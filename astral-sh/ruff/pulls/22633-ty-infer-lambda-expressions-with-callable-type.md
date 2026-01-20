@@ -9,12 +9,12 @@ labels:
   - ecosystem-analyzer
 assignees: []
 draft: true
-base: ibraheem/comprehension-tcx
+base: main
 head: ibraheem/lambda-tcx
 created_at: 2026-01-16T22:48:02Z
-updated_at: 2026-01-19T23:56:03Z
+updated_at: 2026-01-20T20:25:11Z
 url: https://github.com/astral-sh/ruff/pull/22633
-synced_at: 2026-01-20T00:49:15Z
+synced_at: 2026-01-20T20:55:43Z
 ```
 
 # [ty] Infer lambda expressions with `Callable` type context

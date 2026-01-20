@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: konsti/drop-ppc64
 created_at: 2026-01-20T15:16:15Z
-updated_at: 2026-01-20T19:22:56Z
+updated_at: 2026-01-20T20:16:41Z
 url: https://github.com/astral-sh/ty/pull/2571
-synced_at: 2026-01-20T20:43:14Z
+synced_at: 2026-01-20T20:55:26Z
 ```
 
 # Drop PPC64 builds
@@ -33,5 +33,11 @@ I don't have any objection to this, but I'm also not sure I have the right conte
 ---
 
 _@carljm approved on 2026-01-20 19:22_
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 20:16_
+
+Hmm. I don't have much context myself but I'll try to find the PR that added support for it in Ruff to understand what the motivation was back then.
 
 ---

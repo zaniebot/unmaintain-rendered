@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-22395
 created_at: 2026-01-12T18:45:18Z
-updated_at: 2026-01-20T18:25:44Z
+updated_at: 2026-01-20T20:04:48Z
 url: https://github.com/astral-sh/ruff/pull/22538
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-20T20:55:43Z
 ```
 
 # [flake8_bugbear] fix: improve docs for `no_explicit_stacklevel`
@@ -94,5 +94,39 @@ _@ntBre reviewed on 2026-01-20 18:25_
 _Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_bugbear/rules/no_explicit_stacklevel.rs`:23 on 2026-01-20 18:25_
 
 Does this link work? I don't think it will match up with the one below in the `## References` section, but I'd have to test the docs locally to be sure.
+
+---
+
+_Review comment by @caiquejjx on `crates/ruff_linter/src/rules/flake8_bugbear/rules/no_explicit_stacklevel.rs`:23 on 2026-01-20 19:54_
+
+You're right! I added now a reusable doc link that serves for both docs references nicely:
+
+https://github.com/user-attachments/assets/2b949f00-2852-4d31-b323-13953dfa7868
+
+
+
+---
+
+_@caiquejjx reviewed on 2026-01-20 19:54_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-20 20:04_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
 
 ---

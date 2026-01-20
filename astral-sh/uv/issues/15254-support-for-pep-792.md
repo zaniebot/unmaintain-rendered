@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-08-13T16:56:06Z
-updated_at: 2026-01-07T23:54:02Z
+updated_at: 2026-01-20T19:49:32Z
 url: https://github.com/astral-sh/uv/issues/15254
-synced_at: 2026-01-12T16:02:07Z
+synced_at: 2026-01-20T20:55:48Z
 ```
 
 # Support for PEP 792
@@ -50,7 +50,8 @@ Subtasks:
 
 - [x] Data modeling + extract status markers from the detail responses (#17311)
 - [ ] Plumb status markers into the internal representation
-    - [ ] https://github.com/rkyv/rkyv/pull/646
+    - [x] https://github.com/rkyv/rkyv/pull/646
+    - [ ] #17631 
 - [ ] Propagate relevant statuses as warnings (e.g. warn users when they request a quarantined / archived / deprecated project)
 
 ---

@@ -2,18 +2,19 @@
 number: 22564
 title: "[ty] Propagate type context through comprehensions"
 type: pull_request
-state: open
+state: merged
 author: ibraheemdev
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-20T00:05:14Z
+updated_at: 2026-01-20T20:25:11Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-20T00:49:14Z
+synced_at: 2026-01-20T20:55:43Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -529,5 +530,17 @@ _@ibraheemdev reviewed on 2026-01-19 23:59_
 _Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:10276 on 2026-01-19 23:59_
 
 It's slightly better now with the `extend_scope` method, I'm not sure we can do much better here. The list and set cases are similar because they both have a single element type, while dictionaries have two.
+
+---
+
+_Merged by @ibraheemdev on 2026-01-20 20:25_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-20 20:25_
+
+---
+
+_Branch deleted on 2026-01-20 20:25_
 
 ---

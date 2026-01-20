@@ -2,15 +2,15 @@
 number: 1602
 title: Bidirectional inference with comprehensions
 type: issue
-state: open
+state: closed
 author: gjcarneiro
 labels:
   - bidirectional inference
 assignees: []
 created_at: 2025-11-20T17:07:10Z
-updated_at: 2026-01-09T05:27:16Z
+updated_at: 2026-01-20T20:25:10Z
 url: https://github.com/astral-sh/ty/issues/1602
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-20T20:55:26Z
 ```
 
 # Bidirectional inference with comprehensions
@@ -113,5 +113,9 @@ _Added to milestone `Pre-stable 1` by @carljm on 2026-01-08 18:46_
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 05:27_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-20 20:25_
 
 ---
