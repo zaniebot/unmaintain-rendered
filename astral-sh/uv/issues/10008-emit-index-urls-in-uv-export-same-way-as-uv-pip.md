@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-12-18T18:10:18Z
-updated_at: 2025-10-24T10:16:03Z
+updated_at: 2026-01-20T00:06:36Z
 url: https://github.com/astral-sh/uv/issues/10008
-synced_at: 2026-01-12T16:00:04Z
+synced_at: 2026-01-20T00:50:23Z
 ```
 
 # Emit index urls in `uv export` same way as `uv pip compile --emit-index-url`
@@ -138,5 +138,26 @@ _Comment by @anton-slashm on 2025-10-24 10:13_
 Try `uv export | uv pip install --extra-index-url https://abc.com/ -r dev/stdin`
 
 Worked for me.
+
+---
+
+_Comment by @debu-sinha on 2026-01-20 00:06_
+
+I'm working on UV integration for MLflow ([mlflow#12478](https://github.com/mlflow/mlflow/issues/12478)) and hit this limitation when exporting dependencies for model artifacts.
+
+I'd like to volunteer a design doc for this feature. Based on the discussion here and related issues, the key challenges seem to be:
+
+1. **Index ordering/strategy** (`first-index` vs `unsafe-best-match`) has no pip equivalent
+2. **Per-package index pinning** (via `[tool.uv.sources]`) not representable in requirements.txt
+
+**Proposed approach:**
+- Emit `--index-url` for default index (if non-PyPI)
+- Emit `--extra-index-url` for additional indexes
+- Add warning comment when per-package pinning detected (limitation)
+- New flag: `--emit-index-url` (matching `uv pip compile` behavior)
+
+The `uv.lock` file already contains `source = { registry = "..." }` for each package, so the data is available.
+
+Would a design doc exploring options and trade-offs be helpful? Happy to draft one if maintainers are open to contributions here.
 
 ---

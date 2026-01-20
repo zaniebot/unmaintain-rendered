@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-19T23:28:36Z
+updated_at: 2026-01-20T00:05:14Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-19T23:36:38Z
+synced_at: 2026-01-20T00:49:14Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -62,7 +62,7 @@ _@ibraheemdev reviewed on 2026-01-14 01:50_
 
 ---
 
-_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer.rs`:371 on 2026-01-14 01:50_
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer.rs`:402 on 2026-01-14 01:50_
 
 Ideally we could have a generic `InferRegion` type, but the salsa macros don't seem to like it.
 
@@ -109,6 +109,14 @@ aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo & ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
 + aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo & ~bytes) | int | list[Unknown | bytes | memoryview[int] | ... omitted 5 union elements] | ... omitted 4 union elements`
 
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/req/req_uninstall.py:132:42: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Sized | Unknown`
++ src/pip/_internal/req/req_uninstall.py:132:42: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Unknown | Sized`
+- src/pip/_internal/req/req_uninstall.py:133:40: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Sized | Unknown`
++ src/pip/_internal/req/req_uninstall.py:133:40: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Unknown | Sized`
+- src/pip/_internal/req/req_uninstall.py:139:27: error[unsupported-operator] Operator `+` is not supported between objects of type `Sized | Unknown` and `LiteralString`
++ src/pip/_internal/req/req_uninstall.py:139:27: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | Sized` and `LiteralString`
+
 spack (https://github.com/spack/spack)
 - lib/spack/spack/detection/path.py:399:20: error[invalid-assignment] Object of type `list[Pattern[str] | Unknown]` is not assignable to `list[str]`
 + lib/spack/spack/detection/path.py:399:20: error[invalid-assignment] Object of type `list[str | Pattern[str]]` is not assignable to `list[str]`
@@ -149,23 +157,17 @@ spack (https://github.com/spack/spack)
 - lib/spack/spack/verify_libraries.py:170:69: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[bytes]`, found `list[bytes | Unknown | str | PathLike[str] | PathLike[bytes]]`
 + lib/spack/spack/verify_libraries.py:170:69: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[bytes]`, found `list[Unknown | bytes | str | PathLike[str] | PathLike[bytes]]`
 
-pip (https://github.com/pypa/pip)
-- src/pip/_internal/req/req_uninstall.py:132:42: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Sized | Unknown`
-+ src/pip/_internal/req/req_uninstall.py:132:42: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Unknown | Sized`
-- src/pip/_internal/req/req_uninstall.py:133:40: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Sized | Unknown`
-+ src/pip/_internal/req/req_uninstall.py:133:40: error[invalid-argument-type] Argument to function `norm_join` is incorrect: Expected `str`, found `Unknown | Sized`
-- src/pip/_internal/req/req_uninstall.py:139:27: error[unsupported-operator] Operator `+` is not supported between objects of type `Sized | Unknown` and `LiteralString`
-+ src/pip/_internal/req/req_uninstall.py:139:27: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | Sized` and `LiteralString`
-
-jinja (https://github.com/pallets/jinja)
-- src/jinja2/environment.py:1496:20: error[invalid-return-type] Return type does not match returned value: expected `list[tuple[int, int]]`, found `list[tuple[int, ...] | Unknown]`
-+ src/jinja2/environment.py:1496:20: error[invalid-return-type] Return type does not match returned value: expected `list[tuple[int, int]]`, found `list[tuple[int, ...]]`
-
 werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/debug/tbtools.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `list[DebugFrameSummary]`, found `list[FrameSummary | Unknown]`
++ src/werkzeug/debug/tbtools.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `list[DebugFrameSummary]`, found `list[FrameSummary]`
 - tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Unknown | None | set[str | Unknown]`
 + tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Unknown | None | set[str]`
 - tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` may be missing on object of type `Unknown | None | set[str | Unknown]`
 + tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` may be missing on object of type `Unknown | None | set[str]`
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/environment.py:1496:20: error[invalid-return-type] Return type does not match returned value: expected `list[tuple[int, int]]`, found `list[tuple[int, ...] | Unknown]`
++ src/jinja2/environment.py:1496:20: error[invalid-return-type] Return type does not match returned value: expected `list[tuple[int, int]]`, found `list[tuple[int, ...]]`
 
 graphql-core (https://github.com/graphql-python/graphql-core)
 - src/graphql/utilities/find_breaking_changes.py:107:12: error[invalid-return-type] Return type does not match returned value: expected `list[BreakingChange]`, found `list[BreakingChange | DangerousChange | Unknown]`
@@ -173,23 +175,27 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - src/graphql/utilities/find_breaking_changes.py:122:12: error[invalid-return-type] Return type does not match returned value: expected `list[DangerousChange]`, found `list[BreakingChange | DangerousChange | Unknown]`
 + src/graphql/utilities/find_breaking_changes.py:122:12: error[invalid-return-type] Return type does not match returned value: expected `list[DangerousChange]`, found `list[DangerousChange | BreakingChange]`
 
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Mapping[str, Any] | Unknown] | None]`
-+ paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Unknown | Mapping[str, Any]] | None]`
-
 scrapy (https://github.com/scrapy/scrapy)
 - scrapy/utils/python.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `Iterable[_KT@without_none_values]`, found `dict[object, ~None | Unknown]`
 + scrapy/utils/python.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `Iterable[_KT@without_none_values]`, found `dict[object, Unknown | ~None]`
 
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Mapping[str, Any] | Unknown] | None]`
++ paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Unknown | Mapping[str, Any]] | None]`
+
 kopf (https://github.com/nolar/kopf)
 - kopf/_core/engines/admission.py:449:42: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | str] | dict[Unknown | str, Unknown | str | list[Unknown | str]] | Unknown]` is not assignable to `Collection[MatchExpression]`
-- Found 268 diagnostics
-+ Found 267 diagnostics
+- Found 260 diagnostics
++ Found 259 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 + testing/test_config.py:2516:21: warning[possibly-missing-attribute] Submodule `config` may not be available as an attribute on module `_pytest`
-- Found 416 diagnostics
-+ Found 417 diagnostics
+- Found 413 diagnostics
++ Found 414 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/refs.py:1992:12: error[invalid-return-type] Return type does not match returned value: expected `T@filter_ref_prefix`, found `dict[Ref | Unknown, ObjectID | None | Unknown]`
++ dulwich/refs.py:1992:12: error[invalid-return-type] Return type does not match returned value: expected `T@filter_ref_prefix`, found `dict[Unknown | Ref, Unknown | ObjectID | None]`
 
 sockeye (https://github.com/awslabs/sockeye)
 - sockeye/data_io.py:506:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> int | Unknown, (s: slice[Any, Any, Any], /) -> list[int | Unknown]]` cannot be called with key of type `None` on object of type `list[int | Unknown]`
@@ -202,10 +208,6 @@ sockeye (https://github.com/awslabs/sockeye)
 + sockeye/inference.py:352:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~Top[list[Unknown]]) | None | list[Unknown | list[str]]`
 - sockeye/test_utils.py:105:101: error[not-iterable] Object of type `None | list[list[str | Unknown] | Unknown]` may not be iterable
 + sockeye/test_utils.py:105:101: error[not-iterable] Object of type `None | list[Unknown | list[Unknown | str]]` may not be iterable
-
-dulwich (https://github.com/dulwich/dulwich)
-- dulwich/refs.py:1992:12: error[invalid-return-type] Return type does not match returned value: expected `T@filter_ref_prefix`, found `dict[Ref | Unknown, ObjectID | None | Unknown]`
-+ dulwich/refs.py:1992:12: error[invalid-return-type] Return type does not match returned value: expected `T@filter_ref_prefix`, found `dict[Unknown | Ref, Unknown | ObjectID | None]`
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - test/mitmproxy/addons/test_proxyserver.py:119:36: error[invalid-argument-type] Argument to function `wait_for` is incorrect: Expected `Awaitable[Unknown]`, found `Task[Unknown] | None | Unknown`
@@ -221,25 +223,6 @@ optuna (https://github.com/optuna/optuna)
 - optuna/storages/_rdb/storage.py:396:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
 + optuna/storages/_rdb/storage.py:396:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Unknown]`
 
-pandera (https://github.com/pandera-dev/pandera)
-- pandera/api/pandas/components.py:400:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | None | str, Unknown | Index]`
-+ pandera/api/pandas/components.py:400:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[str | Unknown | None, Any]`
-- pandera/api/pandas/model.py:210:13: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[str | Unknown, Any | None]`
-+ pandera/api/pandas/model.py:210:13: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown | str, Unknown | None]`
-- tests/pandas/test_pydantic.py:308:53: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown, Unknown] | dict[str | Unknown, Any | None | type[Any]]`
-+ tests/pandas/test_pydantic.py:308:53: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown, Unknown] | dict[Unknown | str, Unknown | None | type[Any]]`
-
-artigraph (https://github.com/artigraph/artigraph)
-- src/arti/storage/__init__.py:221:13: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str, ...]`, found `str | Any`
-+ src/arti/storage/__init__.py:221:13: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str, ...]`, found `Unknown | str`
-
-freqtrade (https://github.com/freqtrade/freqtrade)
-- freqtrade/data/btanalysis/bt_fileutils.py:238:12: error[invalid-return-type] Return type does not match returned value: expected `list[BacktestHistoryEntryType]`, found `list[dict[Unknown | str, Unknown | str] | Unknown]`
-- freqtrade/exchange/exchange_utils.py:132:48: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown] | Unknown]` is not assignable to `list[TradeModeType]`
-- freqtrade/plugins/pairlist/PercentChangePairList.py:218:56: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | str | None] | Unknown]` is not assignable to `list[SymbolWithPercentage]`
-- Found 648 diagnostics
-+ Found 645 diagnostics
-
 schema_salad (https://github.com/common-workflow-language/schema_salad)
 - schema_salad/schema.py:572:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["symbols"]` and value of type `list[str | Unknown]` on object of type `MutableSequence[Any]`
 + schema_salad/schema.py:572:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["symbols"]` and value of type `list[Unknown | str]` on object of type `MutableSequence[Any]`
@@ -254,15 +237,61 @@ vision (https://github.com/pytorch/vision)
 - torchvision/utils.py:763:14: error[invalid-assignment] Object of type `list[tuple[int, int, int] | tuple[int, int, int, int] | Unknown]` is not assignable to `None | str | tuple[int, int, int] | list[str | tuple[int, int, int]]`
 + torchvision/utils.py:763:14: error[invalid-assignment] Object of type `list[str | tuple[int, int, int] | tuple[int, int, int, int] | (Unknown & ~str)]` is not assignable to `None | str | tuple[int, int, int] | list[str | tuple[int, int, int]]`
 
+artigraph (https://github.com/artigraph/artigraph)
+- src/arti/storage/__init__.py:221:13: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str, ...]`, found `str | Any`
++ src/arti/storage/__init__.py:221:13: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str, ...]`, found `Unknown | str`
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/components.py:1326:27: error[invalid-argument-type] Invalid argument to key "components" with declared type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 5 union elements]` on TypedDict `ContainerComponent`: value of type `list[ButtonComponent | SelectMenu | TextInput | ... omitted 11 union elements]`
++ discord/components.py:1326:27: error[invalid-argument-type] Invalid argument to key "components" with declared type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 5 union elements]` on TypedDict `ContainerComponent`: value of type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 10 union elements]`
+- discord/role.py:450:45: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown] | Unknown]` is not assignable to `list[RolePositionUpdate]`
+- discord/role.py:700:45: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | int] | Unknown]` is not assignable to `list[RolePositionUpdate]`
+- Found 542 diagnostics
++ Found 540 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/api/pandas/components.py:400:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | None | str, Unknown | Index]`
++ pandera/api/pandas/components.py:400:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[str | Unknown | None, Any]`
+- pandera/api/pandas/model.py:210:13: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[str | Unknown, Any | None]`
++ pandera/api/pandas/model.py:210:13: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown | str, Unknown | None]`
+- tests/pandas/test_pydantic.py:308:53: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown, Unknown] | dict[str | Unknown, Any | None | type[Any]]`
++ tests/pandas/test_pydantic.py:308:53: error[invalid-argument-type] Argument to bound method `astype` is incorrect: Expected `type | Literal["bool", "boolean", "?", "b1", "bool_", ... omitted 154 literals] | ExtensionDtype | ... omitted 3 union elements`, found `dict[Unknown, Unknown] | dict[Unknown | str, Unknown | None | type[Any]]`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/data/btanalysis/bt_fileutils.py:238:12: error[invalid-return-type] Return type does not match returned value: expected `list[BacktestHistoryEntryType]`, found `list[dict[Unknown | str, Unknown | str] | Unknown]`
+- freqtrade/exchange/exchange_utils.py:132:48: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown] | Unknown]` is not assignable to `list[TradeModeType]`
+- freqtrade/plugins/pairlist/PercentChangePairList.py:218:56: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | str | None] | Unknown]` is not assignable to `list[SymbolWithPercentage]`
+- Found 648 diagnostics
++ Found 645 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- apprise/persistent_store.py:1538:35: error[invalid-argument-type] Argument to function `unlink` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `int | str | bytes | ... omitted 3 union elements`
++ apprise/persistent_store.py:1538:35: error[invalid-argument-type] Argument to function `unlink` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | int | str | ... omitted 3 union elements`
+- apprise/plugins/email/base.py:1048:28: error[invalid-assignment] Object of type `list[str | Unknown]` is not assignable to `set[Unknown] | None`
++ apprise/plugins/email/base.py:1048:28: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `set[Unknown] | None`
+
+xarray (https://github.com/pydata/xarray)
+- properties/test_properties.py:59:39: error[invalid-argument-type] Argument to function `find_independent_seasons` is incorrect: Expected `Sequence[str]`, found `list[list[Unknown] | Unknown]`
++ properties/test_properties.py:59:39: error[invalid-argument-type] Argument to function `find_independent_seasons` is incorrect: Expected `Sequence[str]`, found `list[Unknown | list[Unknown]]`
++ xarray/core/dataarray.py:164:21: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `Hashable` on object of type `list[str]`
+- xarray/core/dataarray.py:473:9: error[invalid-assignment] Object of type `(Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[tuple[Any, ...], dtype[Any]]] & Top[dict[Unknown, Unknown]]) | (Mapping[Unknown, Unknown] & Top[dict[Unknown, Unknown]]) | dict[Hashable, Variable | Unknown]` is not assignable to attribute `_coords` of type `dict[Any, Variable]`
++ xarray/core/dataarray.py:473:9: error[invalid-assignment] Object of type `(Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[tuple[Any, ...], dtype[Any]]] & Top[dict[Unknown, Unknown]]) | (Mapping[Unknown, Unknown] & Top[dict[Unknown, Unknown]]) | dict[Hashable, Unknown | Variable]` is not assignable to attribute `_coords` of type `dict[Any, Variable]`
+- xarray/core/dataset.py:9127:21: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Any | dict[Any, Any] | int | ... omitted 4 union elements`
++ xarray/core/dataset.py:9127:21: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Any | dict[Unknown, Unknown] | int | ... omitted 4 union elements`
+- xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str | Unknown, Self@_detach | Unknown]` is not assignable to attribute `_children` of type `dict[str, <special-form 'typing.Self'>]`
++ xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str, <special-form 'typing.Self'> | Self@_detach]` is not assignable to attribute `_children` of type `dict[str, <special-form 'typing.Self'>]`
+- Found 1752 diagnostics
++ Found 1753 diagnostics
+
 meson (https://github.com/mesonbuild/meson)
 - docs/refman/generatorjson.py:31:16: error[invalid-return-type] Return type does not match returned value: expected `list[Type]`, found `list[dict[Unknown | str, Unknown | str | list[Type] | list[Unknown]] | Unknown]`
 - mesonbuild/dependencies/dub.py:471:16: error[invalid-return-type] Return type does not match returned value: expected `list[FindTargetEntry]`, found `list[dict[Unknown | str, Unknown | str] | Unknown]`
 - mesonbuild/dependencies/pkgconfig.py:215:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[str | Unknown]`
 + mesonbuild/dependencies/pkgconfig.py:215:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[Unknown | str]`
-- mesonbuild/interpreter/interpreter.py:3301:13: error[invalid-assignment] Object of type `dict[str | Unknown, Compiler | Unknown]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
-+ mesonbuild/interpreter/interpreter.py:3301:13: error[invalid-assignment] Object of type `dict[str, Compiler]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
-- mesonbuild/interpreter/interpreter.py:3492:18: error[invalid-assignment] Object of type `dict[str | Unknown, object]` is not assignable to `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
-+ mesonbuild/interpreter/interpreter.py:3492:18: error[invalid-assignment] Object of type `dict[Unknown | str, object]` is not assignable to `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- mesonbuild/interpreter/interpreter.py:3305:13: error[invalid-assignment] Object of type `dict[str | Unknown, Compiler | Unknown]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
++ mesonbuild/interpreter/interpreter.py:3305:13: error[invalid-assignment] Object of type `dict[str, Compiler]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
+- mesonbuild/interpreter/interpreter.py:3496:18: error[invalid-assignment] Object of type `dict[str | Unknown, object]` is not assignable to `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3496:18: error[invalid-assignment] Object of type `dict[Unknown | str, object]` is not assignable to `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
 - mesonbuild/interpreter/type_checking.py:252:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | list[str]] | None`, found `dict[object, list[Any] | Unknown]`
 + mesonbuild/interpreter/type_checking.py:252:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | list[str]] | None`, found `dict[object, str | list[str]]`
 - mesonbuild/interpreterbase/helpers.py:39:20: error[invalid-return-type] Return type does not match returned value: expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `dict[object, str | int | Sequence[Divergent] | ... omitted 6 union elements]`
@@ -273,29 +302,8 @@ meson (https://github.com/mesonbuild/meson)
 + test cases/common/22 object extraction/check-obj.py:19:35: error[unsupported-operator] Operator `not in` is not supported between objects of type `str` and `None | set[Unknown]`
 - unittests/allplatformstests.py:3199:41: error[invalid-argument-type] Argument to function `exists` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | dict[str | Unknown, Any] | ... omitted 3 union elements`
 + unittests/allplatformstests.py:3199:41: error[invalid-argument-type] Argument to function `exists` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | dict[Unknown | str, Unknown] | ... omitted 3 union elements`
-- Found 2152 diagnostics
-+ Found 2150 diagnostics
-
-discord.py (https://github.com/Rapptz/discord.py)
-- discord/components.py:1326:27: error[invalid-argument-type] Invalid argument to key "components" with declared type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 5 union elements]` on TypedDict `ContainerComponent`: value of type `list[ButtonComponent | SelectMenu | TextInput | ... omitted 11 union elements]`
-+ discord/components.py:1326:27: error[invalid-argument-type] Invalid argument to key "components" with declared type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 5 union elements]` on TypedDict `ContainerComponent`: value of type `list[ActionRow | TextComponent | MediaGalleryComponent | ... omitted 10 union elements]`
-- discord/role.py:450:45: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown] | Unknown]` is not assignable to `list[RolePositionUpdate]`
-- discord/role.py:700:45: error[invalid-assignment] Object of type `list[dict[Unknown | str, Unknown | int] | Unknown]` is not assignable to `list[RolePositionUpdate]`
-- Found 552 diagnostics
-+ Found 550 diagnostics
-
-xarray (https://github.com/pydata/xarray)
-- properties/test_properties.py:59:39: error[invalid-argument-type] Argument to function `find_independent_seasons` is incorrect: Expected `Sequence[str]`, found `list[list[Unknown] | Unknown]`
-+ properties/test_properties.py:59:39: error[invalid-argument-type] Argument to function `find_independent_seasons` is incorrect: Expected `Sequence[str]`, found `list[Unknown | list[Unknown]]`
-+ xarray/core/dataarray.py:164:21: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `Hashable` on object of type `list[str]`
-- xarray/core/dataarray.py:473:9: error[invalid-assignment] Object of type `(Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[tuple[Any, ...], dtype[Any]]] & Top[dict[Unknown, Unknown]]) | (Mapping[Unknown, Unknown] & Top[dict[Unknown, Unknown]]) | dict[Hashable, Variable | Unknown]` is not assignable to attribute `_coords` of type `dict[Any, Variable]`
-+ xarray/core/dataarray.py:473:9: error[invalid-assignment] Object of type `(Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[tuple[Any, ...], dtype[Any]]] & Top[dict[Unknown, Unknown]]) | (Mapping[Unknown, Unknown] & Top[dict[Unknown, Unknown]]) | dict[Hashable, Unknown | Variable]` is not assignable to attribute `_coords` of type `dict[Any, Variable]`
-- xarray/core/dataset.py:9121:21: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Any | dict[Any, Any] | int | ... omitted 4 union elements`
-+ xarray/core/dataset.py:9121:21: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Any | dict[Unknown, Unknown] | int | ... omitted 4 union elements`
-- xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str | Unknown, Self@_detach | Unknown]` is not assignable to attribute `_children` of type `dict[str, <special-form 'typing.Self'>]`
-+ xarray/core/treenode.py:133:13: error[invalid-assignment] Object of type `dict[str, <special-form 'typing.Self'> | Self@_detach]` is not assignable to attribute `_children` of type `dict[str, <special-form 'typing.Self'>]`
-- Found 1761 diagnostics
-+ Found 1762 diagnostics
+- Found 2156 diagnostics
++ Found 2154 diagnostics
 
 openlibrary (https://github.com/internetarchive/openlibrary)
 - openlibrary/book_providers.py:829:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal["min", "max"], (tuple[Edition, AbstractBookProvider[Unknown] | None] | Unknown, /) -> int | float]]`, found `list[Unknown | tuple[str, (rec) -> Unknown]]`
@@ -306,14 +314,6 @@ openlibrary (https://github.com/internetarchive/openlibrary)
 + openlibrary/plugins/books/dynlinks.py:399:33: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]] | ... omitted 3 union elements`
 - openlibrary/plugins/books/dynlinks.py:400:37: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown] | ... omitted 3 union elements`
 + openlibrary/plugins/books/dynlinks.py:400:37: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]] | ... omitted 3 union elements`
-
-setuptools (https://github.com/pypa/setuptools)
-- setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown & ~AlwaysFalsy) | (list[tuple[Unknown, str] | Unknown] & ~AlwaysFalsy)`
-+ setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown & ~AlwaysFalsy) | (list[Unknown | tuple[Unknown, str]] & ~AlwaysFalsy)`
-- setuptools/_distutils/sysconfig.py:568:12: error[invalid-return-type] Return type does not match returned value: expected `list[str | int] | dict[str, str | int]`, found `list[Any | None] | dict[str, Any]`
-+ setuptools/_distutils/sysconfig.py:568:12: error[invalid-return-type] Return type does not match returned value: expected `list[str | int] | dict[str, str | int]`, found `list[str | int | Any | None] | dict[str, Any]`
-- setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[str | Unknown]` may not be iterable
-+ setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[Unknown | str]` may not be iterable
 
 cwltool (https://github.com/common-workflow-language/cwltool)
 - cwltool/builder.py:678:24: error[invalid-return-type] Return type does not match returned value: expected `None | int | str | ... omitted 3 union elements`, found `dict[object, None | int | str | ... omitted 4 union elements]`
@@ -329,11 +329,33 @@ strawberry (https://github.com/strawberry-graphql/strawberry)
 - strawberry/permission.py:163:35: error[not-iterable] Object of type `list[~AlwaysFalsy | Unknown]` is not iterable
 + strawberry/permission.py:163:35: error[not-iterable] Object of type `list[Unknown | ~AlwaysFalsy]` is not iterable
 
-apprise (https://github.com/caronc/apprise)
-- apprise/persistent_store.py:1538:35: error[invalid-argument-type] Argument to function `unlink` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `int | str | bytes | ... omitted 3 union elements`
-+ apprise/persistent_store.py:1538:35: error[invalid-argument-type] Argument to function `unlink` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | int | str | ... omitted 3 union elements`
-- apprise/plugins/email/base.py:1048:28: error[invalid-assignment] Object of type `list[str | Unknown]` is not assignable to `set[Unknown] | None`
-+ apprise/plugins/email/base.py:1048:28: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `set[Unknown] | None`
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/commands/killthreads.py:58:26: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
++ pwndbg/commands/killthreads.py:58:26: error[not-iterable] Object of type `list[int] | None | list[Unknown | int]` may not be iterable
+- pwndbg/commands/killthreads.py:71:62: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
++ pwndbg/commands/killthreads.py:71:62: error[not-iterable] Object of type `list[int] | None | list[Unknown | int]` may not be iterable
+- pwndbg/dbg_mod/__init__.py:905:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[Unknown | str | None]`
++ pwndbg/dbg_mod/__init__.py:905:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[str | Unknown | None]`
+- pwndbg/gdblib/shellcode.py:105:46: error[invalid-argument-type] Argument to function `read` is incorrect: Expected `int`, found `int | None | Unknown`
++ pwndbg/gdblib/shellcode.py:105:46: error[invalid-argument-type] Argument to function `read` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/gdblib/shellcode.py:106:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `int | None | Unknown`
++ pwndbg/gdblib/shellcode.py:106:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/gdblib/shellcode.py:125:22: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None | Unknown` and `int`
++ pwndbg/gdblib/shellcode.py:125:22: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | int | None` and `int`
+- pwndbg/gdblib/shellcode.py:148:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `int | None | Unknown`
++ pwndbg/gdblib/shellcode.py:148:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/gdblib/shellcode.py:149:50: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `int | None | Unknown`
++ pwndbg/gdblib/shellcode.py:149:50: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/gdblib/shellcode.py:152:46: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `int | None | Unknown`
++ pwndbg/gdblib/shellcode.py:152:46: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `Unknown | int | None`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown & ~AlwaysFalsy) | (list[tuple[Unknown, str] | Unknown] & ~AlwaysFalsy)`
++ setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown & ~AlwaysFalsy) | (list[Unknown | tuple[Unknown, str]] & ~AlwaysFalsy)`
+- setuptools/_distutils/sysconfig.py:568:12: error[invalid-return-type] Return type does not match returned value: expected `list[str | int] | dict[str, str | int]`, found `list[Any | None] | dict[str, Any]`
++ setuptools/_distutils/sysconfig.py:568:12: error[invalid-return-type] Return type does not match returned value: expected `list[str | int] | dict[str, str | int]`, found `list[str | int | Any | None] | dict[str, Any]`
+- setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[str | Unknown]` may not be iterable
++ setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[Unknown | str]` may not be iterable
 
 hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
 - src/hydra_zen/structured_configs/_implementations.py:1325:20: error[invalid-return-type] Return type does not match returned value: expected `_T@_sanitize_collection`, found `dict[int | None | float | ... omitted 13 union elements, int | None | float | ... omitted 13 union elements]`
@@ -369,26 +391,6 @@ prefect (https://github.com/PrefectHQ/prefect)
 - src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
 + src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown | T@resolve_variables]`
 
-pwndbg (https://github.com/pwndbg/pwndbg)
-- pwndbg/commands/killthreads.py:58:26: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
-+ pwndbg/commands/killthreads.py:58:26: error[not-iterable] Object of type `list[int] | None | list[Unknown | int]` may not be iterable
-- pwndbg/commands/killthreads.py:71:62: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
-+ pwndbg/commands/killthreads.py:71:62: error[not-iterable] Object of type `list[int] | None | list[Unknown | int]` may not be iterable
-- pwndbg/dbg_mod/__init__.py:905:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[Unknown | str | None]`
-+ pwndbg/dbg_mod/__init__.py:905:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[str | Unknown | None]`
-- pwndbg/gdblib/shellcode.py:105:46: error[invalid-argument-type] Argument to function `read` is incorrect: Expected `int`, found `int | None | Unknown`
-+ pwndbg/gdblib/shellcode.py:105:46: error[invalid-argument-type] Argument to function `read` is incorrect: Expected `int`, found `Unknown | int | None`
-- pwndbg/gdblib/shellcode.py:106:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `int | None | Unknown`
-+ pwndbg/gdblib/shellcode.py:106:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `Unknown | int | None`
-- pwndbg/gdblib/shellcode.py:125:22: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None | Unknown` and `int`
-+ pwndbg/gdblib/shellcode.py:125:22: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | int | None` and `int`
-- pwndbg/gdblib/shellcode.py:148:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `int | None | Unknown`
-+ pwndbg/gdblib/shellcode.py:148:31: error[invalid-argument-type] Argument to function `write` is incorrect: Expected `int`, found `Unknown | int | None`
-- pwndbg/gdblib/shellcode.py:149:50: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `int | None | Unknown`
-+ pwndbg/gdblib/shellcode.py:149:50: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `Unknown | int | None`
-- pwndbg/gdblib/shellcode.py:152:46: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `int | None | Unknown`
-+ pwndbg/gdblib/shellcode.py:152:46: error[invalid-argument-type] Argument to bound method `write_reg` is incorrect: Expected `int`, found `Unknown | int | None`
-
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 - lib/Crypto/Cipher/_mode_kw.py:25:12: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytes | bytearray | Unknown`
 + lib/Crypto/Cipher/_mode_kw.py:25:12: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `Unknown | bytes | bytearray`
@@ -402,10 +404,9 @@ pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/IO/_PBES.py:531:36: error[invalid-argument-type] Argument to function `scrypt` is incorrect: Expected `int`, found `Unknown | None`
 - lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:275:37: error[invalid-argument-type] Argument to function `construct` is incorrect: Expected `tuple[int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase]`, found `list[int | Unknown]`
 + lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:275:37: error[invalid-argument-type] Argument to function `construct` is incorrect: Expected `tuple[int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase]`, found `list[Unknown | int]`
-- lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:306:37: error[invalid-argument-type] Argument to function `construct` is incorrect: Expected `tuple[int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase]`, found `list[int | Unknown]`
-+ lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:306:37: error[invalid-argument-type] Argument to function `construct` is incorrect: Expected `tuple[int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase]
+- lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:306:37: error[invalid-argument-type] Argument to function `construct` is incorrect: Expected `tuple[int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase, int | IntegerBase] | tuple[int | IntegerBase, int | IntegerBase, 
 
-... (truncated 526 lines) ...
+... (truncated 531 lines) ...
 ```
 
 </details>
@@ -445,19 +446,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 02:00_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 1 | 12 | 137 |
-| `possibly-missing-attribute` | 0 | 1 | 70 |
-| `invalid-return-type` | 1 | 21 | 38 |
+| `invalid-argument-type` | 2 | 12 | 137 |
+| `possibly-missing-attribute` | 3 | 1 | 71 |
+| `invalid-return-type` | 0 | 25 | 37 |
 | `invalid-assignment` | 1 | 20 | 35 |
-| `unsupported-operator` | 0 | 0 | 31 |
+| `unsupported-operator` | 0 | 0 | 32 |
 | `not-iterable` | 0 | 0 | 9 |
 | `type-assertion-failure` | 0 | 0 | 8 |
 | `not-subscriptable` | 0 | 0 | 6 |
-| `unused-ignore-comment` | 2 | 0 | 0 |
-| **Total** | **5** | **54** | **334** |
+| `unused-ignore-comment` | 2 | 1 | 0 |
+| `invalid-await` | 2 | 0 | 0 |
+| `unresolved-attribute` | 0 | 0 | 2 |
+| **Total** | **10** | **59** | **337** |
 
 
-**[Full report with detailed diff](https://09fb55a6.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://09fb55a6.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://92d069b2.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://92d069b2.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -512,5 +515,19 @@ _@carljm approved on 2026-01-16 20:29_
 Looks good!
 
 I'm guessing we may want similar treatment for generator expressions at some point, but those have enough of their own wrinkles that it makes sense to handle them separately.
+
+---
+
+_Review requested from @Gankra by @ibraheemdev on 2026-01-19 23:53_
+
+---
+
+_@ibraheemdev reviewed on 2026-01-19 23:59_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:10276 on 2026-01-19 23:59_
+
+It's slightly better now with the `extend_scope` method, I'm not sure we can do much better here. The list and set cases are similar because they both have a single element type, while dictionaries have two.
 
 ---

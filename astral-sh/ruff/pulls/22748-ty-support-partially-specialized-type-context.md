@@ -11,9 +11,9 @@ assignees: []
 base: ibraheem/bidi-diagnostics
 head: ibraheem/partial-tcx
 created_at: 2026-01-19T23:14:57Z
-updated_at: 2026-01-19T23:28:30Z
+updated_at: 2026-01-19T23:36:40Z
 url: https://github.com/astral-sh/ruff/pull/22748
-synced_at: 2026-01-19T23:36:38Z
+synced_at: 2026-01-20T00:49:16Z
 ```
 
 # [ty] Support partially specialized type context
@@ -436,15 +436,15 @@ _Comment by @codspeed-hq[bot] on 2026-01-19 23:26_
 
 ### Merging this PR will **degrade performance by 6.59%**
 
-<sub>Comparing <code>ibraheem/partial-tcx</code> (1f98abe) with <code>ibraheem/bidi-diagnostics</code> (d6a2820)</sub>
+<sub>Comparing <code>ibraheem/partial-tcx</code> (5d8943e) with <code>ibraheem/bidi-diagnostics</code> (d6a2820)</sub>
 
 
 
 ### Summary
 
-`❌ 1` regressed benchmark  
-`✅ 16` untouched benchmarks  
-`⏩ 36` skipped benchmarks[^skipped]  
+`❌ 2` regressed benchmarks  
+`✅ 21` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
 
 
 > :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fpartial-tcx?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
@@ -454,8 +454,41 @@ _Comment by @codspeed-hq[bot] on 2026-01-19 23:26_
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
 | ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fpartial-tcx?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.9 s | 8.5 s | -6.59% |
+| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fpartial-tcx?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 88.5 s | 93.8 s | -5.65% |
 
-[^skipped]: 36 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fpartial-tcx?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fpartial-tcx?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 23:31_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 40 | 2 | 67 |
+| `invalid-assignment` | 17 | 1 | 4 |
+| `possibly-missing-attribute` | 7 | 0 | 4 |
+| `not-subscriptable` | 8 | 0 | 0 |
+| `invalid-await` | 0 | 0 | 6 |
+| `type-assertion-failure` | 0 | 2 | 4 |
+| `invalid-return-type` | 1 | 0 | 4 |
+| `unused-ignore-comment` | 0 | 4 | 0 |
+| `no-matching-overload` | 3 | 0 | 0 |
+| `invalid-key` | 2 | 0 | 0 |
+| `missing-typed-dict-key` | 2 | 0 | 0 |
+| `unsupported-operator` | 2 | 0 | 0 |
+| **Total** | **82** | **9** | **89** |
+
+
+**[Full report with detailed diff](https://4b556fbb.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://4b556fbb.ty-ecosystem-ext.pages.dev/timing))
+
 
 
 ---
