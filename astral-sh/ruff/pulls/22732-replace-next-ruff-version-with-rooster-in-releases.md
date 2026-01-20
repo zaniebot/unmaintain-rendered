@@ -2,17 +2,18 @@
 number: 22732
 title: "Replace `NEXT_RUFF_VERSION` with rooster in releases"
 type: pull_request
-state: open
+state: merged
 author: ntBre
 labels:
   - release
 assignees: []
+merged: true
 base: main
 head: brent/rooster-rule-versions
 created_at: 2026-01-19T19:43:33Z
-updated_at: 2026-01-20T18:25:08Z
+updated_at: 2026-01-20T22:58:31Z
 url: https://github.com/astral-sh/ruff/pull/22732
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-20T23:51:43Z
 ```
 
 # Replace `NEXT_RUFF_VERSION` with rooster in releases
@@ -179,5 +180,17 @@ _@ntBre reviewed on 2026-01-20 13:35_
 _Review comment by @ntBre on `crates/ruff_macros/src/violation_metadata.rs`:136 on 2026-01-20 13:35_
 
 All of our versions before 0.5.0 have a `v` prefix, so this was just to allow those. I narrowed this a bit more to allow the `v` only for `v0.[0-4].\d+`.
+
+---
+
+_Merged by @ntBre on 2026-01-20 22:58_
+
+---
+
+_Closed by @ntBre on 2026-01-20 22:58_
+
+---
+
+_Branch deleted on 2026-01-20 22:58_
 
 ---

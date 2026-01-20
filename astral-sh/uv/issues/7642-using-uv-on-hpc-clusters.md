@@ -7,9 +7,9 @@ author: PhilipVinc
 labels: []
 assignees: []
 created_at: 2024-09-23T15:44:39Z
-updated_at: 2025-11-07T23:55:31Z
+updated_at: 2026-01-20T22:56:30Z
 url: https://github.com/astral-sh/uv/issues/7642
-synced_at: 2026-01-12T15:59:15Z
+synced_at: 2026-01-20T23:51:47Z
 ```
 
 # Using uv on HPC Clusters
@@ -76,5 +76,11 @@ Regarding the second point, you could set [reinstall-package](https://docs.astra
 _Comment by @marcelroed on 2025-11-07 23:55_
 
 @PhilipVinc Did you ever find a good solution for this? I have a semi-solution for myself where I use Bash's prompt_function to figure out which project I'm in and set UV_PROJECT_ENVIRONMENT based on this, but I'm not sure how I can have this working well for all users. The distinction between slow project file storage that's global and fast local scratch storage is the key issue for us.
+
+---
+
+_Comment by @LouisJalouzot on 2026-01-20 22:56_
+
+@PhilipVinc, I have had the exact same issue as your issue 1. To solve it I make `.venv` symlinks from my different projects on `$WORK` to `$SCRATCH` where I also have my `.cache` so they live on the same filesystem and don't consume precious inodes. This has worked very well for me in combination with `cd` overloads to automatically activate the environment in the `.venv` of the current directory.
 
 ---

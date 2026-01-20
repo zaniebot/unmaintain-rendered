@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-20T22:48:33Z
+updated_at: 2026-01-20T23:40:44Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-20T22:52:51Z
+synced_at: 2026-01-20T23:51:43Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -22,9 +22,11 @@ synced_at: 2026-01-20T22:52:51Z
 
 _@leandrobbraga_
 
-When I was debugging I've noticed that the function parameters were of type `ExprName` in normal situation and `Attribute` if it was an inner class. I don't know enough of ruff's codebase to understand if it makes sense to pattern match it as well or if there is a deeper issue that needs to be solved. 
+While debugging, I noticed that the function parameters were of type `Expr::Name` in the normal case and `Expr::Attribute` when the function was in a nested class. Reading the [documentation](https://docs.python.org/3/library/ast.html#ast.expr), it seems that being an `Expr::Attribute` makes sense because `Inner` is an attribute of `Outer`.
 
-I went the pattern match approach and it seems to work without regression. I also tested it in multi-level nested classes and it worked as well.
+I did some thinking and could not identify any additional `Expr` types I should be pattern-matching here, but I would like some input from you.
+
+The change seems to fix the issue without any regression.
 
 ```console
 echo 'class Base:
@@ -140,5 +142,32 @@ _Label `bug` added by @ntBre on 2026-01-20 22:48_
 ---
 
 _Label `rule` added by @ntBre on 2026-01-20 22:48_
+
+---
+
+_Comment by @leandrobbraga on 2026-01-20 23:40_
+
+This bug seems easy to introduce into the codebase. I did a quick search and found another example in one minute.
+
+PLC1802 won’t trigger if the list is an attribute. PLC1802 detects the use of the len call on a sequence in a boolean test context.
+
+https://play.ruff.rs/f9f8f76b-c468-4f4f-a3b8-0bca5850daf1
+
+```python
+class Fruits:
+    fruits: list[str]
+
+    def __init__(self, fruits: list[str]):
+        self.fruits = fruits
+
+fruits_class = Fruits(["orange", "apple"])
+fruits_list = ["a", "b"]
+
+if len(fruits_class.fruits):
+    ...
+
+if len(fruits_list):
+    ...
+```
 
 ---

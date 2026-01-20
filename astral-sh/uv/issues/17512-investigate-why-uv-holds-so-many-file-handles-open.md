@@ -10,9 +10,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2026-01-16T09:32:03Z
-updated_at: 2026-01-20T21:17:09Z
+updated_at: 2026-01-20T22:55:44Z
 url: https://github.com/astral-sh/uv/issues/17512
-synced_at: 2026-01-20T21:54:23Z
+synced_at: 2026-01-20T23:51:49Z
 ```
 
 # Investigate why uv holds so many file handles open
@@ -292,5 +292,11 @@ The locks themselves are looking correctly scoped - they protect the cache shard
 We acquire them early and each lock is held until the build completes but then we use semaphore that only allows `available_parallelism` (number of cpus). 
 
 Should we limit concurrency earlier? Change prepare_stream to use `buffer_unordered(concurrent_builds)` instead of unbounded `FuturesUnordered`. This way only N editables start at a time, matching the build semaphore.
+
+---
+
+_Comment by @denyszhak on 2026-01-20 22:55_
+
+@konstin Would you mind taking a look at the PR I've got for this one?
 
 ---

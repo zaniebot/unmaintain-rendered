@@ -6,13 +6,12 @@ state: open
 author: amyreese
 labels: []
 assignees: []
-draft: true
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-20T21:48:41Z
+updated_at: 2026-01-20T22:58:17Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-20T21:54:18Z
+synced_at: 2026-01-20T23:51:43Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -194,5 +193,35 @@ _Review requested from @ntBre by @amyreese on 2026-01-20 21:23_
 ---
 
 _Renamed from "WIP: Ruffen docs prototype" to "Apply formatting to markdown code blocks" by @amyreese on 2026-01-20 21:23_
+
+---
+
+_Marked ready for review by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Review requested from @carljm by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Review requested from @AlexWaygood by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Review requested from @sharkdp by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Review requested from @dcreager by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Review requested from @dhruvmanila by @amyreese on 2026-01-20 22:57_
+
+---
+
+_Comment by @amyreese on 2026-01-20 22:58_
+
+Not familiar enough with ty to know why this changed what files ty looks at, or how to make ty ignore the md files when loading the project.
 
 ---

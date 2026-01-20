@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
-updated_at: 2026-01-18T23:38:51Z
+updated_at: 2026-01-20T23:39:41Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-19T00:21:19Z
+synced_at: 2026-01-20T23:51:43Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
@@ -191,7 +191,7 @@ _Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_com
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:28 on 2026-01-16 21:45_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:29 on 2026-01-16 21:45_
 
 I think it might be worth suggesting a type alias too, that's what clippy does for its similar lint: https://rust-lang.github.io/rust-clippy/master/index.html?search=type_#type_complexity. 
 
@@ -234,13 +234,13 @@ Let's move this function and the assignment version closer to the top of the fil
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:63 on 2026-01-16 21:57_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:64 on 2026-01-16 21:57_
 
 I think it would make sense to implement a `fix_title` function too (even if we can't provide an actual fix). That will attach a `help` sub-diagnostic to the end of the main diagnostic, where we could put a message like `consider using a type alias` or something. Just an idea.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:170 on 2026-01-16 21:59_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:99 on 2026-01-16 21:59_
 
 I haven't really looked closely enough to see if this is a drop-in replacement, but this function reminds me of an existing helper:
 
@@ -332,7 +332,7 @@ _@danjones1618 reviewed on 2026-01-18 21:56_
 
 ---
 
-_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:63 on 2026-01-18 21:56_
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:64 on 2026-01-18 21:56_
 
 Nice idea!
 
@@ -366,7 +366,7 @@ _@danjones1618 reviewed on 2026-01-18 23:05_
 
 ---
 
-_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:170 on 2026-01-18 23:05_
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:99 on 2026-01-18 23:05_
 
 Looks like the `traverse_union` could be a viable alternative - I can try refactor it later in the week
 
