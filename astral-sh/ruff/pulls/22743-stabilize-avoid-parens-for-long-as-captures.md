@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-avoid_parens_for_long_as_captures
 created_at: 2026-01-19T20:46:10Z
-updated_at: 2026-01-19T20:58:25Z
+updated_at: 2026-01-20T07:20:08Z
 url: https://github.com/astral-sh/ruff/pull/22743
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `avoid_parens_for_long_as_captures`
@@ -55,5 +55,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:58_
 
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:20_
 
 ---

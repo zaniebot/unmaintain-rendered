@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-allow_newline_after_block_open
 created_at: 2026-01-19T20:43:37Z
-updated_at: 2026-01-19T20:54:32Z
+updated_at: 2026-01-20T07:19:25Z
 url: https://github.com/astral-sh/ruff/pull/22742
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `allow_newline_after_block_open`
@@ -1281,5 +1281,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:54_
 ... (truncated 3188 lines) ...
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:19_
 
 ---

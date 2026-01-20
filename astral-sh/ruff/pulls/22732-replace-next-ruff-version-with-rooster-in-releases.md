@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: brent/rooster-rule-versions
 created_at: 2026-01-19T19:43:33Z
-updated_at: 2026-01-20T00:29:05Z
+updated_at: 2026-01-20T07:15:44Z
 url: https://github.com/astral-sh/ruff/pull/22732
-synced_at: 2026-01-20T00:49:16Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Replace `NEXT_RUFF_VERSION` with rooster in releases
@@ -175,5 +175,17 @@ _@amyreese approved on 2026-01-19 20:45_
 ---
 
 _Review requested from @MichaReiser by @ntBre on 2026-01-20 00:29_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_macros/src/violation_metadata.rs`:136 on 2026-01-20 07:15_
+
+What's the reason that we allow the `v` prefix? Can't we standardize around one format? 
+
+
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:15_
 
 ---

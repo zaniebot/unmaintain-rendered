@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: brent/lambda-walrus
 created_at: 2026-01-19T21:38:34Z
-updated_at: 2026-01-19T22:38:01Z
+updated_at: 2026-01-20T07:30:16Z
 url: https://github.com/astral-sh/ruff/pull/22747
-synced_at: 2026-01-19T23:36:38Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Preserve required parentheses in lambda bodies
@@ -93,5 +93,15 @@ Looks good to me! Strange we missed what appears to be exactly one case from PEP
 _Comment by @ntBre on 2026-01-19 22:38_
 
 Oh good idea to double-check that, thank you!
+
+---
+
+_@MichaReiser reviewed on 2026-01-20 07:30_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_formatter/src/expression/expr_lambda.rs`:444 on 2026-01-20 07:30_
+
+Do we need the same change on line 356? Or is it that we don't need it because the body must already be parenthesized?
 
 ---

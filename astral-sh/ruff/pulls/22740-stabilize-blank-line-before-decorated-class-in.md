@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-blank_line_before_decorated_class_in_stub
 created_at: 2026-01-19T20:37:32Z
-updated_at: 2026-01-19T20:49:08Z
+updated_at: 2026-01-20T07:21:17Z
 url: https://github.com/astral-sh/ruff/pull/22740
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `blank_line_before_decorated_class_in_stub`
@@ -73,5 +73,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:49_
 
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:21_
 
 ---

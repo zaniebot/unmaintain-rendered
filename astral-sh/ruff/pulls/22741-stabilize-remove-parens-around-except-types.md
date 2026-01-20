@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-remove_parens_around_except_types
 created_at: 2026-01-19T20:40:47Z
-updated_at: 2026-01-19T20:52:16Z
+updated_at: 2026-01-20T07:18:46Z
 url: https://github.com/astral-sh/ruff/pull/22741
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `remove_parens_around_except_types`
@@ -55,5 +55,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:52_
 
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:18_
 
 ---

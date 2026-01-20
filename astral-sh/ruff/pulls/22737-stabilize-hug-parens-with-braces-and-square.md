@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-hug-parens
 created_at: 2026-01-19T20:23:50Z
-updated_at: 2026-01-19T20:44:36Z
+updated_at: 2026-01-20T07:25:56Z
 url: https://github.com/astral-sh/ruff/pull/22737
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `hug_parens_with_braces_and_square_brackets` preview style
@@ -1279,5 +1279,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:32_
 ... (truncated 56065 lines) ...
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 07:25_
+
+I love the changes, but it's a massive change, and we might want to have a mechanism that decouples upgrading ruff from applying the new formatter style before releasing this change.
 
 ---

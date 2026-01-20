@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-19T17:23:50Z
-updated_at: 2026-01-19T21:15:06Z
+updated_at: 2026-01-20T07:09:55Z
 url: https://github.com/astral-sh/ruff/issues/22728
-synced_at: 2026-01-19T21:32:54Z
+synced_at: 2026-01-20T07:37:37Z
 ```
 
 # Consistent accessibility
@@ -100,5 +100,13 @@ which then renders in our docs as intended:
 > **do_it**(foo: Literal["a", "b"]) -> int | str
 
 So while it would make sense to avoid exposing private *classes*, types starting with an underscore aren’t all that private in many cases.
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 07:09_
+
+> So while it would make sense to avoid exposing private classes, types starting with an underscore aren’t all that private in many cases.
+
+Although this may require a configuration knob. I don't know if this is also an issue in the Python community but I always found it very frustrating when I used a TypeScript library, where a function takes an argument or returns a value that is typed as a union, and the library even defines a type alias for it, but I can't reuse it. Instead, I have to copy paste their definition. 
 
 ---

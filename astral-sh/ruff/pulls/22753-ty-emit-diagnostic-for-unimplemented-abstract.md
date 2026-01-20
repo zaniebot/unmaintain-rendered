@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T02:58:39Z
+updated_at: 2026-01-20T07:03:41Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T03:42:50Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -160,5 +160,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 02:53_
 **[Full report with detailed diff](https://570e1361.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://570e1361.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@MichaReiser reviewed on 2026-01-20 07:03_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_`@final`_class_mus…_-_Multiple_abstract_me…_(feafee9a4abbe8d1).snap`:54 on 2026-01-20 07:03_
+
+Should we add a secondary annotation instead that points to the definition of `foo`? The info message is helpful, but it still requires me to lookup `Base`, find `foo`, to understand the method signature
 
 ---

@@ -10,9 +10,9 @@ draft: true
 base: main
 head: amy/markdown-code-format-option
 created_at: 2026-01-20T00:45:56Z
-updated_at: 2026-01-20T00:53:26Z
+updated_at: 2026-01-20T06:57:51Z
 url: https://github.com/astral-sh/ruff/pull/22750
-synced_at: 2026-01-20T01:38:34Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Add new option `format.markdown-code-format`
@@ -52,5 +52,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 00:53_
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 06:57_
+
+I don't know if you planned to do so or if this is just a prototype PR but I think this may require some design decision, because this new option is orthogonal to ruff's existing include/exclude system but sort of does the same
 
 ---

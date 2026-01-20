@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: charlie/int-method
 created_at: 2026-01-19T18:58:41Z
-updated_at: 2026-01-19T20:31:23Z
+updated_at: 2026-01-20T06:55:15Z
 url: https://github.com/astral-sh/ruff/pull/22731
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # [ty] Make `infer_subscript_expression_types` a method on `Type`
@@ -321,5 +321,26 @@ _Review requested from @AlexWaygood by @charliermarsh on 2026-01-19 20:26_
 _Comment by @AlexWaygood on 2026-01-19 20:31_
 
 (will review tomorrow morning -- thank you!)
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types.rs`:3789 on 2026-01-20 06:55_
+
+`try_call` is different. It doesn't accept any AST-dependent arguments, nor does it access the `semantic_index`. It entirely operates on the Type-IR. 
+
+Which is very different to what we have here with
+
+```
+		expr_context: ast::ExprContext,
+        scope_id: ScopeId<'db>,
+        index: &'db SemanticIndex<'db>,
+        typevar_binding_context: Option<Definition<'db>>,
+```
+
+But I also find it difficult to give any advice here with this little information in the summary. Where and how do we plan on using this? 
+
+---
+
+_@MichaReiser reviewed on 2026-01-20 06:55_
 
 ---

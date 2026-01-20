@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-fluent_layout_split_first_call
 created_at: 2026-01-19T20:57:07Z
-updated_at: 2026-01-19T21:06:32Z
+updated_at: 2026-01-20T07:23:21Z
 url: https://github.com/astral-sh/ruff/pull/22745
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `fluent_layout_split_first_call`
@@ -1212,5 +1212,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 21:06_
 ... (truncated 3717 lines) ...
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:23_
 
 ---

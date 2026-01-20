@@ -11,9 +11,9 @@ assignees: []
 base: 2026-style
 head: stabilize-chaperone
 created_at: 2026-01-19T20:30:23Z
-updated_at: 2026-01-19T20:38:46Z
+updated_at: 2026-01-20T07:22:17Z
 url: https://github.com/astral-sh/ruff/pull/22739
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T07:37:49Z
 ```
 
 # Stabilize `no_chaperone_for_escaped_quote_in_triple_quoted_docstring`
@@ -56,5 +56,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:38_
 
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:22_
 
 ---
