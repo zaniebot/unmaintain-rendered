@@ -2,18 +2,19 @@
 number: 17577
 title: Update tokio-tracing monorepo
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/tokio-tracing-monorepo
 created_at: 2026-01-19T01:32:00Z
-updated_at: 2026-01-19T19:14:38Z
+updated_at: 2026-01-20T09:35:01Z
 url: https://github.com/astral-sh/uv/pull/17577
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-20T10:43:38Z
 ```
 
 # Update tokio-tracing monorepo
@@ -163,5 +164,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:32_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @konstin on 2026-01-20 09:35_
+
+---
+
+_Closed by @konstin on 2026-01-20 09:35_
+
+---
+
+_Branch deleted on 2026-01-20 09:35_
 
 ---

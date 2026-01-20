@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T08:42:00Z
+updated_at: 2026-01-20T10:01:03Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T09:41:46Z
+synced_at: 2026-01-20T10:43:28Z
 ```
 
 # Dependency Dashboard
@@ -62,7 +62,6 @@ The following updates have been manually edited so Renovate will no longer make 
  - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
- - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
 
 ## Pending Status Checks
 
@@ -75,6 +74,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.14
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
+ - [ ] <!-- approvePr-branch=renovate/conda-incubator-setup-miniconda-3.x -->Update conda-incubator/setup-miniconda action to v3.3.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
 
@@ -89,7 +89,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/tokio-rustls-0.x-lockfile -->[Update Rust crate tokio-rustls to v0.26.4](../pull/17571)
  - [ ] <!-- rebase-branch=renovate/tokio-util-0.x-lockfile -->[Update Rust crate tokio-util to v0.7.18](../pull/17573)
  - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
- - [ ] <!-- rebase-branch=renovate/tokio-tracing-monorepo -->[Update tokio-tracing monorepo](../pull/17577) (`tracing`, `tracing-subscriber`)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
  - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
  - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
@@ -218,9 +217,9 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `tokio-util 0.7.12` → [Updates: `0.7.12`]
  - `toml 0.9.2` → [Updates: `0.9.2`]
  - `toml_edit 0.24.0`
- - `tracing 0.1.40` → [Updates: `0.1.40`]
+ - `tracing 0.1.40`
  - `tracing-durations-export 0.3.0`
- - `tracing-subscriber 0.3.18` → [Updates: `0.3.18`]
+ - `tracing-subscriber 0.3.18`
  - `tracing-test 0.2.5`
  - `tracing-tree 0.4.0`
  - `unicode-width 0.2.0`
@@ -254,7 +253,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `test-case 3.3.1`
  - `test-log 0.2.16`
  - `tokio-rustls 0.26.2` → [Updates: `0.26.2`]
- - `whoami 1.6.0` → [Updates: `2.0.0`]
+ - `whoami 2.0.0`
 
 </details>
 
@@ -914,7 +913,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
+ - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f` → [Updates: `v3.3.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
@@ -1029,7 +1028,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
+ - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f` → [Updates: `v3.3.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]

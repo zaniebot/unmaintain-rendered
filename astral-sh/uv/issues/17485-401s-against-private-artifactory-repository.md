@@ -9,9 +9,9 @@ labels:
   - great writeup
 assignees: []
 created_at: 2026-01-15T15:28:39Z
-updated_at: 2026-01-16T12:13:00Z
+updated_at: 2026-01-20T09:39:22Z
 url: https://github.com/astral-sh/uv/issues/17485
-synced_at: 2026-01-16T12:56:37Z
+synced_at: 2026-01-20T10:43:30Z
 ```
 
 # 401s against private Artifactory repository
@@ -280,5 +280,14 @@ we are facing exactly the same issue with uv + Artifactory
 _Comment by @konstin on 2026-01-16 12:13_
 
 @SergeyZharikhin Can you share details on your Artifactory deployment? What are you using as auth backend, and are there any specific signs that you see in the logs?
+
+---
+
+_Comment by @annettejanewilson on 2026-01-20 09:39_
+
+I understand we're using artifactory's [get-user-encrypted-password][1] API to obtain credentials and then using those credentials. I'm not sure what's beyond that, I think it's using LDAP or something LDAP-compatible.
+
+
+[1]: https://jfrog.com/help/r/jfrog-rest-apis/get-user-encrypted-password
 
 ---
