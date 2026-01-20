@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: ibraheem/bidi-diagnostics
 head: ibraheem/partial-tcx
 created_at: 2026-01-19T23:14:57Z
-updated_at: 2026-01-19T23:36:40Z
+updated_at: 2026-01-20T01:18:46Z
 url: https://github.com/astral-sh/ruff/pull/22748
-synced_at: 2026-01-20T00:49:16Z
+synced_at: 2026-01-20T01:38:34Z
 ```
 
 # [ty] Support partially specialized type context
@@ -490,5 +491,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 23:31_
 **[Full report with detailed diff](https://4b556fbb.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://4b556fbb.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Converted to draft by @ibraheemdev on 2026-01-20 01:18_
 
 ---
