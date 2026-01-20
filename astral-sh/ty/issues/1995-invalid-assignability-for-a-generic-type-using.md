@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-12-17T10:09:34Z
-updated_at: 2025-12-23T05:26:22Z
+updated_at: 2026-01-20T04:07:44Z
 url: https://github.com/astral-sh/ty/issues/1995
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-20T04:32:04Z
 ```
 
 # Invalid assignability for a generic type using `ParamSpec`
@@ -139,5 +139,19 @@ Even this should fail because the parameter in `f0` is positional or keyword whi
 ---
 
 _Renamed from "wrong assignability of generic using ParamSpec" to "Invalid assignability for a generic type using `ParamSpec`" by @dhruvmanila on 2025-12-23 05:26_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-20 03:44_
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2026-01-20 03:59_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-20 04:07_
+
+Possibly related issue: #1843
 
 ---

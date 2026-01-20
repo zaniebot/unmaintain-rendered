@@ -2,7 +2,7 @@
 number: 1838
 title: "Resolve `ParamSpec` with the matching overload"
 type: issue
-state: open
+state: closed
 author: leddy231
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-12-10T12:25:56Z
-updated_at: 2026-01-18T23:32:44Z
+updated_at: 2026-01-20T04:14:06Z
 url: https://github.com/astral-sh/ty/issues/1838
-synced_at: 2026-01-19T00:21:01Z
+synced_at: 2026-01-20T04:32:04Z
 ```
 
 # Resolve `ParamSpec` with the matching overload
@@ -119,5 +119,9 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2025-12-10 12:49_
 _Comment by @leddy231 on 2026-01-18 23:32_
 
 Any updates to share here? Would love to upgrade from 0.0.1a26 to the latest beta 😄 
+
+---
+
+_Closed by @dhruvmanila on 2026-01-20 04:14_
 
 ---

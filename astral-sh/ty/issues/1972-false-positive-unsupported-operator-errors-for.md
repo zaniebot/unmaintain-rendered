@@ -9,9 +9,9 @@ labels:
   - generics
 assignees: []
 created_at: 2025-12-17T02:21:09Z
-updated_at: 2026-01-08T16:05:44Z
+updated_at: 2026-01-20T03:59:49Z
 url: https://github.com/astral-sh/ty/issues/1972
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-20T04:32:04Z
 ```
 
 # False-positive `unsupported-operator` errors for value-constrained type variable
@@ -140,5 +140,9 @@ _Removed from milestone `Stable` by @carljm on 2026-01-08 16:05_
 ---
 
 _Added to milestone `Pre-stable 1` by @carljm on 2026-01-08 16:05_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-20 03:59_
 
 ---

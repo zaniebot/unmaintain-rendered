@@ -5,12 +5,13 @@ type: issue
 state: open
 author: PeterKhoudary
 labels:
+  - bug
   - bidirectional inference
 assignees: []
 created_at: 2026-01-16T01:02:02Z
-updated_at: 2026-01-16T08:24:34Z
+updated_at: 2026-01-20T04:24:59Z
 url: https://github.com/astral-sh/ty/issues/2526
-synced_at: 2026-01-16T08:55:00Z
+synced_at: 2026-01-20T04:32:05Z
 ```
 
 # Literal[True] overload resolution fails in argument position
@@ -43,5 +44,9 @@ _Added to milestone `Stable` by @carljm on 2026-01-16 01:55_
 ---
 
 _Label `bidirectional inference` added by @carljm on 2026-01-16 01:55_
+
+---
+
+_Label `bug` added by @dhruvmanila on 2026-01-20 04:24_
 
 ---

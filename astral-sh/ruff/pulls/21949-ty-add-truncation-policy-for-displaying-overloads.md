@@ -8,12 +8,12 @@ labels:
   - ty
 assignees: []
 draft: true
-base: dhruv/paramspec-overload-1
+base: main
 head: dhruv/overload-truncation-policy
 created_at: 2025-12-12T14:49:15Z
-updated_at: 2025-12-12T16:36:05Z
+updated_at: 2026-01-20T04:14:06Z
 url: https://github.com/astral-sh/ruff/pull/21949
-synced_at: 2026-01-12T15:57:37Z
+synced_at: 2026-01-20T04:32:23Z
 ```
 
 # [ty] Add truncation policy for displaying overloads on single line

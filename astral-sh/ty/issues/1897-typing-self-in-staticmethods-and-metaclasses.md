@@ -8,9 +8,9 @@ labels:
   - typing semantics
 assignees: []
 created_at: 2025-12-15T18:16:39Z
-updated_at: 2025-12-15T18:20:47Z
+updated_at: 2026-01-20T03:40:27Z
 url: https://github.com/astral-sh/ty/issues/1897
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-20T04:32:04Z
 ```
 
 # `typing.Self` in staticmethods and metaclasses should be rejected
@@ -50,5 +50,9 @@ _Added to milestone `Stable` by @AlexWaygood on 2025-12-15 18:20_
 ---
 
 _Label `typing semantics` added by @AlexWaygood on 2025-12-15 18:20_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-20 03:40_
 
 ---
