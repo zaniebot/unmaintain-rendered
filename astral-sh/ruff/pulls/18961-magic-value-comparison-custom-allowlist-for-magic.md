@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: allow_magic_values
 created_at: 2025-06-26T14:54:18Z
-updated_at: 2025-12-05T02:42:38Z
+updated_at: 2026-01-20T12:47:04Z
 url: https://github.com/astral-sh/ruff/pull/18961
-synced_at: 2026-01-12T15:56:28Z
+synced_at: 2026-01-20T13:37:57Z
 ```
 
 # [magic-value-comparison] Custom allowlist for Magic Numbers (PLR2004)
@@ -174,5 +174,16 @@ Yes.. I'm sorry, I haven't had much time recently. Will pick it up within the ne
 _Comment by @marciska on 2025-12-05 02:42_
 
 Is there any update on this? 🙂 
+
+---
+
+_Comment by @DaniBodor on 2026-01-20 12:46_
+
+Hi. I'm sorry for the radio silence. 
+Due to life events, I have not been able to work on this in quite a while.
+
+I now have some limited availability again, so can start picking this up again, but am hesitant to bite off more than I can chew atm, so I may need some help moving this forward.
+
+
 
 ---

@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-02-20T00:18:56Z
-updated_at: 2025-10-30T16:51:38Z
+updated_at: 2026-01-20T12:48:17Z
 url: https://github.com/astral-sh/ruff/issues/3045
-synced_at: 2026-01-12T15:54:43Z
+synced_at: 2026-01-20T13:37:44Z
 ```
 
 # Rule to enforce import module only
@@ -71,5 +71,11 @@ I opened a PR to enforce the google style guide rules #21118
 _Comment by @qthequartermasterman on 2025-10-30 16:51_
 
 It's tragic the PR was closed. The [pylint plugin](https://github.com/Enforcer/pylint_google_style_guide_imports_enforcing) enforcing this feature is the only things keeping us on pylint still.
+
+---
+
+_Comment by @serjflint on 2026-01-20 12:48_
+
+@ntBre Hello! Is it possible to contribute this feature as on opt-in option to isort section of the formatter instead of a separate rule for the linter?
 
 ---

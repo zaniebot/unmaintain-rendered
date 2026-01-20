@@ -2,17 +2,18 @@
 number: 17567
 title: Update Rust crate syn to v2.0.114
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/syn-2.x-lockfile
 created_at: 2026-01-19T01:30:26Z
-updated_at: 2026-01-19T15:25:36Z
+updated_at: 2026-01-20T12:39:40Z
 url: https://github.com/astral-sh/uv/pull/17567
-synced_at: 2026-01-19T16:27:20Z
+synced_at: 2026-01-20T13:38:12Z
 ```
 
 # Update Rust crate syn to v2.0.114
@@ -85,5 +86,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:30_
 _Comment by @EliteTK on 2026-01-19 15:25_
 
 Will wait for CI but :+1: WRT the changes themselves.
+
+---
+
+_Merged by @EliteTK on 2026-01-20 12:39_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 12:39_
+
+---
+
+_Branch deleted on 2026-01-20 12:39_
 
 ---

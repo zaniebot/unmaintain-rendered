@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T07:03:41Z
+updated_at: 2026-01-20T12:52:11Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T07:37:49Z
+synced_at: 2026-01-20T13:37:58Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -170,5 +170,33 @@ _@MichaReiser reviewed on 2026-01-20 07:03_
 _Review comment by @MichaReiser on `crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_`@final`_class_mus…_-_Multiple_abstract_me…_(feafee9a4abbe8d1).snap`:54 on 2026-01-20 07:03_
 
 Should we add a secondary annotation instead that points to the definition of `foo`? The info message is helpful, but it still requires me to lookup `Base`, find `foo`, to understand the method signature
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1317 on 2026-01-20 12:50_
+
+There are quite a few as-yet unimplemented rules where we need to know the full set of unimplemented abstract methods a class might have (https://github.com/astral-sh/ty/issues/1927, https://github.com/astral-sh/ty/issues/1923, and https://github.com/astral-sh/ty/issues/1877). I think it would best to extract this into a standalone method on `ClassType` (probably Salsa-cached, so we don't repeatedly reconstruct the `FxHashMap`, which seems expensive).
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1319 on 2026-01-20 12:52_
+
+What's the reason for calling `.skip(1)` here? This means that your branch doesn't emit an error on this, but it seems just as invalid as having an unimplemented method on a parent or grandparent class:
+
+```py
+from typing import final
+from abc import abstractmethod, ABC
+
+@final
+class F(ABC):
+    @abstractmethod
+    def g(self): ...
+```
+
+
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 12:52_
 
 ---

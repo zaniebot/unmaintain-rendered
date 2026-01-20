@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T12:28:50Z
+updated_at: 2026-01-20T12:56:45Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T12:35:53Z
+synced_at: 2026-01-20T13:38:02Z
 ```
 
 # Dependency Dashboard
@@ -54,8 +54,6 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
- - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
 
@@ -66,12 +64,14 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/crate-ci-typos-1.x -->Update crate-ci/typos action to v1.42.1
  - [ ] <!-- approvePr-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
  - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
+ - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
  - [ ] <!-- approvePr-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.7
  - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.14
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.8.0
  - [ ] <!-- approvePr-branch=renovate/conda-incubator-setup-miniconda-3.x -->Update conda-incubator/setup-miniconda action to v3.3.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
+ - [ ] <!-- approvePr-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.4.1
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
 
 ## Open
@@ -84,7 +84,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
  - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
- - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
  - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
@@ -198,7 +197,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `sha2 0.10.8`
  - `smallvec 1.13.2`
  - `spdx 0.13.0`
- - `syn 2.0.77` → [Updates: `2.0.77`]
+ - `syn 2.0.77`
  - `sys-info 0.9.1`
  - `tar 0.4.43`
  - `target-lexicon 0.13.0`

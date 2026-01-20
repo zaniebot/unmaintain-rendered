@@ -9,9 +9,9 @@ labels:
   - completions
 assignees: []
 created_at: 2025-09-18T17:08:45Z
-updated_at: 2026-01-17T16:49:48Z
+updated_at: 2026-01-20T13:15:48Z
 url: https://github.com/astral-sh/ty/issues/1206
-synced_at: 2026-01-17T17:17:18Z
+synced_at: 2026-01-20T13:37:40Z
 ```
 
 # Include dotted module names in `import` completions?
@@ -83,5 +83,21 @@ _Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
 _Comment by @AlexWaygood on 2026-01-17 16:49_
 
 @BurntSushi is this now completed following https://github.com/astral-sh/ruff/pull/21799?
+
+---
+
+_Comment by @BurntSushi on 2026-01-20 13:15_
+
+> [@BurntSushi](https://github.com/BurntSushi) is this now completed following [astral-sh/ruff#21799](https://github.com/astral-sh/ruff/pull/21799)?
+
+Maybe partially. The example in your OP still behaves as it did:
+
+https://github.com/user-attachments/assets/4fe2c24a-8610-4534-a513-bb4b6ba828ac
+
+But if you're just looking to type a module name via auto-import, submodules are included:
+
+https://github.com/user-attachments/assets/07c2dd29-47d1-4495-a37e-6ee6565fa7b0
+
+Now that we have somewhat better ranking, maybe it makes sense to apply the behavior in the latter to the former scenario.
 
 ---

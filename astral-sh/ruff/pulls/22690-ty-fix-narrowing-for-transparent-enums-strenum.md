@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-enum-custom-eq-narrowing
 created_at: 2026-01-18T21:14:30Z
-updated_at: 2026-01-20T00:02:59Z
+updated_at: 2026-01-20T13:15:05Z
 url: https://github.com/astral-sh/ruff/pull/22690
-synced_at: 2026-01-20T00:49:15Z
+synced_at: 2026-01-20T13:37:58Z
 ```
 
 # [ty] Fix narrowing for transparent enums (StrEnum, IntEnum)
@@ -193,5 +193,9 @@ I've updated the implementation to address this:
 - The fix is now purely in the narrowing logic (narrow.rs and reachability_constraints.rs), where we check if a transparent enum's underlying value equals the match subject
 
 This keeps type relations correct while still handling the runtime equality behavior of StrEnum/IntEnum in match statement narrowing.
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-20 13:15_
 
 ---

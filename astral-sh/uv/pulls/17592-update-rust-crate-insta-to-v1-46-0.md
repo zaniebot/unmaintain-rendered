@@ -2,18 +2,19 @@
 number: 17592
 title: Update Rust crate insta to v1.46.0
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/insta-1.x-lockfile
 created_at: 2026-01-19T01:34:08Z
-updated_at: 2026-01-19T19:14:42Z
+updated_at: 2026-01-20T12:55:42Z
 url: https://github.com/astral-sh/uv/pull/17592
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-20T13:38:12Z
 ```
 
 # Update Rust crate insta to v1.46.0
@@ -79,5 +80,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:34_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @EliteTK on 2026-01-20 12:55_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 12:55_
+
+---
+
+_Branch deleted on 2026-01-20 12:55_
 
 ---
