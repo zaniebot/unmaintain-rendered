@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: cjm/attrs-in-decorated-methods
 created_at: 2026-01-20T21:59:48Z
-updated_at: 2026-01-20T22:12:02Z
+updated_at: 2026-01-21T01:27:03Z
 url: https://github.com/astral-sh/ruff/pull/22778
-synced_at: 2026-01-20T22:52:51Z
+synced_at: 2026-01-21T02:01:17Z
 ```
 
 # [ty] Fix assignment in decorated method causing Unknown fallback
@@ -517,5 +517,27 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 22:12_
 **[Full report with detailed diff](https://338b5a1e.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://338b5a1e.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Comment by @carljm on 2026-01-21 01:27_
+
+The new diagnostics in the ecosystem report look like true positives. Home-assistant is relying on a pattern like this:
+
+```py
+class CoinbaseData:
+      def __init__(self, client, exchange_base):
+          self.accounts = None
+
+      @Throttle(MIN_TIME_BETWEEN_UPDATES)  # <- Unknown decorator
+      def update(self):
+          self.accounts = get_accounts(self.client)      # <- Assigns list
+```
+
+This code implicitly relies on the `update` method being called before the `accounts` attribute is ever used. But this isn't an invariant we can guarantee; the new diagnostic is correct.
+
+The reason why `None` wasn't previously included in the type of `self.accounts` in this particular case is a bit complex, and looks like it has to do with Salsa cycles introduced by the use of `.class_member(...)` in `is_valid_scope`. The new version infers the types of decorators directly, without needing to go through the entire `class_member()` call, and is thus less likely to introduce cycles -- a side benefit!
+
+The new parso diagnostics have the same basic cause, and are also true positives.
 
 ---

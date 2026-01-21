@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-10T09:11:32Z
-updated_at: 2025-12-16T11:07:00Z
+updated_at: 2026-01-21T01:24:27Z
 url: https://github.com/astral-sh/uv/issues/17063
-synced_at: 2026-01-12T16:02:43Z
+synced_at: 2026-01-21T02:01:23Z
 ```
 
 # Installing / reading metadata of workspace members from wheels
@@ -35,7 +35,7 @@ and
 uv lock --read-from-wheel=./dist/foo-0.4.1-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 ```
 
-I don't like this option names but didn't come up with better ones.
+I don't like these option names but didn't come up with better ones.
 
 It's very useful if we can specify a specific index to download wheels, but I couldn't think of clean UI for that.
 

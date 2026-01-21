@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-21T00:18:11Z
+updated_at: 2026-01-21T01:18:35Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-21T00:50:46Z
+synced_at: 2026-01-21T02:01:17Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -302,5 +302,25 @@ _@dcreager reviewed on 2026-01-20 23:14_
 _Comment by @ibraheemdev on 2026-01-21 00:18_
 
 Looks like the last commit regressed performance again? 
+
+---
+
+_@ibraheemdev reviewed on 2026-01-21 01:17_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/constraints.rs`:1167 on 2026-01-21 01:17_
+
+It's unclear to me why this is algorithmically cheaper. If the constraint sets are all disjoint, this is equivalent (modulo node ordering, which we can really control here). The worst case is also equivalent. Otherwise, I don't see how this is better given that both BDDs operate on the same set of pairs of nodes — we end up ORing two medium sized constraint sets instead of a large constraint set with a small one. I may be missing something here, given that the benchmarks agree this is an improvement.
+
+---
+
+_@ibraheemdev reviewed on 2026-01-21 01:18_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/constraints.rs`:1204 on 2026-01-21 01:18_
+
+Doesn't this assume the input constraint sets are of equal or similar size (though I suppose that is mostly true currently)? Should we try sorting by size here?
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-20T02:36:17Z
+updated_at: 2026-01-21T01:08:25Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-20T03:42:49Z
+synced_at: 2026-01-21T02:01:17Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -708,5 +708,17 @@ _@Jkhall81 reviewed on 2026-01-20 02:36_
 _Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:260 on 2026-01-20 02:36_
 
 I updated `manual_list_comprehension.rs` and `PERF401.py` to incorporate all of your suggested changes.
+
+---
+
+_Comment by @amyreese on 2026-01-21 01:08_
+
+I'm still concerned about some of the ecosystem reports, like the ones below, where there are multiple locations in different branches that append to the same list, or are appending to lists that are passed as arguments. Unless I'm missing something, these are major false positives that should be "easy" to catch.
+
+1: https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/dag_command.py#L487
+2: https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/models/taskinstance.py#L1761
+3: https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/commands/importers/v1/__init__.py#L146
+4: https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/reports/notifications/webhook.py#L88
+5: https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/databricks/__init__.py#L187
 
 ---

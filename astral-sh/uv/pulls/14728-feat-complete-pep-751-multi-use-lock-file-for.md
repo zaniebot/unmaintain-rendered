@@ -10,9 +10,9 @@ draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-20T21:10:34Z
+updated_at: 2026-01-21T01:47:21Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-20T21:54:30Z
+synced_at: 2026-01-21T02:01:30Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file for pylock.toml export
@@ -438,7 +438,7 @@ https://inspector.pypi.io/project/anyio/3.7.0/packages/68/fe/7ce1926952c8a403b35
 
 ---
 
-_Review comment by @konstin on `crates/uv-pep508/src/marker/lowering.rs`:174 on 2026-01-12 09:28_
+_Review comment by @konstin on `crates/uv-pep508/src/marker/lowering.rs`:173 on 2026-01-12 09:28_
 
 The added docstrings don't add information here. We should either keep as-is, or add docstrings that explain e.g. what list
 
@@ -591,5 +591,15 @@ _Converted to draft by @gaborbernat on 2026-01-14 14:56_
 ---
 
 _Renamed from "feat: Complete PEP 751 multi-use lock file implementation for pylock.toml" to "feat: Complete PEP 751 multi-use lock file for pylock.toml export" by @gaborbernat on 2026-01-20 21:10_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2026-01-21 01:47_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_ERROR_PERFORMANCE_REPORT_COMMENT__ -->
+## Unable to generate the performance report
+
+There was an internal error while processing the run's data. We're working on fixing the issue. Feel free to contact us on Discord or at [support@codspeed.io](mailto:support@codspeed.io) if the issue persists.
 
 ---
