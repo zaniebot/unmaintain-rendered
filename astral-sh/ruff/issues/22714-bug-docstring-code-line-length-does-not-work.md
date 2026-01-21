@@ -2,15 +2,15 @@
 number: 22714
 title: "Bug: docstring-code-line-length does not work."
 type: issue
-state: open
+state: closed
 author: vaibhavmano
 labels:
   - question
 assignees: []
 created_at: 2026-01-19T08:36:16Z
-updated_at: 2026-01-19T08:44:22Z
+updated_at: 2026-01-21T06:45:48Z
 url: https://github.com/astral-sh/ruff/issues/22714
-synced_at: 2026-01-19T09:26:50Z
+synced_at: 2026-01-21T06:53:55Z
 ```
 
 # Bug: docstring-code-line-length does not work.
@@ -188,5 +188,15 @@ def test():
     """
 
 ```
+
+---
+
+_Comment by @vaibhavmano on 2026-01-21 06:45_
+
+Thanks for the reply @MichaReiser. Looks like I've got it confused with the line-length. I'm assuming all of this overrides the root `line-length` configuration.
+
+---
+
+_Closed by @vaibhavmano on 2026-01-21 06:45_
 
 ---

@@ -4,12 +4,13 @@ title: "Result of `max` with `key=len` is always `Sized`"
 type: issue
 state: open
 author: druzsan
-labels: []
+labels:
+  - generics
 assignees: []
 created_at: 2026-01-20T22:22:14Z
-updated_at: 2026-01-20T23:00:34Z
+updated_at: 2026-01-21T06:15:05Z
 url: https://github.com/astral-sh/ty/issues/2572
-synced_at: 2026-01-20T23:51:27Z
+synced_at: 2026-01-21T06:53:50Z
 ```
 
 # Result of `max` with `key=len` is always `Sized`
@@ -65,5 +66,13 @@ class Sized(Protocol, metaclass=ABCMeta):
     def __len__(self) -> int: ...
 ```
 So in this case ty should prefer solving to the concrete class instead of the `Protocol`, but doesn't.
+
+---
+
+_Label `generics` added by @carljm on 2026-01-21 06:15_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-21 06:15_
 
 ---

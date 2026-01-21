@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: cjm/attrs-in-decorated-methods
 created_at: 2026-01-20T21:59:48Z
-updated_at: 2026-01-21T03:59:07Z
+updated_at: 2026-01-21T06:03:52Z
 url: https://github.com/astral-sh/ruff/pull/22778
-synced_at: 2026-01-21T04:56:55Z
+synced_at: 2026-01-21T06:54:06Z
 ```
 
 # [ty] Fix assignment in decorated method causing Unknown fallback
@@ -28,7 +28,7 @@ Fix a bug where assigning to an instance attribute in a decorated method (like @
 
 The bug was in the `is_valid_scope` closure in `implicit_attribute_inner`. When looking up class members for the descriptor protocol, it calls `implicit_attribute` with `MethodDecorator::ClassMethod`. The previous code relied on the final evaluated type of the method (after all decorators are applied) to determine if it's a classmethod. For methods wrapped by `@cache`, the final type becomes `_lru_cache_wrapper[...]` instead of `FunctionLiteral`, which caused incorrect behavior.
 
-The fix changes the approach to directly iterate through the decorators on the AST node and check if any of their types evaluate to `classmethod` or `staticmethod`. This is more reliable because it checks the original decorator types, not the final wrapped result.
+The fix changes the approach to directly iterate through the decorators on the AST node and check if any of their types evaluate to `classmethod` or `staticmethod`. This is more reliable because it checks the original decorator types, not the final wrapped result. It also results in fewer cycles, because attribute lookup no longer depends on a full attribute lookup of every method; instead it just depends on the types of the specific decorator nodes on each method.
 
 Also removes the assumption that unknown decorators might be classmethod/staticmethod aliases. This caused attributes defined in methods with unknown decorators to pollute class-level lookups and potentially override instance-level attributes.
 

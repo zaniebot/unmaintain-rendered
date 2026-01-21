@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-21T01:04:48Z
+updated_at: 2026-01-21T06:51:00Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-21T02:01:17Z
+synced_at: 2026-01-21T06:54:06Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -397,5 +397,19 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @tvatter on 2026-01-21 06:49_
+
+It would be great to also support quarto markdown (qmd) files, where executability of code chunks is triggered by the addition of brackets 3```{} vs 3```:
+
+```{python}
+# this is executable code
+```
+
+```python
+# this isn't 
+```
 
 ---

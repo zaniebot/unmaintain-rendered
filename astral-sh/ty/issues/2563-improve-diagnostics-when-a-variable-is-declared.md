@@ -9,9 +9,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-19T15:00:56Z
-updated_at: 2026-01-20T09:08:19Z
+updated_at: 2026-01-21T05:52:18Z
 url: https://github.com/astral-sh/ty/issues/2563
-synced_at: 2026-01-20T09:41:25Z
+synced_at: 2026-01-21T06:53:50Z
 ```
 
 # Improve diagnostics when a variable is declared to have a type from the `numbers` module and an `int`/`float`/`complex` is passed
@@ -77,5 +77,12 @@ _Renamed from "Object of type `Literal[1]` is not assignable to `numbers.Number`
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2026-01-20 09:08_
+
+---
+
+_Comment by @11happy on 2026-01-21 05:52_
+
+I will work on this : )
+Thank you
 
 ---
