@@ -7,9 +7,9 @@ author: amyreese
 labels: []
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-21T00:34:06Z
+updated_at: 2026-01-21T03:28:32Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-21T00:50:35Z
+synced_at: 2026-01-21T03:58:05Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -71,5 +71,15 @@ _Comment by @Avasam on 2026-01-21 00:34_
 Since opinions were requested: I would enable this feature. Formatting code blocks is really neat and I believe something the `dprint` formatter Markdown plugin also does by offloading to its other plugins (similarly with the html/css/ts plugins).
 
 Since I'm using shared configs I don't really care if it's opt-in/out by default. But I'd lean to say opt in until stable/confident enough, then switch in a breaking version.
+
+---
+
+_Comment by @DetachHead on 2026-01-21 03:28_
+
+> Turn it on by default, including `.md` in the global default search path, and allow users to set `exclude = ["**/*.md"]` or similar in their project config if they don't want the feature (opt-out).
+
+i think this is the better choice. i prefer when linters enable all checks by default because it's much better for discoverability. you can be confident that all users who disabled it have done so because they don't want it, and that all users who keep it enabled do.
+
+if this feature was disabled by default, a vast majority of people who don't check changelogs would be missing out on this feature that they would enable if they knew it existed.
 
 ---

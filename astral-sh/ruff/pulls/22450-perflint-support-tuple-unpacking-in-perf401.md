@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-21T01:08:25Z
+updated_at: 2026-01-21T03:01:09Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-21T02:01:17Z
+synced_at: 2026-01-21T03:58:15Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -45,62 +45,83 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 02:24_
 ## `ruff-ecosystem` results
 
 ### Linter (stable)
-ℹ️ ecosystem check **detected linter changes**. (+119 -0 violations, +0 -0 fixes in 13 projects; 42 projects unchanged)
+ℹ️ ecosystem check **detected linter changes**. (+237 -118 violations, +0 -0 fixes in 13 projects; 42 projects unchanged)
 
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+89 -62 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/connection_command.py#L154'>airflow-core/src/airflow/cli/commands/connection_command.py:154:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/dag_command.py#L483'>airflow-core/src/airflow/cli/commands/dag_command.py:483:25:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/dag_command.py#L487'>airflow-core/src/airflow/cli/commands/dag_command.py:487:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/dag_processing/manager.py#L775'>airflow-core/src/airflow/dag_processing/manager.py:775:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/models/taskinstance.py#L1761'>airflow-core/src/airflow/models/taskinstance.py:1761:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/models/taskinstance.py#L1771'>airflow-core/src/airflow/models/taskinstance.py:1771:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/tests/conftest.py#L86'>airflow-core/tests/conftest.py:86:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/tests/unit/api_fastapi/common/test_exceptions.py#L85'>airflow-core/tests/unit/api_fastapi/common/test_exceptions.py:85:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/breeze/src/airflow_breeze/utils/parallel.py#L247'>dev/breeze/src/airflow_breeze/utils/parallel.py:247:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/stats/get_important_pr_candidates.py#L121'>dev/stats/get_important_pr_candidates.py:121:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/stats/get_important_pr_candidates.py#L275'>dev/stats/get_important_pr_candidates.py:275:21:</a> PERF401 Use a list comprehension to create a transformed list
-... 16 additional changes omitted for project
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L154'>airflow-core/src/airflow/cli/commands/connection_command.py:154:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L244'>airflow-core/src/airflow/cli/commands/connection_command.py:244:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L244'>airflow-core/src/airflow/cli/commands/connection_command.py:244:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/dag_command.py#L483'>airflow-core/src/airflow/cli/commands/dag_command.py:483:25:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/dag_command.py#L487'>airflow-core/src/airflow/cli/commands/dag_command.py:487:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/bundles/base.py#L125'>airflow-core/src/airflow/dag_processing/bundles/base.py:125:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/bundles/base.py#L125'>airflow-core/src/airflow/dag_processing/bundles/base.py:125:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/manager.py#L779'>airflow-core/src/airflow/dag_processing/manager.py:779:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/example_dags/example_params_trigger_ui.py#L68'>airflow-core/src/airflow/example_dags/example_params_trigger_ui.py:68:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/example_dags/example_params_trigger_ui.py#L68'>airflow-core/src/airflow/example_dags/example_params_trigger_ui.py:68:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L680'>airflow-core/src/airflow/models/asset.py:680:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L680'>airflow-core/src/airflow/models/asset.py:680:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L768'>airflow-core/src/airflow/models/asset.py:768:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L768'>airflow-core/src/airflow/models/asset.py:768:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L881'>airflow-core/src/airflow/models/asset.py:881:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L881'>airflow-core/src/airflow/models/asset.py:881:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/taskinstance.py#L1761'>airflow-core/src/airflow/models/taskinstance.py:1761:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/taskinstance.py#L1771'>airflow-core/src/airflow/models/taskinstance.py:1771:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/conftest.py#L86'>airflow-core/tests/conftest.py:86:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/unit/api_fastapi/common/test_exceptions.py#L85'>airflow-core/tests/unit/api_fastapi/common/test_exceptions.py:85:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/unit/api_fastapi/core_api/routes/ui/test_backfills.py#L155'>airflow-core/tests/unit/api_fastapi/core_api/routes/ui/test_backfills.py:155:13:</a> PERF401 Use `list.extend` to create a transformed list
+... 130 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+48 -38 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/commands/importers/v1/__init__.py#L146'>superset/commands/importers/v1/__init__.py:146:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/daos/tag.py#L368'>superset/daos/tag.py:368:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/db_engine_specs/presto.py#L489'>superset/db_engine_specs/presto.py:489:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/chart/tool/get_chart_preview.py#L1442'>superset/mcp_service/chart/tool/get_chart_preview.py:1442:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/chart/tool/get_chart_preview.py#L1482'>superset/mcp_service/chart/tool/get_chart_preview.py:1482:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/screenshot/webdriver_pool.py#L279'>superset/mcp_service/screenshot/webdriver_pool.py:279:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/reports/notifications/webhook.py#L88'>superset/reports/notifications/webhook.py:88:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/viz.py#L894'>superset/viz.py:894:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/tests/integration_tests/security/migrate_roles_tests.py#L44'>tests/integration_tests/security/migrate_roles_tests.py:44:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/tests/integration_tests/security_tests.py#L1677'>tests/integration_tests/security_tests.py:1677:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/importers/v1/__init__.py#L146'>superset/commands/importers/v1/__init__.py:146:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/report/execute.py#L400'>superset/commands/report/execute.py:400:21:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/report/execute.py#L400'>superset/commands/report/execute.py:400:21:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/tag/delete.py#L103'>superset/commands/tag/delete.py:103:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/tag/delete.py#L103'>superset/commands/tag/delete.py:103:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/daos/tag.py#L368'>superset/daos/tag.py:368:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/base.py#L113'>superset/db_engine_specs/base.py:113:9:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/base.py#L113'>superset/db_engine_specs/base.py:113:9:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/presto.py#L489'>superset/db_engine_specs/presto.py:489:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1032'>superset/mcp_service/chart/tool/get_chart_preview.py:1032:9:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1032'>superset/mcp_service/chart/tool/get_chart_preview.py:1032:9:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1406'>superset/mcp_service/chart/tool/get_chart_preview.py:1406:17:</a> PERF401 Use `list.extend` to create a transformed list
+... 74 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+14 -11 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L813'>src/bokeh/core/has_props.py:813:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_sampledata_xref.py#L206'>src/bokeh/sphinxext/bokeh_sampledata_xref.py:206:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_no_request_host.py#L48'>tests/codebase/test_no_request_host.py:48:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L813'>src/bokeh/core/has_props.py:813:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L101'>src/bokeh/core/property/container.py:101:21:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L101'>src/bokeh/core/property/container.py:101:21:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/layouts.py#L507'>src/bokeh/layouts.py:507:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/layouts.py#L507'>src/bokeh/layouts.py:507:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/layouts.py#L496'>src/bokeh/models/layouts.py:496:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/layouts.py#L496'>src/bokeh/models/layouts.py:496:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L388'>src/bokeh/plotting/_figure.py:388:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L388'>src/bokeh/plotting/_figure.py:388:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L429'>src/bokeh/plotting/_figure.py:429:13:</a> PERF401 Use `list.extend` to create a transformed list
+... 15 additional changes omitted for project
 </pre>
 
 </p>
@@ -110,10 +131,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 02:24_
 
 <pre>
 + <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/databricks/__init__.py#L187'>ibis/backends/databricks/__init__.py:187:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/flink/ddl.py#L34'>ibis/backends/flink/ddl.py:34:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/impala/ddl.py#L33'>ibis/backends/impala/ddl.py:33:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/risingwave/__init__.py#L56'>ibis/backends/risingwave/__init__.py:56:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/expr/format.py#L194'>ibis/expr/format.py:194:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/flink/ddl.py#L34'>ibis/backends/flink/ddl.py:34:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/impala/ddl.py#L33'>ibis/backends/impala/ddl.py:33:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/risingwave/__init__.py#L56'>ibis/backends/risingwave/__init__.py:56:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/expr/format.py#L194'>ibis/expr/format.py:194:13:</a> PERF401 Use `list.extend` to create a transformed list
 </pre>
 
 </p>
@@ -122,34 +143,36 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 02:24_
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/migrate/generate/generic.py#L68'>libs/cli/langchain_cli/namespaces/migrate/generate/generic.py:68:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/migrate/generate/utils.py#L91'>libs/cli/langchain_cli/namespaces/migrate/generate/utils.py:91:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/messages/ai.py#L375'>libs/core/langchain_core/messages/ai.py:375:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/tools/base.py#L599'>libs/core/langchain_core/tools/base.py:599:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/utils/function_calling.py#L689'>libs/core/langchain_core/utils/function_calling.py:689:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/tests/unit_tests/runnables/test_concurrency.py#L73'>libs/core/tests/unit_tests/runnables/test_concurrency.py:73:9:</a> PERF401 Use an async list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L117'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:117:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L82'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:82:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain_v1/langchain/agents/middleware/file_search.py#L370'>libs/langchain_v1/langchain/agents/middleware/file_search.py:370:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py#L122'>libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py:122:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/cli/langchain_cli/namespaces/migrate/generate/generic.py#L68'>libs/cli/langchain_cli/namespaces/migrate/generate/generic.py:68:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/cli/langchain_cli/namespaces/migrate/generate/utils.py#L91'>libs/cli/langchain_cli/namespaces/migrate/generate/utils.py:91:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/messages/ai.py#L375'>libs/core/langchain_core/messages/ai.py:375:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/tools/base.py#L599'>libs/core/langchain_core/tools/base.py:599:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/utils/function_calling.py#L689'>libs/core/langchain_core/utils/function_calling.py:689:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/tests/unit_tests/runnables/test_concurrency.py#L73'>libs/core/tests/unit_tests/runnables/test_concurrency.py:73:9:</a> PERF401 Use `list.extend` with an async comprehension to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L117'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:117:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L82'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:82:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain_v1/langchain/agents/middleware/file_search.py#L370'>libs/langchain_v1/langchain/agents/middleware/file_search.py:370:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py#L122'>libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py:122:13:</a> PERF401 Use `list.extend` to create a transformed list
 ... 4 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+16 -7 violations, +0 -0 fixes)</summary>
 <p>
 
 <pre>
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/functions/operators.py#L186'>src/latch/functions/operators.py:186:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/download.py#L135'>src/latch/ldata/_transfer/download.py:135:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/download.py#L135'>src/latch/ldata/_transfer/download.py:135:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L169'>src/latch/ldata/_transfer/upload.py:169:25:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L169'>src/latch/ldata/_transfer/upload.py:169:25:</a> PERF401 Use a list comprehension to create a transformed list
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L216'>src/latch/ldata/_transfer/upload.py:216:29:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/registry/utils.py#L71'>src/latch/registry/utils.py:71:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/registry/utils.py#L71'>src/latch/registry/utils.py:71:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/resources/workflow.py#L73'>src/latch/resources/workflow.py:73:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/resources/workflow.py#L73'>src/latch/resources/workflow.py:73:17:</a> PERF401 Use a list comprehension to create a transformed list
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/exceptions/traceback.py#L30'>src/latch_cli/exceptions/traceback.py:30:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/services/sync.py#L27'>src/latch_cli/services/sync.py:27:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/services/workspace.py#L26'>src/latch_cli/services/workspace.py:26:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/config/utils.py#L298'>src/latch_cli/snakemake/config/utils.py:298:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/workflow.py#L1532'>src/latch_cli/snakemake/workflow.py:1532:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/workflow.py#L387'>src/latch_cli/snakemake/workflow.py:387:13:</a> PERF401 Use a list comprehension to create a transformed list
+... 13 additional changes omitted for project
 </pre>
 
 </p>
@@ -158,16 +181,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 02:24_
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/check_function_signatures.py#L65'>dev/check_function_signatures.py:65:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/check_function_signatures.py#L97'>dev/check_function_signatures.py:97:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/remove_experimental_decorators.py#L121'>dev/remove_experimental_decorators.py:121:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/update_changelog.py#L119'>dev/update_changelog.py:119:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/docs/api_reference/source/conf.py#L421'>docs/api_reference/source/conf.py:421:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ examples/evaluation/rag-evaluation.ipynb:cell 9:4:9: PERF401 Use a list comprehension to create a transformed list
-+ examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 16:21:9: PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/examples/spacy/train.py#L39'>examples/spacy/train.py:39:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/mlflow/sklearn/__init__.py#L977'>mlflow/sklearn/__init__.py:977:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/mlflow/sklearn/__init__.py#L980'>mlflow/sklearn/__init__.py:980:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/check_function_signatures.py#L65'>dev/check_function_signatures.py:65:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/check_function_signatures.py#L97'>dev/check_function_signatures.py:97:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/remove_experimental_decorators.py#L121'>dev/remove_experimental_decorators.py:121:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/update_changelog.py#L119'>dev/update_changelog.py:119:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/docs/api_reference/source/conf.py#L421'>docs/api_reference/source/conf.py:421:17:</a> PERF401 Use `list.extend` to create a transformed list
++ examples/evaluation/rag-evaluation.ipynb:cell 9:4:9: PERF401 Use `list.extend` to create a transformed list
++ examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 16:21:9: PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/examples/spacy/train.py#L39'>examples/spacy/train.py:39:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/mlflow/sklearn/__init__.py#L977'>mlflow/sklearn/__init__.py:977:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/mlflow/sklearn/__init__.py#L980'>mlflow/sklearn/__init__.py:980:13:</a> PERF401 Use `list.extend` to create a transformed list
 ... 5 additional changes omitted for project
 </pre>
 
@@ -177,59 +200,14 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 02:24_
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/_testing/__init__.py#L414'>pandas/_testing/__init__.py:414:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/_numba/kernels/min_max_.py#L176'>pandas/core/_numba/kernels/min_max_.py:176:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/arrays/period.py#L1467'>pandas/core/arrays/period.py:1467:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/internals/blocks.py#L567'>pandas/core/internals/blocks.py:567:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/reshape/merge.py#L1267'>pandas/core/reshape/merge.py:1267:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/io/formats/printing.py#L161'>pandas/io/formats/printing.py:161:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/io/json/_table_schema.py#L320'>pandas/io/json/_table_schema.py:320:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/tests/test_sorting.py#L290'>pandas/tests/test_sorting.py:290:17:</a> PERF401 Use `list.extend` to create a transformed list
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)</summary>
-<p>
-
-<pre>
-+ <a href='https://github.com/pypa/cibuildwheel/blob/90da3e21e2cb44781a494d772839caa979ad972b/cibuildwheel/platforms/android.py#L507'>cibuildwheel/platforms/android.py:507:13:</a> PERF401 Use a list comprehension to create a transformed list
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+19 -0 violations, +0 -0 fixes)</summary>
-<p>
-
-<pre>
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/api/services/assets.py#L1179'>rotkehlchen/api/services/assets.py:1179:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/api/services/assets.py#L1208'>rotkehlchen/api/services/assets.py:1208:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/chain/decoding/decoder.py#L521'>rotkehlchen/chain/decoding/decoder.py:521:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/eth2.py#L830'>rotkehlchen/db/eth2.py:830:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/evmtx.py#L365'>rotkehlchen/db/evmtx.py:365:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/history_events.py#L1356'>rotkehlchen/db/history_events.py:1356:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/reports.py#L151'>rotkehlchen/db/reports.py:151:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/solanatx.py#L113'>rotkehlchen/db/solanatx.py:113:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/upgrades/v34_v35.py#L160'>rotkehlchen/db/upgrades/v34_v35.py:160:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/upgrades/v35_v36.py#L104'>rotkehlchen/db/upgrades/v35_v36.py:104:13:</a> PERF401 Use `list.extend` to create a transformed list
-... 9 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+6 -0 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/scripts/lib/check_rabbitmq_queue.py#L202'>scripts/lib/check_rabbitmq_queue.py:202:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/actions/message_flags.py#L284'>zerver/actions/message_flags.py:284:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/checks.py#L112'>zerver/checks.py:112:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/checks.py#L124'>zerver/checks.py:124:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/migrations/0436_realmauthenticationmethods.py#L18'>zerver/migrations/0436_realmauthenticationmethods.py:18:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/openapi/markdown_extension.py#L347'>zerver/openapi/markdown_extension.py:347:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/_testing/__init__.py#L414'>pandas/_testing/__init__.py:414:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/_numba/kernels/min_max_.py#L176'>pandas/core/_numba/kernels/min_max_.py:176:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/arrays/period.py#L1467'>pandas/core/arrays/period.py:1467:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/internals/blocks.py#L567'>pandas/core/internals/blocks.py:567:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/reshape/merge.py#L1267'>pandas/core/reshape/merge.py:1267:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/io/formats/printing.py#L161'>pandas/io/formats/printing.py:161:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/io/json/_table_schema.py#L320'>pandas/io/json/_table_schema.py:320:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/tests/test_sorting.py#L290'>pandas/tests/test_sorting.py:290:17:</a> PERF401 Use `list.extend` to create a transformed list
 </pre>
 
 </p>
@@ -242,68 +220,89 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 
 | code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
-| PERF401 | 119 | 119 | 0 | 0 | 0 |
+| PERF401 | 355 | 237 | 118 | 0 | 0 |
 
 </p>
 </details>
 
 ### Linter (preview)
-ℹ️ ecosystem check **detected linter changes**. (+119 -0 violations, +0 -0 fixes in 13 projects; 42 projects unchanged)
+ℹ️ ecosystem check **detected linter changes**. (+237 -118 violations, +0 -0 fixes in 13 projects; 42 projects unchanged)
 
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+89 -62 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/connection_command.py#L154'>airflow-core/src/airflow/cli/commands/connection_command.py:154:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/dag_command.py#L483'>airflow-core/src/airflow/cli/commands/dag_command.py:483:25:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/cli/commands/dag_command.py#L487'>airflow-core/src/airflow/cli/commands/dag_command.py:487:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/dag_processing/manager.py#L775'>airflow-core/src/airflow/dag_processing/manager.py:775:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/models/taskinstance.py#L1761'>airflow-core/src/airflow/models/taskinstance.py:1761:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/src/airflow/models/taskinstance.py#L1771'>airflow-core/src/airflow/models/taskinstance.py:1771:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/tests/conftest.py#L86'>airflow-core/tests/conftest.py:86:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/airflow-core/tests/unit/api_fastapi/common/test_exceptions.py#L85'>airflow-core/tests/unit/api_fastapi/common/test_exceptions.py:85:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/breeze/src/airflow_breeze/utils/parallel.py#L247'>dev/breeze/src/airflow_breeze/utils/parallel.py:247:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/stats/get_important_pr_candidates.py#L121'>dev/stats/get_important_pr_candidates.py:121:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/airflow/blob/41403de774f8db47c48de0448329d8751b090e98/dev/stats/get_important_pr_candidates.py#L275'>dev/stats/get_important_pr_candidates.py:275:21:</a> PERF401 Use a list comprehension to create a transformed list
-... 16 additional changes omitted for project
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L154'>airflow-core/src/airflow/cli/commands/connection_command.py:154:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L244'>airflow-core/src/airflow/cli/commands/connection_command.py:244:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/connection_command.py#L244'>airflow-core/src/airflow/cli/commands/connection_command.py:244:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/dag_command.py#L483'>airflow-core/src/airflow/cli/commands/dag_command.py:483:25:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/cli/commands/dag_command.py#L487'>airflow-core/src/airflow/cli/commands/dag_command.py:487:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/bundles/base.py#L125'>airflow-core/src/airflow/dag_processing/bundles/base.py:125:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/bundles/base.py#L125'>airflow-core/src/airflow/dag_processing/bundles/base.py:125:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/dag_processing/manager.py#L779'>airflow-core/src/airflow/dag_processing/manager.py:779:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/example_dags/example_params_trigger_ui.py#L68'>airflow-core/src/airflow/example_dags/example_params_trigger_ui.py:68:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/example_dags/example_params_trigger_ui.py#L68'>airflow-core/src/airflow/example_dags/example_params_trigger_ui.py:68:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L680'>airflow-core/src/airflow/models/asset.py:680:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L680'>airflow-core/src/airflow/models/asset.py:680:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L768'>airflow-core/src/airflow/models/asset.py:768:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L768'>airflow-core/src/airflow/models/asset.py:768:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L881'>airflow-core/src/airflow/models/asset.py:881:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/asset.py#L881'>airflow-core/src/airflow/models/asset.py:881:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/taskinstance.py#L1761'>airflow-core/src/airflow/models/taskinstance.py:1761:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/src/airflow/models/taskinstance.py#L1771'>airflow-core/src/airflow/models/taskinstance.py:1771:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/conftest.py#L86'>airflow-core/tests/conftest.py:86:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/unit/api_fastapi/common/test_exceptions.py#L85'>airflow-core/tests/unit/api_fastapi/common/test_exceptions.py:85:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/airflow/blob/928d5b4ba29dec84b636c300fc1b6915aceef243/airflow-core/tests/unit/api_fastapi/core_api/routes/ui/test_backfills.py#L155'>airflow-core/tests/unit/api_fastapi/core_api/routes/ui/test_backfills.py:155:13:</a> PERF401 Use `list.extend` to create a transformed list
+... 130 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+48 -38 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/commands/importers/v1/__init__.py#L146'>superset/commands/importers/v1/__init__.py:146:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/daos/tag.py#L368'>superset/daos/tag.py:368:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/db_engine_specs/presto.py#L489'>superset/db_engine_specs/presto.py:489:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/chart/tool/get_chart_preview.py#L1442'>superset/mcp_service/chart/tool/get_chart_preview.py:1442:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/chart/tool/get_chart_preview.py#L1482'>superset/mcp_service/chart/tool/get_chart_preview.py:1482:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/mcp_service/screenshot/webdriver_pool.py#L279'>superset/mcp_service/screenshot/webdriver_pool.py:279:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/reports/notifications/webhook.py#L88'>superset/reports/notifications/webhook.py:88:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/viz.py#L894'>superset/viz.py:894:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/tests/integration_tests/security/migrate_roles_tests.py#L44'>tests/integration_tests/security/migrate_roles_tests.py:44:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/tests/integration_tests/security_tests.py#L1677'>tests/integration_tests/security_tests.py:1677:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/importers/v1/__init__.py#L146'>superset/commands/importers/v1/__init__.py:146:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/report/execute.py#L400'>superset/commands/report/execute.py:400:21:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/report/execute.py#L400'>superset/commands/report/execute.py:400:21:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/tag/delete.py#L103'>superset/commands/tag/delete.py:103:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/commands/tag/delete.py#L103'>superset/commands/tag/delete.py:103:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/daos/tag.py#L368'>superset/daos/tag.py:368:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/base.py#L113'>superset/db_engine_specs/base.py:113:9:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/base.py#L113'>superset/db_engine_specs/base.py:113:9:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/db_engine_specs/presto.py#L489'>superset/db_engine_specs/presto.py:489:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1032'>superset/mcp_service/chart/tool/get_chart_preview.py:1032:9:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1032'>superset/mcp_service/chart/tool/get_chart_preview.py:1032:9:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/mcp_service/chart/tool/get_chart_preview.py#L1406'>superset/mcp_service/chart/tool/get_chart_preview.py:1406:17:</a> PERF401 Use `list.extend` to create a transformed list
+... 74 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+14 -11 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L813'>src/bokeh/core/has_props.py:813:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_sampledata_xref.py#L206'>src/bokeh/sphinxext/bokeh_sampledata_xref.py:206:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_no_request_host.py#L48'>tests/codebase/test_no_request_host.py:48:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/has_props.py#L813'>src/bokeh/core/has_props.py:813:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L101'>src/bokeh/core/property/container.py:101:21:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L101'>src/bokeh/core/property/container.py:101:21:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/layouts.py#L507'>src/bokeh/layouts.py:507:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/layouts.py#L507'>src/bokeh/layouts.py:507:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/layouts.py#L496'>src/bokeh/models/layouts.py:496:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/layouts.py#L496'>src/bokeh/models/layouts.py:496:17:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L388'>src/bokeh/plotting/_figure.py:388:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L388'>src/bokeh/plotting/_figure.py:388:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L429'>src/bokeh/plotting/_figure.py:429:13:</a> PERF401 Use `list.extend` to create a transformed list
+... 15 additional changes omitted for project
 </pre>
 
 </p>
@@ -316,10 +315,10 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 
 <pre>
 + <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/databricks/__init__.py#L187'>ibis/backends/databricks/__init__.py:187:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/flink/ddl.py#L34'>ibis/backends/flink/ddl.py:34:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/impala/ddl.py#L33'>ibis/backends/impala/ddl.py:33:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/risingwave/__init__.py#L56'>ibis/backends/risingwave/__init__.py:56:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/expr/format.py#L194'>ibis/expr/format.py:194:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/flink/ddl.py#L34'>ibis/backends/flink/ddl.py:34:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/impala/ddl.py#L33'>ibis/backends/impala/ddl.py:33:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/risingwave/__init__.py#L56'>ibis/backends/risingwave/__init__.py:56:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/expr/format.py#L194'>ibis/expr/format.py:194:13:</a> PERF401 Use `list.extend` to create a transformed list
 </pre>
 
 </p>
@@ -331,22 +330,22 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/migrate/generate/generic.py#L68'>libs/cli/langchain_cli/namespaces/migrate/generate/generic.py:68:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/migrate/generate/utils.py#L91'>libs/cli/langchain_cli/namespaces/migrate/generate/utils.py:91:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/messages/ai.py#L375'>libs/core/langchain_core/messages/ai.py:375:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/tools/base.py#L599'>libs/core/langchain_core/tools/base.py:599:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/langchain_core/utils/function_calling.py#L689'>libs/core/langchain_core/utils/function_calling.py:689:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/core/tests/unit_tests/runnables/test_concurrency.py#L73'>libs/core/tests/unit_tests/runnables/test_concurrency.py:73:9:</a> PERF401 Use an async list comprehension to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L117'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:117:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L82'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:82:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain_v1/langchain/agents/middleware/file_search.py#L370'>libs/langchain_v1/langchain/agents/middleware/file_search.py:370:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py#L122'>libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py:122:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/cli/langchain_cli/namespaces/migrate/generate/generic.py#L68'>libs/cli/langchain_cli/namespaces/migrate/generate/generic.py:68:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/cli/langchain_cli/namespaces/migrate/generate/utils.py#L91'>libs/cli/langchain_cli/namespaces/migrate/generate/utils.py:91:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/messages/ai.py#L375'>libs/core/langchain_core/messages/ai.py:375:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/tools/base.py#L599'>libs/core/langchain_core/tools/base.py:599:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/langchain_core/utils/function_calling.py#L689'>libs/core/langchain_core/utils/function_calling.py:689:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/core/tests/unit_tests/runnables/test_concurrency.py#L73'>libs/core/tests/unit_tests/runnables/test_concurrency.py:73:9:</a> PERF401 Use `list.extend` with an async comprehension to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L117'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:117:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain/langchain_classic/retrievers/merger_retriever.py#L82'>libs/langchain/langchain_classic/retrievers/merger_retriever.py:82:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain_v1/langchain/agents/middleware/file_search.py#L370'>libs/langchain_v1/langchain/agents/middleware/file_search.py:370:21:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/langchain-ai/langchain/blob/66038386d42ffe4ed39b8cfc6a1ce7a2c9e9abe9/libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py#L122'>libs/langchain_v1/tests/unit_tests/agents/test_agent_name.py:122:13:</a> PERF401 Use `list.extend` to create a transformed list
 ... 4 additional changes omitted for project
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+16 -7 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
 </p>
@@ -354,14 +353,16 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 
 <pre>
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/functions/operators.py#L186'>src/latch/functions/operators.py:186:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/download.py#L135'>src/latch/ldata/_transfer/download.py:135:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/download.py#L135'>src/latch/ldata/_transfer/download.py:135:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L169'>src/latch/ldata/_transfer/upload.py:169:25:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L169'>src/latch/ldata/_transfer/upload.py:169:25:</a> PERF401 Use a list comprehension to create a transformed list
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/ldata/_transfer/upload.py#L216'>src/latch/ldata/_transfer/upload.py:216:29:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/registry/utils.py#L71'>src/latch/registry/utils.py:71:13:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/registry/utils.py#L71'>src/latch/registry/utils.py:71:13:</a> PERF401 Use a list comprehension to create a transformed list
++ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/resources/workflow.py#L73'>src/latch/resources/workflow.py:73:17:</a> PERF401 Use `list.extend` to create a transformed list
+- <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch/resources/workflow.py#L73'>src/latch/resources/workflow.py:73:17:</a> PERF401 Use a list comprehension to create a transformed list
 + <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/exceptions/traceback.py#L30'>src/latch_cli/exceptions/traceback.py:30:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/services/sync.py#L27'>src/latch_cli/services/sync.py:27:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/services/workspace.py#L26'>src/latch_cli/services/workspace.py:26:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/config/utils.py#L298'>src/latch_cli/snakemake/config/utils.py:298:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/workflow.py#L1532'>src/latch_cli/snakemake/workflow.py:1532:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/latchbio/latch/blob/9d6f3c68e6ad91b3b192f16990b55b38bc682048/src/latch_cli/snakemake/workflow.py#L387'>src/latch_cli/snakemake/workflow.py:387:13:</a> PERF401 Use a list comprehension to create a transformed list
+... 13 additional changes omitted for project
 </pre>
 
 </p>
@@ -373,16 +374,16 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/check_function_signatures.py#L65'>dev/check_function_signatures.py:65:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/check_function_signatures.py#L97'>dev/check_function_signatures.py:97:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/remove_experimental_decorators.py#L121'>dev/remove_experimental_decorators.py:121:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/dev/update_changelog.py#L119'>dev/update_changelog.py:119:9:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/docs/api_reference/source/conf.py#L421'>docs/api_reference/source/conf.py:421:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ examples/evaluation/rag-evaluation.ipynb:cell 9:4:9: PERF401 Use a list comprehension to create a transformed list
-+ examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 16:21:9: PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/examples/spacy/train.py#L39'>examples/spacy/train.py:39:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/mlflow/sklearn/__init__.py#L977'>mlflow/sklearn/__init__.py:977:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/mlflow/mlflow/blob/df645374f8563bed620549ffca06001213f76bd3/mlflow/sklearn/__init__.py#L980'>mlflow/sklearn/__init__.py:980:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/check_function_signatures.py#L65'>dev/check_function_signatures.py:65:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/check_function_signatures.py#L97'>dev/check_function_signatures.py:97:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/remove_experimental_decorators.py#L121'>dev/remove_experimental_decorators.py:121:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/dev/update_changelog.py#L119'>dev/update_changelog.py:119:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/docs/api_reference/source/conf.py#L421'>docs/api_reference/source/conf.py:421:17:</a> PERF401 Use `list.extend` to create a transformed list
++ examples/evaluation/rag-evaluation.ipynb:cell 9:4:9: PERF401 Use `list.extend` to create a transformed list
++ examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 16:21:9: PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/examples/spacy/train.py#L39'>examples/spacy/train.py:39:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/mlflow/sklearn/__init__.py#L977'>mlflow/sklearn/__init__.py:977:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/mlflow/mlflow/blob/4931c66d6035ab039849817a0f70ee4e05f4c0bc/mlflow/sklearn/__init__.py#L980'>mlflow/sklearn/__init__.py:980:13:</a> PERF401 Use `list.extend` to create a transformed list
 ... 5 additional changes omitted for project
 </pre>
 
@@ -395,65 +396,14 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/_testing/__init__.py#L414'>pandas/_testing/__init__.py:414:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/_numba/kernels/min_max_.py#L176'>pandas/core/_numba/kernels/min_max_.py:176:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/arrays/period.py#L1467'>pandas/core/arrays/period.py:1467:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/internals/blocks.py#L567'>pandas/core/internals/blocks.py:567:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/core/reshape/merge.py#L1267'>pandas/core/reshape/merge.py:1267:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/io/formats/printing.py#L161'>pandas/io/formats/printing.py:161:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/io/json/_table_schema.py#L320'>pandas/io/json/_table_schema.py:320:13:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/pandas-dev/pandas/blob/d51494eeae96b4118057153c70555c31731605f0/pandas/tests/test_sorting.py#L290'>pandas/tests/test_sorting.py:290:17:</a> PERF401 Use `list.extend` to create a transformed list
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-+ <a href='https://github.com/pypa/cibuildwheel/blob/90da3e21e2cb44781a494d772839caa979ad972b/cibuildwheel/platforms/android.py#L507'>cibuildwheel/platforms/android.py:507:13:</a> PERF401 Use a list comprehension to create a transformed list
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+19 -0 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/api/services/assets.py#L1179'>rotkehlchen/api/services/assets.py:1179:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/api/services/assets.py#L1208'>rotkehlchen/api/services/assets.py:1208:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/chain/decoding/decoder.py#L521'>rotkehlchen/chain/decoding/decoder.py:521:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/eth2.py#L830'>rotkehlchen/db/eth2.py:830:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/evmtx.py#L365'>rotkehlchen/db/evmtx.py:365:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/history_events.py#L1356'>rotkehlchen/db/history_events.py:1356:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/reports.py#L151'>rotkehlchen/db/reports.py:151:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/solanatx.py#L113'>rotkehlchen/db/solanatx.py:113:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/upgrades/v34_v35.py#L160'>rotkehlchen/db/upgrades/v34_v35.py:160:17:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/rotki/rotki/blob/5a10dc4aa1591155e5ce8aa92cb7e8f4fd1d4e44/rotkehlchen/db/upgrades/v35_v36.py#L104'>rotkehlchen/db/upgrades/v35_v36.py:104:13:</a> PERF401 Use `list.extend` to create a transformed list
-... 9 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+6 -0 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/scripts/lib/check_rabbitmq_queue.py#L202'>scripts/lib/check_rabbitmq_queue.py:202:9:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/actions/message_flags.py#L284'>zerver/actions/message_flags.py:284:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/checks.py#L112'>zerver/checks.py:112:13:</a> PERF401 Use a list comprehension to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/checks.py#L124'>zerver/checks.py:124:21:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/migrations/0436_realmauthenticationmethods.py#L18'>zerver/migrations/0436_realmauthenticationmethods.py:18:17:</a> PERF401 Use `list.extend` to create a transformed list
-+ <a href='https://github.com/zulip/zulip/blob/0b48eee8160553d67ac5b078304b025d053c125c/zerver/openapi/markdown_extension.py#L347'>zerver/openapi/markdown_extension.py:347:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/_testing/__init__.py#L414'>pandas/_testing/__init__.py:414:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/_numba/kernels/min_max_.py#L176'>pandas/core/_numba/kernels/min_max_.py:176:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/arrays/period.py#L1467'>pandas/core/arrays/period.py:1467:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/internals/blocks.py#L567'>pandas/core/internals/blocks.py:567:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/core/reshape/merge.py#L1267'>pandas/core/reshape/merge.py:1267:17:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/io/formats/printing.py#L161'>pandas/io/formats/printing.py:161:9:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/io/json/_table_schema.py#L320'>pandas/io/json/_table_schema.py:320:13:</a> PERF401 Use `list.extend` to create a transformed list
++ <a href='https://github.com/pandas-dev/pandas/blob/a57434f60579a4df8a43e9b7f07f6ac3b05bbc17/pandas/tests/test_sorting.py#L290'>pandas/tests/test_sorting.py:290:17:</a> PERF401 Use `list.extend` to create a transformed list
 </pre>
 
 </p>
@@ -466,7 +416,7 @@ _... Truncated remaining completed project reports due to GitHub comment length 
 
 | code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
-| PERF401 | 119 | 119 | 0 | 0 | 0 |
+| PERF401 | 355 | 237 | 118 | 0 | 0 |
 
 </p>
 </details>
@@ -720,5 +670,11 @@ I'm still concerned about some of the ecosystem reports, like the ones below, wh
 3: https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/commands/importers/v1/__init__.py#L146
 4: https://github.com/apache/superset/blob/f4597be341c3cc982a4c4639800c906be4ec39ba/superset/reports/notifications/webhook.py#L88
 5: https://github.com/ibis-project/ibis/blob/64aed03898c543ede8ad2b7ce039b50d25861d33/ibis/backends/databricks/__init__.py#L187
+
+---
+
+_Comment by @Jkhall81 on 2026-01-21 02:54_
+
+@amyreese You're right.  I added a check to check the reference count of the list variable.  In these false positive situations that you identified it should now suggest `list.extend`, instead of a list comprehension that would destroy any previously appended stuff.  I added a test also, just for this scenario.
 
 ---

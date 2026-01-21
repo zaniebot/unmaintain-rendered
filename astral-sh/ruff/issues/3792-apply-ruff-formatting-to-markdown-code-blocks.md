@@ -8,9 +8,9 @@ labels:
   - formatter
 assignees: []
 created_at: 2023-03-29T09:26:30Z
-updated_at: 2026-01-21T00:11:16Z
+updated_at: 2026-01-21T03:28:25Z
 url: https://github.com/astral-sh/ruff/issues/3792
-synced_at: 2026-01-21T00:50:33Z
+synced_at: 2026-01-21T03:58:03Z
 ```
 
 # Apply `ruff` formatting to `markdown` code blocks
@@ -490,5 +490,21 @@ _Label `formatter` added by @amyreese on 2026-01-21 00:11_
 ---
 
 _Label `wish` removed by @amyreese on 2026-01-21 00:11_
+
+---
+
+_Comment by @DetachHead on 2026-01-21 03:25_
+
+> Turn it on by default, including `.md` in the global default search path, and allow users to set `exclude = ["**/*.md"]` or similar in their project config if they don't want the feature (opt-out).
+
+i think this is the better choice. i prefer when linters enable all checks by default because it's much better for discoverability. you can be confident that all users who disabled it have done so because they don't want it, and that all users who keep it enabled do.
+
+if this feature was disabled by default, a vast majority of people who don't check changelogs would be missing out on this feature that they would enable if they knew it existed.
+
+----
+
+> If you have opinions or preferences, please share them in https://github.com/astral-sh/ruff/issues/22636.
+
+EDIT: oops i didn't see this. will repost my comment there as well
 
 ---
