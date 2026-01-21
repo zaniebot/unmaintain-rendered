@@ -2,17 +2,18 @@
 number: 22779
 title: Update contributing guide for adding a new rule
 type: pull_request
-state: open
+state: merged
 author: ntBre
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: brent/new-rule-docs
 created_at: 2026-01-20T23:19:27Z
-updated_at: 2026-01-21T08:13:04Z
+updated_at: 2026-01-21T18:24:24Z
 url: https://github.com/astral-sh/ruff/pull/22779
-synced_at: 2026-01-21T09:03:02Z
+synced_at: 2026-01-21T19:05:04Z
 ```
 
 # Update contributing guide for adding a new rule
@@ -55,5 +56,27 @@ Very unrelated, but our playground might be more approachable than the CLI :) We
 ---
 
 _@MichaReiser approved on 2026-01-21 08:13_
+
+---
+
+_@ntBre reviewed on 2026-01-21 18:21_
+
+---
+
+_Review comment by @ntBre on `CONTRIBUTING.md`:191 on 2026-01-21 18:21_
+
+Added!
+
+---
+
+_Merged by @ntBre on 2026-01-21 18:24_
+
+---
+
+_Closed by @ntBre on 2026-01-21 18:24_
+
+---
+
+_Branch deleted on 2026-01-21 18:24_
 
 ---

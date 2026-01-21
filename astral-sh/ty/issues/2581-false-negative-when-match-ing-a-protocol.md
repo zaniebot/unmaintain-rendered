@@ -4,12 +4,13 @@ title: "False negative when `match`ing a Protocol"
 type: issue
 state: open
 author: lihu-zhong
-labels: []
+labels:
+  - Protocols
 assignees: []
 created_at: 2026-01-21T17:12:58Z
-updated_at: 2026-01-21T17:13:42Z
+updated_at: 2026-01-21T18:13:07Z
 url: https://github.com/astral-sh/ty/issues/2581
-synced_at: 2026-01-21T18:05:11Z
+synced_at: 2026-01-21T19:04:47Z
 ```
 
 # False negative when `match`ing a Protocol
@@ -61,5 +62,9 @@ In the above code, `ty` raises one error.
 ### Version
 
 0.0.10
+
+---
+
+_Label `Protocols` added by @AlexWaygood on 2026-01-21 18:13_
 
 ---

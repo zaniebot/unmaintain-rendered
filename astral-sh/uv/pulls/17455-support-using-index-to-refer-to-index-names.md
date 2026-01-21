@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/index-by-name
 created_at: 2026-01-13T23:35:35Z
-updated_at: 2026-01-21T17:54:45Z
+updated_at: 2026-01-21T18:25:25Z
 url: https://github.com/astral-sh/uv/pull/17455
-synced_at: 2026-01-21T18:05:41Z
+synced_at: 2026-01-21T19:05:17Z
 ```
 
 # Support using `--index` to refer to index names
@@ -285,5 +285,87 @@ I will adjust it for clarity, but the section you referenced mentions that this 
 "On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package's indexes next."
 
 
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:15_
+
+---
+
+_Review comment by @zanieb on `crates/uv-distribution-types/src/index.rs`:454 on 2026-01-21 18:15_
+
+```suggestion
+    /// Parse an index passed on the command line
+```
+
+---
+
+_Review comment by @zanieb on `crates/uv-distribution-types/src/index.rs`:507 on 2026-01-21 18:16_
+
+This could probably use a doc comment
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:16_
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:17_
+
+---
+
+_Review comment by @zanieb on `crates/uv-settings/src/settings.rs`:573 on 2026-01-21 18:17_
+
+This should probably have a doc comment
+
+---
+
+_Review comment by @zanieb on `crates/uv-settings/src/settings.rs`:577 on 2026-01-21 18:17_
+
+Do we need to clone? Can the caller clone?
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:17_
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:18_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/edit.rs`:11129 on 2026-01-21 18:18_
+
+We might want a follow-up issue to enumerate searched source files here.
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:19_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/edit.rs`:11133 on 2026-01-21 18:19_
+
+Have we considered continuing to support the current behavior if `./test-index` exists and / or if the name `test-index` doesn't exist?
+
+---
+
+_@zanieb reviewed on 2026-01-21 18:20_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/edit.rs`:11283 on 2026-01-21 18:20_
+
+@konstin you'd prefer workspace root only in what sense?
+
+Isn't @EliteTK describing an existing behavior?
+
+---
+
+_Comment by @zanieb on 2026-01-21 18:25_
+
+This will need some documentation updates, which might help explain the behavior?
+
+The code looks fine but I only sort of understand how behaves, tbh.
 
 ---

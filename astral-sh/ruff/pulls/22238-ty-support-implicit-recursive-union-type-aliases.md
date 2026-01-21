@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
-updated_at: 2026-01-21T17:54:40Z
+updated_at: 2026-01-21T18:01:11Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-21T18:05:27Z
+synced_at: 2026-01-21T19:05:04Z
 ```
 
 # [ty] support implicit recursive union type aliases
@@ -432,9 +432,9 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **degrade performance by 5.46%**
+### Merging this PR will **degrade performance by 6.88%**
 
-<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (a100e6c) with <code>main</code> (4e9de95)</sub>
+<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (a5a5076) with <code>main</code> (53962dc)</sub>
 
 
 
@@ -452,11 +452,11 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 86.9 s | 91.9 s | -5.46% |
-| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -4.92% |
-| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 69.6 ms | N/A |
-| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +6.23% |
-| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +14.71% |
+| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 87.1 s | 93.5 s | -6.88% |
+| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -5.11% |
+| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +5.9% |
+| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 69.2 ms | N/A |
+| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +16.25% |
 
 
 ---

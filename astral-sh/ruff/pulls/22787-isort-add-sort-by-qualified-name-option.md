@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: hacking-import-order
 created_at: 2026-01-21T12:29:23Z
-updated_at: 2026-01-21T12:32:28Z
+updated_at: 2026-01-21T18:27:10Z
 url: https://github.com/astral-sh/ruff/pull/22787
-synced_at: 2026-01-21T12:56:53Z
+synced_at: 2026-01-21T19:05:04Z
 ```
 
 # isort: Add `sort-by-qualified-name` option
@@ -27,7 +27,7 @@ Currently, the isort rules sort imports purely based on module path. For example
     from foo import baz
     from foo.bar import wow
 
-since `foo` < `foo.bar`. However, the [hacking][1] plugin for flake8 provides rule `H306`, which expects [that imports are sorted by full module path][2]. Therefore it would expect the following:
+since `foo` < `foo.bar`. However, the [hacking][1] plugin for flake8 provides rule `H306`, which expects [that imports are sorted by their fully qualified name][2]. Therefore it would expect the following:
 
     from foo.bar import wow
     from foo import baz

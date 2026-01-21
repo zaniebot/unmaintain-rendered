@@ -2,16 +2,16 @@
 number: 18775
 title: "[flake8-simplify] SIM910/SIM911 can delete comments"
 type: issue
-state: open
+state: closed
 author: MeGaGiGaGon
 labels:
   - fixes
   - help wanted
 assignees: []
 created_at: 2025-06-19T00:40:13Z
-updated_at: 2026-01-15T14:26:34Z
+updated_at: 2026-01-21T18:16:03Z
 url: https://github.com/astral-sh/ruff/issues/18775
-synced_at: 2026-01-15T14:51:08Z
+synced_at: 2026-01-21T19:04:52Z
 ```
 
 # [flake8-simplify] SIM910/SIM911 can delete comments
@@ -80,7 +80,7 @@ _Label `help wanted` added by @MichaReiser on 2025-06-19 09:38_
 
 ---
 
-_Comment by @leonace924 on 2026-01-15 12:28_
+_Comment by @eureka928 on 2026-01-15 12:28_
 
 @MichaReiser I assume this is still opening? may I take up this?
 
@@ -92,8 +92,12 @@ Yeah sure. The easiest fix would be to mark the fix as unsafe if it intersects w
 
 ---
 
-_Comment by @leonace924 on 2026-01-15 14:26_
+_Comment by @eureka928 on 2026-01-15 14:26_
 
 PR is ready based on your comment
+
+---
+
+_Closed by @ntBre on 2026-01-21 18:16_
 
 ---

@@ -2,17 +2,17 @@
 number: 22212
 title: Implement a fixer for E402
 type: pull_request
-state: closed
+state: open
 author: PeterJCLaw
-labels: []
+labels:
+  - fixes
 assignees: []
-draft: true
 base: main
 head: e402-fixer
 created_at: 2025-12-26T19:05:54Z
-updated_at: 2026-01-21T13:32:42Z
+updated_at: 2026-01-21T18:35:13Z
 url: https://github.com/astral-sh/ruff/pull/22212
-synced_at: 2026-01-21T14:07:21Z
+synced_at: 2026-01-21T19:05:04Z
 ```
 
 # Implement a fixer for E402
@@ -82,5 +82,35 @@ _Closed by @MichaReiser on 2026-01-21 10:36_
 _Comment by @ntBre on 2026-01-21 13:32_
 
 Oops, I think this one was waiting on my review. Sorry @PeterJCLaw for the delay! If you'd still like me to have a look, please let me know, and I will reopen and add this back to my review queue.
+
+---
+
+_Comment by @PeterJCLaw on 2026-01-21 18:24_
+
+Apologies for the radio silence here. I am definitely hoping to keep working on this, I haven't had a lot of time recently. I _may_ have some time next week or the following weekend, but not sure.
+
+@ntBre if you have capacity for a review of what's here or any suggestions on approaching the missing pieces that'd be most welcome.
+
+---
+
+_Comment by @ntBre on 2026-01-21 18:27_
+
+I intended to have a look, but just got a bit behind. I'll reopen for now. Thank you!
+
+---
+
+_Reopened by @ntBre on 2026-01-21 18:27_
+
+---
+
+_Review requested from @ntBre by @ntBre on 2026-01-21 18:27_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-21 18:27_
+
+---
+
+_Marked ready for review by @ntBre on 2026-01-21 18:28_
 
 ---

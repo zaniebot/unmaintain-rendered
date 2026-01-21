@@ -2,7 +2,7 @@
 number: 22600
 title: "[`flake8-simplify`] Mark `SIM910`/`SIM911` fix as unsafe when deleting comments"
 type: pull_request
-state: open
+state: closed
 author: eureka928
 labels:
   - fixes
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-21T17:30:35Z
+updated_at: 2026-01-21T18:15:15Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-21T18:05:28Z
+synced_at: 2026-01-21T19:05:04Z
 ```
 
 # [`flake8-simplify`] Mark `SIM910`/`SIM911` fix as unsafe when deleting comments
@@ -186,5 +186,15 @@ _Comment by @eureka928 on 2026-01-21 17:30_
 > Please remove the `pr_summary` markdown files.
 
 Updated! it was mistake
+
+---
+
+_Comment by @ntBre on 2026-01-21 18:15_
+
+Sorry for the confusion! I didn't realize that #22661 and #22662 were fixing the same issue. I'll close this for now since the main changes have already been made. Thank you for working on this!
+
+---
+
+_Closed by @ntBre on 2026-01-21 18:15_
 
 ---
