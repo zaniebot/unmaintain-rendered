@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/index-by-name
 created_at: 2026-01-13T23:35:35Z
-updated_at: 2026-01-21T18:25:25Z
+updated_at: 2026-01-21T20:59:11Z
 url: https://github.com/astral-sh/uv/pull/17455
-synced_at: 2026-01-21T19:05:17Z
+synced_at: 2026-01-21T21:19:22Z
 ```
 
 # Support using `--index` to refer to index names
@@ -367,5 +367,29 @@ _Comment by @zanieb on 2026-01-21 18:25_
 This will need some documentation updates, which might help explain the behavior?
 
 The code looks fine but I only sort of understand how behaves, tbh.
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/edit.rs`:11133 on 2026-01-21 20:52_
+
+I hadn't, but I would say it should be only if the directory exists _and_ the index doesn't. Otherwise you're going to get a confusing error whenever you mis-type an index or mis-type a directory name.
+
+But honestly I am mildly against this kind of special casing.
+
+Rather simple to implement though.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 20:52_
+
+---
+
+_@zanieb reviewed on 2026-01-21 20:59_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/edit.rs`:11133 on 2026-01-21 20:59_
+
+I think such special casing generally makes transitioning easier because then the change is breaking for less people? I don't think it's an ideal end state, but the mistake was when we allowed `foo` to be treated as a relative path without `./foo` in the first place.
 
 ---

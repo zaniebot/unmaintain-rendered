@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-21T18:19:21Z
-updated_at: 2026-01-21T18:20:57Z
+updated_at: 2026-01-21T20:20:57Z
 url: https://github.com/astral-sh/uv/issues/17644
-synced_at: 2026-01-21T19:05:09Z
+synced_at: 2026-01-21T21:17:27Z
 ```
 
 # Resolve torchrun script dependencies
@@ -46,5 +46,13 @@ _No response_
 ---
 
 _Label `enhancement` added by @lhoestq on 2026-01-21 18:19_
+
+---
+
+_Comment by @zanieb on 2026-01-21 20:20_
+
+How would we know that an argument after `<command>` is a target for uv? I'm not sure we want to start scanning for scripts in arbitrary command arguments.
+
+I think the current suggestion would be to do `uv run --with-requirements-from train.py torchrun train.py`, which is a bit verbose. We've also considered something like `uv run --wrapper torchrun -- train.py`. See #7032
 
 ---

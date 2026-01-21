@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T10:44:35Z
+updated_at: 2026-01-21T20:56:42Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T11:00:00Z
+synced_at: 2026-01-21T21:15:40Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -87,7 +87,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
++ <a href='https://github.com/apache/superset/blob/25647942fd774d8c193cb570ba5fc3d74f037999/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -112,7 +112,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
++ <a href='https://github.com/apache/superset/blob/25647942fd774d8c193cb570ba5fc3d74f037999/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -374,7 +374,7 @@ _@generalmimon reviewed on 2026-01-21 10:05_
 
 ---
 
-_Review comment by @generalmimon on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:141 on 2026-01-21 10:05_
+_Review comment by @generalmimon on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:140 on 2026-01-21 10:05_
 
 What's the point of accepting an attribute in the second argument? This `second_arg_id` is required to be equal to the name of the "parent argument" (`parent_arg`), which is typically `self`:
 
@@ -388,8 +388,166 @@ _@leandrobbraga reviewed on 2026-01-21 10:44_
 
 ---
 
-_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:141 on 2026-01-21 10:44_
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:140 on 2026-01-21 10:44_
 
 That's correct, I removed the match on `Expr::Attribute` for the second parameter.
+
+---
+
+_@generalmimon reviewed on 2026-01-21 20:42_
+
+---
+
+_Review comment by @generalmimon on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:134 on 2026-01-21 20:42_
+
+This assumes that whenever `super(A.B, self)` appears inside a class named `B`, it must be the `super(__class__, self)` case and an upgrade can be performed. Unfortunately, this is not necessarily true. Consider this:
+
+```python
+class Base:
+    def __init__(self, foo):
+        print(f"Base.__init__({foo}) called")
+        self.foo = foo
+
+
+class Outer:
+    class Inner(Base):
+        def __init__(self, foo):
+            print(f"Outer.Inner.__init__({foo}) called")
+            super().__init__(foo)
+
+
+class Inner(Outer.Inner):
+    def __init__(self, foo):
+        super(Outer.Inner, self).__init__(foo)
+
+
+i = Inner(5)
+```
+
+Note that the `super` call in the `Inner.__init__` method body is `super(Outer.Inner, self)`, not `super(Inner, self)`. If you run the above code, the output is the following:
+
+```console
+root@d2a45e4529f7:~# python3 --version
+Python 3.13.5
+root@d2a45e4529f7:~# python3 test.py
+Base.__init__(5) called
+```
+
+As you can see, only `Base.__init__` was called, not `Outer.Inner.__init__`.
+
+Nevertheless, your current implementation at https://github.com/astral-sh/ruff/commit/a9b58e1d3610ef14430569af480d9a5fd0b4d209 still suggests omitting arguments to this `super` call:
+
+```console
+root@d2a45e4529f7:~/ruff# git status
+On branch bugfix/up008-inner-class
+Your branch is up to date with 'origin/bugfix/up008-inner-class'.
+
+nothing to commit, working tree clean
+root@d2a45e4529f7:~/ruff# git rev-parse HEAD
+a9b58e1d3610ef14430569af480d9a5fd0b4d209
+root@d2a45e4529f7:~/ruff# cargo run -p ruff -- check --select UP ../test.py --no-cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/ruff check --select UP ../test.py --no-cache`
+UP008 Use `super()` instead of `super(__class__, self)`
+  --> /root/test.py:16:14
+   |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+16 |         super(Outer.Inner, self).__init__(foo)
+   |              ^^^^^^^^^^^^^^^^^^^
+   |
+help: Remove `super()` parameters
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+```
+
+In preview, this is even offered as a safe fix:
+
+```console
+root@d2a45e4529f7:~/ruff# cargo run -p ruff -- check --preview --select UP ../test.py --no-cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running `target/debug/ruff check --preview --select UP ../test.py --no-cache`
+UP008 [*] Use `super()` instead of `super(__class__, self)`
+  --> /root/test.py:16:14
+   |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+16 |         super(Outer.Inner, self).__init__(foo)
+   |              ^^^^^^^^^^^^^^^^^^^
+   |
+help: Remove `super()` parameters
+13 |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+   -         super(Outer.Inner, self).__init__(foo)
+16 +         super().__init__(foo)
+17 |
+18 |
+19 | i = Inner(5)
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+However, if you apply it, the behavior of the program changes - notice the additional message `Outer.Inner.__init__(5) called`, which the original program did not print:
+
+```console
+root@d2a45e4529f7:~# cat test.py
+class Base:
+    def __init__(self, foo):
+        print(f"Base.__init__({foo}) called")
+        self.foo = foo
+
+
+class Outer:
+    class Inner(Base):
+        def __init__(self, foo):
+            print(f"Outer.Inner.__init__({foo}) called")
+            super().__init__(foo)
+
+
+class Inner(Outer.Inner):
+    def __init__(self, foo):
+        super().__init__(foo)
+
+
+i = Inner(5)
+root@d2a45e4529f7:~# python3 test.py
+Outer.Inner.__init__(5) called
+Base.__init__(5) called
+```
+
+I admit that this is perhaps an unusual scenario. Calling `super(Outer.Inner, self)` in the `Inner` class looks rather unintentional or at least suspicious, but from Python's point of view, it is a valid program that does not raise any runtime errors.
+
+So I believe that Ruff should verify whether the entire attribute chain (in this case `Outer.Inner`) matches, not just its last segment. This means that instead of just finding the closest enclosing class:
+
+https://github.com/astral-sh/ruff/blob/a9b58e1d3610ef14430569af480d9a5fd0b4d209/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L120-L128
+
+... and comparing its name with the last segment in the attribute chain:
+
+https://github.com/astral-sh/ruff/blob/a9b58e1d3610ef14430569af480d9a5fd0b4d209/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L148
+
+..., Ruff should also inspect further (nested) enclosing classes and compare the second-to-last segment in the attribute chain, third-to-last segment, etc. If anything doesn't match, UP008 should not be triggered.
+
+---
+
+_@leandrobbraga reviewed on 2026-01-21 20:56_
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:134 on 2026-01-21 20:56_
+
+Thank you for your review, I'll try to think about the corner cases and come up with a solution in the next days. 
+
+---
+
+_@leandrobbraga reviewed on 2026-01-21 20:56_
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:134 on 2026-01-21 20:56_
+
+Thank you for your review, I'll try to think about the corner cases and come up with a solution in the next days. 
 
 ---

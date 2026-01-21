@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T19:40:22Z
-updated_at: 2026-01-21T19:40:22Z
+updated_at: 2026-01-21T20:48:38Z
 url: https://github.com/astral-sh/uv/issues/17645
-synced_at: 2026-01-21T20:04:17Z
+synced_at: 2026-01-21T21:17:27Z
 ```
 
 # `uv sync` removes base dependencies when switching extras (at least impacts typer/typer-slim)
@@ -47,13 +47,13 @@ uv sync --extra extra2      # ✗ ModuleNotFoundError: No module named 'typer'
 The package has:
 - Base dependency: typer>=0.20.0
 - extra1: typer-slim>=0.20.0
-- extra2: rich>=13.0.0
+- extra2: rich>=13.0.0 (note: what deps extra2 has is irrelevant for this issue)
 
 ## What happens
 
-1. `uv sync` installs typer (which depends on typer-slim)
-2. `uv sync --extra extra1` adds typer-slim explicitly
-3. `uv sync --extra extra2` removes typer-slim, but also removes typer even though it's a base dependency
+1. `uv sync` installs typer (which **doesn't** depend on `typer-slim`)
+2. `uv sync --extra extra1` adds `typer-slim`
+3. `uv sync --extra extra2` removes `typer-slim`, but because they "contribute" the same module in venv, the `typer`'s files get removed as well.
 
 This issue is likely caused by how `typer` and `typer-slim` are set up (i.e. `typer` doesn't depend on `typer-slim`), but it may be potentially causing similar issues with other packages (AFAIK pydantic uses the `-slim` pattern, but in a different way).
 
@@ -91,5 +91,24 @@ CPython 3.14.0
 ---
 
 _Label `bug` added by @pimlock on 2026-01-21 19:40_
+
+---
+
+_Comment by @zanieb on 2026-01-21 20:38_
+
+Thanks for the report and reproduction!
+
+> Installing typer-slim overwrites typer's files, and uninstalling typer-slim deletes them—leaving uv's metadata incorrectly showing typer as installed while the actual files are gone.
+
+It's hard to say if we should support this — we generally discourage that pattern as it's problematic in a variety of ways.
+
+cc @konstin who has more context on this category of issue.
+
+
+---
+
+_Comment by @zanieb on 2026-01-21 20:48_
+
+Here the issue is not that we're removing base dependencies, but rather that we're not reinstalling `typer` after uninstalling `typer-slim` which overwrites typer's files?
 
 ---

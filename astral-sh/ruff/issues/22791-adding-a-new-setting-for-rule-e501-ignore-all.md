@@ -7,9 +7,9 @@ author: chirizxc
 labels: []
 assignees: []
 created_at: 2026-01-21T19:28:40Z
-updated_at: 2026-01-21T19:56:50Z
+updated_at: 2026-01-21T20:01:41Z
 url: https://github.com/astral-sh/ruff/issues/22791
-synced_at: 2026-01-21T20:04:00Z
+synced_at: 2026-01-21T21:12:39Z
 ```
 
 # Adding a new setting for rule E501 (`ignore-all-comments`)
@@ -88,5 +88,17 @@ _Comment by @chirizxc on 2026-01-21 19:56_
 The formatter is not entirely suitable, at least in that it violates PEP8.
 
 See: https://github.com/astral-sh/ruff/issues/20454#issuecomment-3304157224
+
+---
+
+_Comment by @chirizxc on 2026-01-21 20:01_
+
+For me, `black` (and its implementation within `ruff`) is a very strange formatter, at least the style that was used before literally bloated the code and made it less readable (in my opinion).
+
+I can give you an example of the [old format](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-multiline-dictionary-and-list-indentation-for-sole-function-parameter) that black used to have:
+
+<img width="954" height="768" alt="Image" src="https://github.com/user-attachments/assets/01f5c743-043c-496f-bb3d-7ebe162005c5" />
+
+It is unclear why this was not done earlier, but remained unchanged for many years.
 
 ---

@@ -8,9 +8,9 @@ labels:
   - cli
 assignees: []
 created_at: 2024-09-04T16:07:24Z
-updated_at: 2024-12-30T05:57:59Z
+updated_at: 2026-01-21T20:21:28Z
 url: https://github.com/astral-sh/uv/issues/7032
-synced_at: 2026-01-12T15:59:09Z
+synced_at: 2026-01-21T21:16:39Z
 ```
 
 # Using script entry point with inline dependencies 
@@ -93,5 +93,11 @@ It seems safest to do the explicit option. We can always add sniffing later. Eek
 _Comment by @sigridjineth on 2024-12-30 05:57_
 
 any update here, for introducing script-runner here?
+
+---
+
+_Comment by @zanieb on 2026-01-21 20:21_
+
+The latest update is #12763 which allows `-r script.py`
 
 ---
