@@ -2,14 +2,14 @@
 number: 2566
 title: "Assignment in decorated method causes fallback to `Unknown`"
 type: issue
-state: open
+state: closed
 author: philj56
 labels: []
 assignees: []
 created_at: 2026-01-19T17:03:34Z
-updated_at: 2026-01-21T04:02:08Z
+updated_at: 2026-01-21T15:20:16Z
 url: https://github.com/astral-sh/ty/issues/2566
-synced_at: 2026-01-21T04:56:39Z
+synced_at: 2026-01-21T16:04:42Z
 ```
 
 # Assignment in decorated method causes fallback to `Unknown`
@@ -79,5 +79,9 @@ _Added to milestone `Stable` by @carljm on 2026-01-20 22:01_
 ---
 
 _Assigned to @carljm by @carljm on 2026-01-21 04:02_
+
+---
+
+_Closed by @carljm on 2026-01-21 15:20_
 
 ---

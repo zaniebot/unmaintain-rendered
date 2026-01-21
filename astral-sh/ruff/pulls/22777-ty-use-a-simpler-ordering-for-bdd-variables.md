@@ -2,19 +2,20 @@
 number: 22777
 title: "[ty] Use a simpler ordering for BDD variables"
 type: pull_request
-state: open
+state: merged
 author: dcreager
 labels:
   - internal
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: dcreager/simpler-ordering
 created_at: 2026-01-20T21:28:03Z
-updated_at: 2026-01-21T00:02:50Z
+updated_at: 2026-01-21T14:58:32Z
 url: https://github.com/astral-sh/ruff/pull/22777
-synced_at: 2026-01-21T00:50:46Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # [ty] Use a simpler ordering for BDD variables
@@ -182,5 +183,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 21:43_
 ---
 
 _@ibraheemdev approved on 2026-01-21 00:02_
+
+---
+
+_Merged by @dcreager on 2026-01-21 14:58_
+
+---
+
+_Closed by @dcreager on 2026-01-21 14:58_
+
+---
+
+_Branch deleted on 2026-01-21 14:58_
 
 ---

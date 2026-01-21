@@ -2,16 +2,16 @@
 number: 22788
 title: "fix: Fix false negative when sequence is an attribute"
 type: pull_request
-state: open
+state: closed
 author: leandrodamascena
 labels: []
 assignees: []
 base: main
 head: fix/plc1802
 created_at: 2026-01-21T14:29:04Z
-updated_at: 2026-01-21T14:54:02Z
+updated_at: 2026-01-21T15:48:39Z
 url: https://github.com/astral-sh/ruff/pull/22788
-synced_at: 2026-01-21T15:05:46Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # fix: Fix false negative when sequence is an attribute
@@ -155,5 +155,40 @@ class C:
 ```
 
 I don't think it's worth the added complexity in the rule code to handle such a small subset of attribute assignments. I also think we'll inherit ty's improved capabilities around resolving attributes in the future, so I'd be inclined to wait for that.
+
+---
+
+_Comment by @leandrodamascena on 2026-01-21 14:58_
+
+I went and tested both cases:
+
+Case 1 (redefinition): My implementation triggers a false positive here - it sees self.field = [] and flags len(self.field), but doesn't account for update_field() potentially changing it to None.
+
+Case 2 (conditional): Doesn't trigger (good), but only by accident since the assignment is inside an if block.
+
+I didn't think about this in the beginner and probably the added complexity isn't worth it for such a narrow fix that can still produce false positives. 
+
+I think makes sense to wait for ty's improved attribute resolution. 
+
+Do you want me to close this PR?
+
+BTW, do you have any other easy/medium complexity issues to work? I'd like to contribute with the project oftern :)
+
+---
+
+_Comment by @ntBre on 2026-01-21 15:48_
+
+Thanks for taking a look at the test cases and again for working on this! Yeah let's go ahead and close this for now, but I'm open to other opinions if others support this change :) @amyreese triaged the issue, so she may want to weigh in.
+
+> BTW, do you have any other easy/medium complexity issues to work? I'd like to contribute with the project oftern :)
+
+Anything with the [help wanted](https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22) or [good first issue](https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) labels without someone assigned or an open PR is a good place to start, although we may be a bit light on those at the moment. The [bug](https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3Abug) label would be the next best place to look, avoiding any with `type-inference` or `needs-decision` labels.
+
+I'm a bit biased, but there are two tracking issues that I'd be glad to review PRs for too: https://github.com/astral-sh/ruff/issues/15642 and https://github.com/astral-sh/ruff/issues/17203. Feel free to ping me on any issues that look interesting, if you need advice on where to start.
+
+
+---
+
+_Closed by @ntBre on 2026-01-21 15:48_
 
 ---

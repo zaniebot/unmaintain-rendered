@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat/implement-max-file-length-rule
 created_at: 2025-12-08T21:13:23Z
-updated_at: 2025-12-08T22:52:10Z
+updated_at: 2026-01-21T15:55:44Z
 url: https://github.com/astral-sh/ruff/pull/21853
-synced_at: 2026-01-12T15:57:35Z
+synced_at: 2026-01-21T16:04:58Z
 ```
 
 # [pylint] Implement too-many-lines (C0302)
@@ -47,5 +47,38 @@ _Label `rule` added by @ntBre on 2025-12-08 22:52_
 ---
 
 _Label `needs-decision` added by @ntBre on 2025-12-08 22:52_
+
+---
+
+_Comment by @devjerry0 on 2026-01-21 14:58_
+
++1 for merging this.
+Resurfacing, running pylint standalone just for that rule is a tad annoying. 
+The "not compatible with the formatter" rationale doesn't hold up:
+
+The formatter changes line counts by maybe 1-5% through wrapping. If my limit is 200 lines, I don't care if the formatter makes it 195 or 205. The point is catching 500+ line monsters, not precise line counts.
+You already ship PLR0915 (too-many-statements), which has the same "problem": the formatter can affect statement counts through expression splitting. Yet that rule exists and is useful.
+This is blocking teams from consolidating on Ruff. Right now, I have to either:
+
+Run Pylint alongside Ruff just for this one rule
+Maintain a custom pre-commit script
+Give up on enforcing file length
+The implementation is done, and there's clear demand. Would love to see this merged, even if it stays in preview mode.
+
+
+@tluolamo thx for your work on this!
+
+---
+
+_Comment by @ntBre on 2026-01-21 15:55_
+
+Thanks for the feedback!
+
+> You already ship PLR0915 (too-many-statements), which has the same "problem": the formatter can affect statement counts through expression splitting. Yet that rule exists and is useful.
+
+I don't think this part is true. I'm fairly certain that the formatter shouldn't modify the AST when it's working correctly. If you've seen this happen, I'd love to see the code, and I think we'd consider it a bug!
+
+(Not trying to invalidate the rest of the feedback, this part just caught my eye)
+
 
 ---

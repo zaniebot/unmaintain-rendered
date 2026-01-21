@@ -2,17 +2,18 @@
 number: 22772
 title: "[`pyupgrade`] Make fix unsafe if it deletes comments (`UP045`, `UP007`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
 labels:
   - fixes
 assignees: []
+merged: true
 base: main
 head: __UP
 created_at: 2026-01-20T18:07:45Z
-updated_at: 2026-01-21T14:54:07Z
+updated_at: 2026-01-21T15:38:13Z
 url: https://github.com/astral-sh/ruff/pull/22772
-synced_at: 2026-01-21T15:05:46Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP045`, `UP007`)
@@ -144,5 +145,19 @@ _@chirizxc reviewed on 2026-01-21 14:31_
 _Review comment by @chirizxc on `crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs`:157 on 2026-01-21 14:31_
 
 Yes, I forget about it😅
+
+---
+
+_@ntBre approved on 2026-01-21 15:37_
+
+Thank you!
+
+---
+
+_Merged by @ntBre on 2026-01-21 15:38_
+
+---
+
+_Closed by @ntBre on 2026-01-21 15:38_
 
 ---

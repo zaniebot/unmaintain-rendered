@@ -12,9 +12,9 @@ draft: true
 base: main
 head: cjm/remove-place-widening
 created_at: 2026-01-21T06:11:53Z
-updated_at: 2026-01-21T14:33:13Z
+updated_at: 2026-01-21T15:16:51Z
 url: https://github.com/astral-sh/ruff/pull/22785
-synced_at: 2026-01-21T15:05:46Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # [ty] remove Unknown widening of class attributes
@@ -586,5 +586,11 @@ Do we need to perform literal promotion in more places?
 _Comment by @carljm on 2026-01-21 14:33_
 
 Yes, I expected we would need literal promotion but wanted to see the ecosystem report; that's why this is in draft mode :)
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 15:16_
+
+Yeah sorry. I was very excited when I saw your PR and couldn't resist taking a look at the ecosystem report.
 
 ---

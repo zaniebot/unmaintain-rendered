@@ -4,14 +4,15 @@ title: "Support using `--index` to refer to index names"
 type: pull_request
 state: open
 author: EliteTK
-labels: []
+labels:
+  - breaking
 assignees: []
 base: main
 head: tk/index-by-name
 created_at: 2026-01-13T23:35:35Z
-updated_at: 2026-01-20T09:30:09Z
+updated_at: 2026-01-21T15:22:03Z
 url: https://github.com/astral-sh/uv/pull/17455
-synced_at: 2026-01-20T09:41:56Z
+synced_at: 2026-01-21T16:05:12Z
 ```
 
 # Support using `--index` to refer to index names
@@ -115,5 +116,13 @@ _@konstin approved on 2026-01-20 09:30_
 ---
 
 _Review requested from @zanieb by @konstin on 2026-01-20 09:30_
+
+---
+
+_Label `breaking` added by @zanieb on 2026-01-21 15:22_
+
+---
+
+_Added to milestone `v0.10.0` by @zanieb on 2026-01-21 15:22_
 
 ---

@@ -2,18 +2,19 @@
 number: 22778
 title: "[ty] Fix assignment in decorated method causing Unknown fallback"
 type: pull_request
-state: open
+state: merged
 author: carljm
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: cjm/attrs-in-decorated-methods
 created_at: 2026-01-20T21:59:48Z
-updated_at: 2026-01-21T08:11:08Z
+updated_at: 2026-01-21T15:20:16Z
 url: https://github.com/astral-sh/ruff/pull/22778
-synced_at: 2026-01-21T09:03:02Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # [ty] Fix assignment in decorated method causing Unknown fallback
@@ -401,46 +402,34 @@ mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - Found 2143 diagnostics
 + Found 2142 diagnostics
 
-cloud-init (https://github.com/canonical/cloud-init)
-+ tests/unittests/sources/test_azure.py:2878:9: error[invalid-assignment] Object of type `Literal["md"]` is not assignable to attribute `metadata` of type `dict[Unknown, Unknown]`
-- Found 1168 diagnostics
-+ Found 1169 diagnostics
-
-meson (https://github.com/mesonbuild/meson)
-- mesonbuild/interpreter/interpreter.py:1184:79: error[invalid-argument-type] Argument to bound method `initialize_from_top_level_project_call` is incorrect: Expected `dict[OptionKey, str | int | list[str]]`, found `list[str]`
-+ mesonbuild/interpreter/interpreter.py:1181:9: error[invalid-assignment] Object of type `list[str]` is not assignable to attribute `project_default_options` of type `dict[OptionKey, str | int | list[str]]`
-- mesonbuild/interpreter/interpreter.py:1190:72: error[invalid-argument-type] Argument to bound method `initialize_from_subproject_call` is incorrect: Expected `dict[OptionKey, str | int | list[str]]`, found `list[str]`
-- Found 2154 diagnostics
-+ Found 2153 diagnostics
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
 discord.py (https://github.com/Rapptz/discord.py)
 - discord/utils.py:243:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 540 diagnostics
 + Found 539 diagnostics
 
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-kubernetes/prefect_kubernetes/jobs.py:499:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `Unknown | dict[Unknown, Unknown] | None`
-+ src/integrations/prefect-kubernetes/prefect_kubernetes/jobs.py:499:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `Unknown | None | dict[Unknown, Unknown]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/infrastructure/provisioners/container_instance.py:751:17: error[invalid-argument-type] Argument to bound method `read_block_document_by_name` is incorrect: Expected `str`, found `Unknown | str | None`
-+ src/prefect/infrastructure/provisioners/container_instance.py:751:17: error[invalid-argument-type] Argument to bound method `read_block_document_by_name` is incorrect: Expected `str`, found `Unknown | None | str`
-- src/prefect/server/orchestration/global_policy.py:460:13: warning[possibly-missing-attribute] Attribute `state_details` may be missing on object of type `(State & @Todo) | None`
-+ src/prefect/server/orchestration/global_policy.py:460:13: warning[possibly-missing-attribute] Attribute `state_details` may be missing on object of type `State | None`
-- src/prefect/testing/fixtures.py:434:27: warning[possibly-missing-attribute] Attribute `events` may be missing on object of type `Unknown | EventsClient`
-- src/prefect/testing/fixtures.py:442:113: warning[possibly-missing-attribute] Attribute `events` may be missing on object of type `Unknown | EventsClient`
-- src/prefect/testing/fixtures.py:448:26: warning[possibly-missing-attribute] Attribute `pop_events` may be missing on object of type `Unknown | EventsClient`
--
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/interpreter/interpreter.py:1209:79: error[invalid-argument-type] Argument to bound method `initialize_from_top_level_project_call` is incorrect: Expected `dict[OptionKey, str | int | list[str]]`, found `list[str]`
++ mesonbuild/interpreter/interpreter.py:1206:9: error[invalid-assignment] Object of type `list[str]` is 
 
-... (truncated 143 lines) ...
+... (truncated 183 lines) ...
 ```
 
 </details>
@@ -451,10 +440,6 @@ prefect (https://github.com/PrefectHQ/prefect)
 <summary>Memory usage changes were detected when running on open source projects</summary>
 
 ```diff
-trio (https://github.com/python-trio/trio)
--     struct fields = ~12MB
-+     struct fields = ~11MB
-
 sphinx (https://github.com/sphinx-doc/sphinx)
 - TOTAL MEMORY USAGE: ~301MB
 + TOTAL MEMORY USAGE: ~287MB
@@ -502,19 +487,20 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 22:12_
 |-----------|------:|--------:|--------:|
 | `possibly-missing-attribute` | 80 | 94 | 42 |
 | `unresolved-attribute` | 94 | 0 | 0 |
-| `invalid-argument-type` | 18 | 2 | 10 |
+| `invalid-argument-type` | 18 | 2 | 11 |
 | `no-matching-overload` | 21 | 0 | 0 |
 | `invalid-assignment` | 6 | 1 | 5 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
 | `not-subscriptable` | 7 | 0 | 0 |
-| `invalid-return-type` | 0 | 1 | 5 |
+| `invalid-return-type` | 1 | 1 | 4 |
 | `not-iterable` | 3 | 0 | 0 |
 | `unsupported-operator` | 0 | 0 | 3 |
 | `unused-ignore-comment` | 0 | 2 | 0 |
 | `parameter-already-assigned` | 0 | 1 | 0 |
-| **Total** | **229** | **101** | **65** |
+| **Total** | **230** | **101** | **72** |
 
 
-**[Full report with detailed diff](https://338b5a1e.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://338b5a1e.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://8a2c1fdc.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://8a2c1fdc.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -549,5 +535,17 @@ The sklearn diagnostics are similar to home-assistant and parso; they generally 
 ---
 
 _@MichaReiser approved on 2026-01-21 08:11_
+
+---
+
+_Merged by @carljm on 2026-01-21 15:20_
+
+---
+
+_Closed by @carljm on 2026-01-21 15:20_
+
+---
+
+_Branch deleted on 2026-01-21 15:20_
 
 ---

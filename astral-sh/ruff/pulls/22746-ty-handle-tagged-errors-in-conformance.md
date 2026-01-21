@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/handle-tagged-errors-conformance
 created_at: 2026-01-19T21:38:32Z
-updated_at: 2026-01-21T11:38:44Z
+updated_at: 2026-01-21T15:11:41Z
 url: https://github.com/astral-sh/ruff/pull/22746
-synced_at: 2026-01-21T11:58:43Z
+synced_at: 2026-01-21T16:04:59Z
 ```
 
 # [ty] Handle tagged errors in conformance
@@ -234,5 +234,118 @@ _Marked ready for review by @WillDuke on 2026-01-21 09:21_
 _Comment by @WillDuke on 2026-01-21 11:38_
 
 @AlexWaygood @MichaReiser My first pass at this was a little buggy and overcomplicated, but I think that it is in a bit better shape now!
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:385 on 2026-01-21 14:40_
+
+Ruff doesn't do a good job right now at formatting nested if-else expressions. But we can help it a bit to make this more readable by adding parentheses
+```suggestion
+                        tag=(
+                        	f"{file.name}:{error.group('tag')}"
+                        	if error.group("tag")
+                        	else None
+                      	),
+```
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:471 on 2026-01-21 14:41_
+
+Nit: I would use a regular loop here to avoid iterating `diagnostics` multiple times and also because I find it slightly more readable. But maybe that's the Rust dev in me.
+
+```py
+				old_diagnostics: list[Diagnostic] = []
+        new_diagnostics: list[Diagnostic] = []
+        expected_diagnostics: list[Diagnostic] = []
+        sources: set[Source] = set()
+
+        for diag in group:
+            sources.add(diag.source)
+            match diag.source:
+                case Source.OLD:
+                    old_diagnostics.append(diag)
+                case Source.NEW:
+                    new_diagnostics.append(diag)
+                case Source.EXPECTED:
+                    expected_diagnostics.append(diag)
+
+        grouped = GroupedDiagnostics(
+            key=key,
+            sources=sources,
+            old=old_diagnostics,
+            new=new_diagnostics,
+            expected=expected_diagnostics,
+        )
+```
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:482 on 2026-01-21 14:44_
+
+It's a bit tricky to say what `num_errors` means in the presence of `E[tag+]` and `E?` where a single expected tag can have multiple errors and some errors are entirely optional. 
+
+But it also seems that we never call `compute_stats` with `Source::Expected`. 
+
+Should we remove this code and make `compute_stats` take a boolean argument instead (new_diagnostics)?
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:499 on 2026-01-21 14:46_
+
+Nit: Maybe `non_optional_diagnostics`
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:430 on 2026-01-21 14:50_
+
+GitHub doesn't really allow me to comment on that line but you could simplify your code a good amount by removing `None` from `old`, `new` and `expected`. Unless I miss a place where you create a `GroupedDiagnostics` instance where those fields are `None`
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:278 on 2026-01-21 14:53_
+
+```suggestion
+        elif source in self.sources:
+```
+
+I believe the second part is implicitly given by not taking the first if branch
+
+It might also be more readable if you nested the conditions like so:
+
+```py
+if source in self.sources:
+	if Source.EXPECTED in self.sources:
+		distinct_lines = ... 
+
+	else:
+		return Classification.FalsePositive
+
+elif Source.EXPECTED in self.sources:
+	return Classification.FALSE_NEGATIVE
+
+else: 
+	return Classification.TRUE_NEGATIVE	
+```
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:273 on 2026-01-21 14:54_
+
+I can see how classifying too many diagnostics as false positives can be a bit confusing but I think it's the right thing. There's at least one false positive. 
+
+It might be better to count them as both a true positive and false positive, but I suspect that this doesn't play well with how we use those numbers later on.
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:489 on 2026-01-21 14:59_
+
+Nit: You could consider using a `match classification` here
+
+---
+
+_@MichaReiser approved on 2026-01-21 15:11_
+
+Thank you. This overall makes sense to me. I've a few small nit comments
 
 ---

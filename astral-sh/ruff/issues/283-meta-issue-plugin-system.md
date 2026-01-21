@@ -8,9 +8,9 @@ labels:
   - core
 assignees: []
 created_at: 2022-09-29T09:42:17Z
-updated_at: 2026-01-21T14:02:09Z
+updated_at: 2026-01-21T15:00:43Z
 url: https://github.com/astral-sh/ruff/issues/283
-synced_at: 2026-01-21T15:05:33Z
+synced_at: 2026-01-21T16:04:46Z
 ```
 
 # Meta issue: plugin system
@@ -965,5 +965,16 @@ I went with `Flake8` mainly because of reach. Most Python projects I've seen alr
 _Comment by @MichaReiser on 2026-01-21 14:01_
 
 Thanks for raising awareness for your use case. I'd like to ask you to keep discussions on this issue limited because many users are subscribed to it. Feel free to open a new discussion to discuss flake8/fixit and other alternatives.
+
+---
+
+_Comment by @jcampbell05 on 2026-01-21 15:00_
+
+I stumbled across this Rust Plugin that lets you query the Python AST using either their query languages or YAML 
+https://ast-grep.github.io
+
+For my use case at least if we could write query statements that could be used to identify matching patterns then that would already be big win.
+
+I think then the only use-cases we would need for plugin would be super complicated analysis which I would agree is proabably left to tools not focused on speed
 
 ---

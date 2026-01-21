@@ -9,9 +9,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-05-22T13:57:20Z
-updated_at: 2025-11-24T17:16:48Z
+updated_at: 2026-01-21T15:31:31Z
 url: https://github.com/astral-sh/ty/issues/487
-synced_at: 2026-01-12T15:54:23Z
+synced_at: 2026-01-21T16:04:41Z
 ```
 
 # improve diagnostics for C extension modules without stubs
@@ -116,5 +116,62 @@ _Added to milestone `Stable` by @carljm on 2025-11-14 00:20_
 _Comment by @carljm on 2025-11-24 17:16_
 
 #1613 raises the same scenario, and also suggests that we might be able to automatically introspect the `.so` and generate some implicit default stubs automatically.
+
+---
+
+_Comment by @dabelknap on 2026-01-21 15:28_
+
+I'm also seeing this issue when using pyo3 and maturin.
+```
+$ maturin new -b pyo3 mylib
+$ cd mylib
+```
+By default, the contents of `src/lib.rs` are:
+```Rust
+use pyo3::prelude::*;
+
+/// A Python module implemented in Rust.
+#[pymodule]
+mod mylib {
+    use pyo3::prelude::*;
+
+    /// Formats the sum of two numbers as string.
+    #[pyfunction]
+    fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
+        Ok((a + b).to_string())
+    }
+}
+```
+```
+$ uv sync  # Setup a venv and build/install the pyo3 library (using a Homebrew install of Python 3.14 on macOS)
+$ source .venv/bin/activate
+```
+Create a test script
+```Python
+# main.py
+from mylib import sum_as_string
+print(sum_as_string(2, 3))
+```
+Running the script should be successful:
+```
+(mylib) $ uv run main.py
+5
+(mylib) $
+```
+The import is clearly valid, but `ty` emits an error:
+```
+(mylib) $ ty check
+error[unresolved-attribute]: Module `mylib` has no member `sum_as_string`
+ --> main.py:3:7
+  |
+1 | import mylib as ml
+2 |
+3 | print(ml.sum_as_string(2, 3))
+  |       ^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+```
 
 ---

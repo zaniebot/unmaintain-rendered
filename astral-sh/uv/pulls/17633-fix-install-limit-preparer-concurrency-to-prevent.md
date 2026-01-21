@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/installer-concurrency
 created_at: 2026-01-20T22:54:03Z
-updated_at: 2026-01-21T14:07:07Z
+updated_at: 2026-01-21T15:12:22Z
 url: https://github.com/astral-sh/uv/pull/17633
-synced_at: 2026-01-21T15:06:00Z
+synced_at: 2026-01-21T16:05:12Z
 ```
 
 # fix(install): limit preparer concurrency to prevent file handle exhaustion
@@ -91,5 +91,24 @@ _Review comment by @denyszhak on `crates/uv/src/commands/pip/operations.rs`:752 
 
 Thanks, I missed that
 
+
+---
+
+_@denyszhak reviewed on 2026-01-21 15:12_
+
+---
+
+_Review comment by @denyszhak on `crates/uv/src/commands/pip/operations.rs`:752 on 2026-01-21 15:12_
+
+@charliermarsh @konstin 
+From outsider perspective these are some possible solutions:
+
+1. Fewest changes is if we limit by download concurrency instead of build concurrency, it appears that DEFAULT_DOWNLOADS constant is 50 and won't cause the issue we have but it's suboptimal and not clean because we still obtain those locks but then build only several at a time.
+
+2. Change Preparer to split streams by Dist type: Build vs Source and run `prepare_stream` with different concurrency. This makes both download and build flow run as intended.
+
+3. Moving lock acquisition to after the semaphore so locks only held during actual Python execution but it means cross-crate coupling and in general unnecessary lift
+
+Would you agree option 2 would be best or maybe you have alternative solutions?
 
 ---

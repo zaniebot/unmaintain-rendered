@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-08-12T22:10:03Z
-updated_at: 2025-10-23T15:52:20Z
+updated_at: 2026-01-21T15:35:35Z
 url: https://github.com/astral-sh/uv/issues/15246
-synced_at: 2026-01-12T16:02:06Z
+synced_at: 2026-01-21T16:05:04Z
 ```
 
 # uv cannot spawn gunicorn in uv project
@@ -240,5 +240,11 @@ This way I have the advantages of uv locally, but in CI/CD I leverage the contai
 _Comment by @konstin on 2025-10-23 15:52_
 
 If you have a Dockerfile that reproduces this problem, please share it!
+
+---
+
+_Comment by @Clover-Kevin-Chen on 2026-01-21 15:35_
+
+I also ran into this problem, and the issue for me was that using a multi-stage Dockerfile, the last stage was copying over the dependencies from the build stage, but they had different WORKDIR, so that was causing the issue - once the 2 WORKDIR were the same, the problem was fixes (also using `uv run gunicorn ...`)
 
 ---
