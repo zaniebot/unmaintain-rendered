@@ -46,10 +46,50 @@
 <p>i guess to avoid confusion the error message could say something like &quot;<code>from __future__ import annotations</code> is <em>unneccessary</em> as of python 3.14&quot; instead of &quot;<code>from __future__ import annotations</code> is <em>deprecated</em> as of python 3.14&quot;</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2026-01-21 01:29</div>
+            <div class="timeline-body"><p>As @dylwil3 correctly stated:</p>
+<blockquote>
+<p>it is not the case that <code>from __future__ import annotations</code> does nothing in Python 3.14 or is deprecated.</p>
+</blockquote>
+<p>I actually find it confusing that the Python 3.14 documentation gives a different idea. Here&#x27;s one example of code that fails to run in Python 3.14 if you remove the <code>from __future__ import annotations</code> from it:</p>
+<pre><code>from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from attr import fields, has
+from cattrs.gen import make_dict_unstructure_fn, override
+from cattrs.preconf.json import make_converter
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from cattrs import Converter
+
+json_converter = make_converter()
+
+
+@json_converter.register_unstructure_hook_factory(has)
+def _json_converter_unstructure_override_class(
+    cl: Any, converter: Converter
+) -&gt; Callable:
+    return make_dict_unstructure_fn(
+        cl,
+        converter,
+        **{
+            f.name: override(omit_if_default=True)
+            for f in fields(cl)
+            if f.default is None
+        },
+    )
+</code></pre>
+<p>Code using <a href="https://docs.python.org/3/library/inspect.html#inspect.signature">inspect.signature</a>, as is the case behind the scenes with cattrs above, might fail if the type definition is enclosed in <code>if TYPE_CHECKING</code> (and the annotation is not a string). And ruff will suggest that <code>if TYPE_CHECKING</code> should be used exactly as above.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 18:50:29 UTC
+        Synced at 2026-01-21 01:50:41 UTC
     </footer>
 </body>
 </html>
