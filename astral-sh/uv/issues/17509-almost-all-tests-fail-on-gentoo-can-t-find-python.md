@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T19:54:24Z
+updated_at: 2026-01-21T05:10:19Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T20:03:48Z
+synced_at: 2026-01-21T05:55:48Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -364,5 +364,11 @@ FEATURES=test ALLOW_TEST=network emerge -1v dev-python/uv
 ```
 
 Note that some failures will only happen when `uv` is installed already (i.e. those caused by global config).
+
+---
+
+_Comment by @mgorny on 2026-01-21 05:10_
+
+Thanks. Now we're down to `publish::read_index_credential_env_vars_for_check_url` as noted in https://github.com/astral-sh/uv/issues/17509#issuecomment-3761184268. Any chance you could look at that one?
 
 ---

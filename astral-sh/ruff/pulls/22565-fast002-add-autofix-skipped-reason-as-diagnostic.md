@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: Extend_FAST002
 created_at: 2026-01-14T09:00:25Z
-updated_at: 2026-01-15T12:53:12Z
+updated_at: 2026-01-21T05:49:27Z
 url: https://github.com/astral-sh/ruff/pull/22565
-synced_at: 2026-01-15T13:52:05Z
+synced_at: 2026-01-21T05:55:43Z
 ```
 
 # FAST002 : add autofix skipped reason as diagnostic info
@@ -134,5 +134,15 @@ Given that users face the same issue as the fix -- they have to reorder the argu
 
 This makes the message useful beyond just saying that the auto-fix isn't available.
 
+
+---
+
+_@11happy reviewed on 2026-01-21 05:49_
+
+---
+
+_Review comment by @11happy on `crates/ruff_linter/src/rules/fastapi/snapshots/ruff_linter__rules__fastapi__tests__fast-api-non-annotated-dependency_FAST002_0.py_py38.snap`:361 on 2026-01-21 05:49_
+
+done, worded the message a little more clear with suggestion to reorder the arguments.
 
 ---

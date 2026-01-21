@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T04:50:53Z
+updated_at: 2026-01-21T05:12:07Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T04:56:55Z
+synced_at: 2026-01-21T05:55:43Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -210,5 +210,83 @@ TypeError: super() argument 1 must be a type, not Outer
 Perhaps you wanted to use either a 2-argument or 0-argument call instead? Also, if the `super` call doesn't have two arguments, the lint will return early, so I don't know if you wanted to verify that there is no panic in that case, for example?
 
 https://github.com/astral-sh/ruff/blob/6f8ae1ba7c62d8197371c43c5501fc005b91824c/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L91-L96
+
+---
+
+_Comment by @generalmimon on 2026-01-21 05:09_
+
+@leandrobbraga (https://github.com/astral-sh/ruff/pull/22677#issue-3826762723):
+
+> ```console
+> echo 'class Base:
+>       def __init__(self, foo):
+>           self.foo = foo
+> 
+> 
+>   class Outer(Base):
+>       def __init__(self, foo):
+>           super().__init__(foo)  # Should not trigger UP008
+> 
+>       class Inner(Base):
+>           def __init__(self, foo):
+>               super().__init__(foo)  # Should not trigger UP008
+> 
+>       class InnerInner(Base):
+>           def __init__(self, foo):
+>               super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+> 
+>   ' | cargo run -p ruff -- check --select UP008 -
+> UP008 Use `super()` instead of `super(__class__, self)`
+>   --> -:16:18
+>    |
+> 14 |     class InnerInner(Base):
+> 15 |         def __init__(self, foo):
+> 16 |             super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+>    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>    |
+> help: Remove `super()` parameters
+> 
+> Found 1 error.
+> No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+> ```
+
+This doesn't work either - I suppose the indentation isn't what you intended?
+
+```console
+$ cat test.py
+class Base:
+    def __init__(self, foo):
+        self.foo = foo
+
+
+class Outer(Base):
+    def __init__(self, foo):
+        super().__init__(foo)  # Should not trigger UP008
+
+    class Inner(Base):
+        def __init__(self, foo):
+            super().__init__(foo)  # Should not trigger UP008
+
+    class InnerInner(Base):
+        def __init__(self, foo):
+            super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+
+o = Outer(5)
+i = Outer.Inner(5)
+ii = Outer.InnerInner(5)
+
+$ python3 --version
+Python 3.14.2
+
+$ python3 test.py
+Traceback (most recent call last):
+  File "/home/pp/test.py", line 21, in <module>
+    ii = Outer.InnerInner(5)
+  File "/home/pp/test.py", line 16, in __init__
+    super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+          ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Inner' has no attribute 'InnerInner'
+```
 
 ---
