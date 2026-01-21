@@ -45,13 +45,13 @@ uv sync --extra extra2      # ✗ ModuleNotFoundError: No module named &#x27;typ
 <ul>
 <li>Base dependency: typer&gt;=0.20.0</li>
 <li>extra1: typer-slim&gt;=0.20.0</li>
-<li>extra2: rich&gt;=13.0.0</li>
+<li>extra2: rich&gt;=13.0.0 (note: what deps extra2 has is irrelevant for this issue)</li>
 </ul>
 What happens
 <ol>
-<li><code>uv sync</code> installs typer (which depends on typer-slim)</li>
-<li><code>uv sync --extra extra1</code> adds typer-slim explicitly</li>
-<li><code>uv sync --extra extra2</code> removes typer-slim, but also removes typer even though it&#x27;s a base dependency</li>
+<li><code>uv sync</code> installs typer (which <strong>doesn&#x27;t</strong> depend on <code>typer-slim</code>)</li>
+<li><code>uv sync --extra extra1</code> adds <code>typer-slim</code></li>
+<li><code>uv sync --extra extra2</code> removes <code>typer-slim</code>, but because they &quot;contribute&quot; the same module in venv, the <code>typer</code>&#x27;s files get removed as well.</li>
 </ol>
 <p>This issue is likely caused by how <code>typer</code> and <code>typer-slim</code> are set up (i.e. <code>typer</code> doesn&#x27;t depend on <code>typer-slim</code>), but it may be potentially causing similar issues with other packages (AFAIK pydantic uses the <code>-slim</code> pattern, but in a different way).</p>
 <ul>
@@ -79,10 +79,25 @@ Python version
         <div class="timeline-entry">
             <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/pimlock">@pimlock</a> on 2026-01-21 19:40</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 20:38</div>
+            <div class="timeline-body"><p>Thanks for the report and reproduction!</p>
+<blockquote>
+<p>Installing typer-slim overwrites typer&#x27;s files, and uninstalling typer-slim deletes them—leaving uv&#x27;s metadata incorrectly showing typer as installed while the actual files are gone.</p>
+</blockquote>
+<p>It&#x27;s hard to say if we should support this — we generally discourage that pattern as it&#x27;s problematic in a variety of ways.</p>
+<p>cc @konstin who has more context on this category of issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 20:48</div>
+            <div class="timeline-body"><p>Here the issue is not that we&#x27;re removing base dependencies, but rather that we&#x27;re not reinstalling <code>typer</code> after uninstalling <code>typer-slim</code> which overwrites typer&#x27;s files?</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 20:07:55 UTC
+        Synced at 2026-01-21 21:29:31 UTC
     </footer>
 </body>
 </html>

@@ -77,7 +77,7 @@ Linter (stable)
 <p>
 
 <pre>
-+ <a href="https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
++ <a href="https://github.com/apache/superset/blob/25647942fd774d8c193cb570ba5fc3d74f037999/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -100,7 +100,7 @@ Linter (preview)
 <p>
 
 <pre>
-+ <a href="https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
++ <a href="https://github.com/apache/superset/blob/25647942fd774d8c193cb570ba5fc3d74f037999/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -333,7 +333,7 @@ UP008 Use `super()` instead of `super(__class__, self)`
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/generalmimon">@generalmimon</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:141 on 2026-01-21 10:05</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/generalmimon">@generalmimon</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:140 on 2026-01-21 10:05</div>
             <div class="timeline-body"><p>What&#x27;s the point of accepting an attribute in the second argument? This <code>second_arg_id</code> is required to be equal to the name of the &quot;parent argument&quot; (<code>parent_arg</code>), which is typically <code>self</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/ff11db466dc5fae8272a026e86638b04505855cb/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L147</p>
 <p>I think it doesn&#x27;t make sense to accept wild stuff like <code>super(..., a.b.c.self)</code>.</p>
@@ -344,14 +344,148 @@ UP008 Use `super()` instead of `super(__class__, self)`
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:141 on 2026-01-21 10:44</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:140 on 2026-01-21 10:44</div>
             <div class="timeline-body"><p>That&#x27;s correct, I removed the match on <code>Expr::Attribute</code> for the second parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/generalmimon">@generalmimon</a> reviewed on 2026-01-21 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/generalmimon">@generalmimon</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:134 on 2026-01-21 20:42</div>
+            <div class="timeline-body"><p>This assumes that whenever <code>super(A.B, self)</code> appears inside a class named <code>B</code>, it must be the <code>super(__class__, self)</code> case and an upgrade can be performed. Unfortunately, this is not necessarily true. Consider this:</p>
+<pre><code>class Base:
+    def __init__(self, foo):
+        print(f&quot;Base.__init__({foo}) called&quot;)
+        self.foo = foo
+
+
+class Outer:
+    class Inner(Base):
+        def __init__(self, foo):
+            print(f&quot;Outer.Inner.__init__({foo}) called&quot;)
+            super().__init__(foo)
+
+
+class Inner(Outer.Inner):
+    def __init__(self, foo):
+        super(Outer.Inner, self).__init__(foo)
+
+
+i = Inner(5)
+</code></pre>
+<p>Note that the <code>super</code> call in the <code>Inner.__init__</code> method body is <code>super(Outer.Inner, self)</code>, not <code>super(Inner, self)</code>. If you run the above code, the output is the following:</p>
+<pre><code>root@d2a45e4529f7:~# python3 --version
+Python 3.13.5
+root@d2a45e4529f7:~# python3 test.py
+Base.__init__(5) called
+</code></pre>
+<p>As you can see, only <code>Base.__init__</code> was called, not <code>Outer.Inner.__init__</code>.</p>
+<p>Nevertheless, your current implementation at https://github.com/astral-sh/ruff/commit/a9b58e1d3610ef14430569af480d9a5fd0b4d209 still suggests omitting arguments to this <code>super</code> call:</p>
+<pre><code>root@d2a45e4529f7:~/ruff# git status
+On branch bugfix/up008-inner-class
+Your branch is up to date with &#x27;origin/bugfix/up008-inner-class&#x27;.
+
+nothing to commit, working tree clean
+root@d2a45e4529f7:~/ruff# git rev-parse HEAD
+a9b58e1d3610ef14430569af480d9a5fd0b4d209
+root@d2a45e4529f7:~/ruff# cargo run -p ruff -- check --select UP ../test.py --no-cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/ruff check --select UP ../test.py --no-cache`
+UP008 Use `super()` instead of `super(__class__, self)`
+  --&gt; /root/test.py:16:14
+   |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+16 |         super(Outer.Inner, self).__init__(foo)
+   |              ^^^^^^^^^^^^^^^^^^^
+   |
+help: Remove `super()` parameters
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>In preview, this is even offered as a safe fix:</p>
+<pre><code>root@d2a45e4529f7:~/ruff# cargo run -p ruff -- check --preview --select UP ../test.py --no-cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running `target/debug/ruff check --preview --select UP ../test.py --no-cache`
+UP008 [*] Use `super()` instead of `super(__class__, self)`
+  --&gt; /root/test.py:16:14
+   |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+16 |         super(Outer.Inner, self).__init__(foo)
+   |              ^^^^^^^^^^^^^^^^^^^
+   |
+help: Remove `super()` parameters
+13 |
+14 | class Inner(Outer.Inner):
+15 |     def __init__(self, foo):
+   -         super(Outer.Inner, self).__init__(foo)
+16 +         super().__init__(foo)
+17 |
+18 |
+19 | i = Inner(5)
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>However, if you apply it, the behavior of the program changes - notice the additional message <code>Outer.Inner.__init__(5) called</code>, which the original program did not print:</p>
+<pre><code>root@d2a45e4529f7:~# cat test.py
+class Base:
+    def __init__(self, foo):
+        print(f&quot;Base.__init__({foo}) called&quot;)
+        self.foo = foo
+
+
+class Outer:
+    class Inner(Base):
+        def __init__(self, foo):
+            print(f&quot;Outer.Inner.__init__({foo}) called&quot;)
+            super().__init__(foo)
+
+
+class Inner(Outer.Inner):
+    def __init__(self, foo):
+        super().__init__(foo)
+
+
+i = Inner(5)
+root@d2a45e4529f7:~# python3 test.py
+Outer.Inner.__init__(5) called
+Base.__init__(5) called
+</code></pre>
+<p>I admit that this is perhaps an unusual scenario. Calling <code>super(Outer.Inner, self)</code> in the <code>Inner</code> class looks rather unintentional or at least suspicious, but from Python&#x27;s point of view, it is a valid program that does not raise any runtime errors.</p>
+<p>So I believe that Ruff should verify whether the entire attribute chain (in this case <code>Outer.Inner</code>) matches, not just its last segment. This means that instead of just finding the closest enclosing class:</p>
+<p>https://github.com/astral-sh/ruff/blob/a9b58e1d3610ef14430569af480d9a5fd0b4d209/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L120-L128</p>
+<p>... and comparing its name with the last segment in the attribute chain:</p>
+<p>https://github.com/astral-sh/ruff/blob/a9b58e1d3610ef14430569af480d9a5fd0b4d209/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L148</p>
+<p>..., Ruff should also inspect further (nested) enclosing classes and compare the second-to-last segment in the attribute chain, third-to-last segment, etc. If anything doesn&#x27;t match, UP008 should not be triggered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2026-01-21 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:134 on 2026-01-21 20:56</div>
+            <div class="timeline-body"><p>Thank you for your review, I&#x27;ll try to think about the corner cases and come up with a solution in the next days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2026-01-21 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs</code>:134 on 2026-01-21 20:56</div>
+            <div class="timeline-body"><p>Thank you for your review, I&#x27;ll try to think about the corner cases and come up with a solution in the next days.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 11:02:23 UTC
+        Synced at 2026-01-21 21:26:54 UTC
     </footer>
 </body>
 </html>

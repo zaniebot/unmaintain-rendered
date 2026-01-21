@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create lock files 644, only check read bit for locks, respect umask - astral-sh/uv #17646</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create lock files 644, only check read bit for locks, respect umask</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17646">#17646</a>
+        opened by <a href="https://github.com/dcwatson">@dcwatson</a>
+        on 2026-01-21 20:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcwatson">@dcwatson</a></div>
+            <div class="timeline-body">Summary
+<p>Resolves <a href="https://github.com/astral-sh/uv/issues/16769">astral-sh/uv#16769</a> by creating the temp lock files 644, and not requiring write access when trying to acquire a lock on a file. Additionally, I removed the forcing of permissions to override umask -- if a umask is set more restrictively it was probably for a reason, and now that failing to acquire a lock is just a warning, it doesn&#x27;t seem worth it to override.</p>
+Test Plan
+<p>Manually, either via docker or CLI, as it requires separate users to both run a <code>uv</code> command that takes a lock on the same project.</p>
+<p>I tested with a locally built <code>uv</code>. I ran an initial sync using <code>root</code>, and verified the lock file was as expected:</p>
+<pre><code>dcwatson@alektra T % ls -l uv*
+.rw-r--r-- 0 root staff 2026-01-21 14:48 uv-ff189de60ce1a681.lock
+</code></pre>
+<p>Then running a sync via my own user:</p>
+<pre><code>DEBUG Acquired exclusive lock for `/Users/dcwatson/testapp`
+DEBUG Reading Python requests from version file at `/Users/dcwatson/testapp/.python-version`
+DEBUG Using Python request `3.14` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment&#x27;s Python version satisfies the request: `Python 3.14`
+DEBUG Released lock at `/var/folders/qs/c9v6ntlx05x4mt88cgs9p4sc0000gn/T/uv-ff189de60ce1a681.lock`
+</code></pre>
+<p>Finally, I modified the lock file so it was owner-read-only (<code>chmod 400</code>), and verified a warning (but not an error) was logged when I ran a sync as my own user:</p>
+<pre><code>WARN Failed to acquire project environment lock: failed to open file `/var/folders/qs/c9v6ntlx05x4mt88cgs9p4sc0000gn/T/uv-ff189de60ce1a681.lock`: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 20:32</div>
+            <div class="timeline-body"><p>cc @EliteTK since this code last changed in <a href="https://github.com/astral-sh/uv/pull/17115">astral-sh/uv#17115</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">test:extended</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 20:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 21:31:16 UTC
+    </footer>
+</body>
+</html>
