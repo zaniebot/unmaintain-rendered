@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative when `match`ing a Protocol - astral-sh/ty #2581</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative when <code>match</code>ing a Protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2581">#2581</a>
+        opened by <a href="https://github.com/lihu-zhong">@lihu-zhong</a>
+        on 2026-01-21 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lihu-zhong">@lihu-zhong</a></div>
+            <div class="timeline-body">Summary
+<p><strong>Observed behavior:</strong></p>
+<p><code>ty</code> correctly raises an <code>invalid-argument-type</code> error when using a <code>Protocol</code> in an <code>isinstance()</code> check, but doesn&#x27;t raise the same error when an equivalent runtime check is done with <code>match</code>:</p>
+<pre><code>from dataclasses import dataclass
+from typing import Any, Protocol
+
+
+class Foo(Protocol):
+    foo: str
+
+
+@dataclass
+class ImplFoo:
+    foo: str = &quot;bar&quot;
+
+
+def isinstance_check(input: Any) -&gt; None:
+    if isinstance(input, Foo):
+        input.foo
+
+
+def match_check(input: Any) -&gt; None:
+    match input:
+        case Foo():
+            input.foo
+
+
+isinstance_check(ImplFoo())
+match_check(ImplFoo())
+</code></pre>
+<p>In the above code, <code>ty</code> raises one error.</p>
+<p><strong>Expected Behavior:</strong></p>
+<p><code>ty</code> should raise the same error on the <code>match</code> structure, since it raises the same runtime error. <code>mypy</code> misses this as well, but <code>pyright</code> catches it.</p>
+Version
+<p>0.0.10</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 18:08:29 UTC
+    </footer>
+</body>
+</html>
