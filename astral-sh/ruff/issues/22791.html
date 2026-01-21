@@ -124,10 +124,142 @@ ignore-all-comments = true
 <p><img alt="Image" src="https://github.com/user-attachments/assets/30d25538-ccf5-4576-9edd-7e304e78da93"></p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2026-01-21 22:05</div>
+            <div class="timeline-body"><p>Diff looks pretty small without tests for such a &quot;useful&quot; setting:</p>
+<pre><code>diff --git a/crates/ruff_linter/src/rules/pycodestyle/overlong.rs b/crates/ruff_linter/src/rules/pycodestyle/overlong.rs                       
+index 56cfb25df9..b4b20a1a5e 100644
+--- a/crates/ruff_linter/src/rules/pycodestyle/overlong.rs
++++ b/crates/ruff_linter/src/rules/pycodestyle/overlong.rs
+@@ -21,6 +21,7 @@ impl Overlong {
+         limit: LineLength,
+         task_tags: &amp;[String],
+         tab_size: IndentWidth,
++        ignore_all_comments: bool,
+     ) -&gt; Option&lt;Self&gt; {
+         // The maximum width of the line is the number of bytes multiplied by the tab size (the
+         // worst-case scenario is that the line is all tabs). If the maximum width is less than the
+@@ -37,7 +38,7 @@ impl Overlong {
+         }
+ 
+         // Strip trailing comments and re-measure the line, if needed.
+-        let line = StrippedLine::from_line(line, comment_ranges, task_tags);
++        let line = StrippedLine::from_line(line, comment_ranges, task_tags, ignore_all_comments);
+         let width = match &amp;line {
+             StrippedLine::WithoutPragma(line) =&gt; {
+                 let width = measure(line.as_str(), tab_size);
+@@ -116,7 +117,12 @@ enum StrippedLine&lt;&#x27;a&gt; {
+ impl&lt;&#x27;a&gt; StrippedLine&lt;&#x27;a&gt; {
+     /// Strip trailing comments from a [`Line`], if the line ends with a pragma comment (like
+     /// `# type: ignore`) or, if necessary, a task comment (like `# TODO`).
+-    fn from_line(line: &amp;&#x27;a Line&lt;&#x27;a&gt;, comment_ranges: &amp;CommentRanges, task_tags: &amp;[String]) -&gt; Self {
++    fn from_line(
++        line: &amp;&#x27;a Line&lt;&#x27;a&gt;,
++        comment_ranges: &amp;CommentRanges,
++        task_tags: &amp;[String],
++        ignore_all_comments: bool,
++    ) -&gt; Self {
+         let [comment_range] = comment_ranges.comments_in_range(line.range()) else {
+             return Self::Unchanged(line);
+         };
+@@ -126,7 +132,7 @@ impl&lt;&#x27;a&gt; StrippedLine&lt;&#x27;a&gt; {
+         let comment = &amp;line.as_str()[comment_range];
+ 
+         // Ex) `# type: ignore`
+-        if is_pragma_comment(comment) {
++        if !ignore_all_comments &amp;&amp; is_pragma_comment(comment) {
+             // Remove the pragma from the line.
+             let prefix = &amp;line.as_str()[..usize::from(comment_range.start())].trim_end();
+             return Self::WithoutPragma(Line::new(prefix, line.start()));
+diff --git a/crates/ruff_linter/src/rules/pycodestyle/rules/doc_line_too_long.rs b/crates/ruff_linter/src/rules/pycodestyle/rules/doc_line_too_long.rs
+index 9e59ce5a79..f0d7b4856f 100644
+--- a/crates/ruff_linter/src/rules/pycodestyle/rules/doc_line_too_long.rs
++++ b/crates/ruff_linter/src/rules/pycodestyle/rules/doc_line_too_long.rs
+@@ -104,6 +104,7 @@ pub(crate) fn doc_line_too_long(
+             &amp;[]
+         },
+         settings.tab_size,
++        settings.pycodestyle.ignore_all_comments,
+     ) {
+         context.report_diagnostic(
+             DocLineTooLong(overlong.width(), limit.value() as usize),
+diff --git a/crates/ruff_linter/src/rules/pycodestyle/rules/line_too_long.rs b/crates/ruff_linter/src/rules/pycodestyle/rules/line_too_long.rs
+index b81cbdf7b1..cdc4a19b6c 100644
+--- a/crates/ruff_linter/src/rules/pycodestyle/rules/line_too_long.rs
++++ b/crates/ruff_linter/src/rules/pycodestyle/rules/line_too_long.rs
+@@ -100,6 +100,7 @@ pub(crate) fn line_too_long(
+             &amp;[]
+         },
+         settings.tab_size,
++        settings.pycodestyle.ignore_all_comments,
+     ) {
+         context.report_diagnostic(
+             LineTooLong(overlong.width(), limit.value() as usize),
+diff --git a/crates/ruff_linter/src/rules/pycodestyle/settings.rs b/crates/ruff_linter/src/rules/pycodestyle/settings.rs
+index b034a77874..df7f146d66 100644
+--- a/crates/ruff_linter/src/rules/pycodestyle/settings.rs
++++ b/crates/ruff_linter/src/rules/pycodestyle/settings.rs
+@@ -11,6 +11,7 @@ pub struct Settings {
+     pub max_line_length: LineLength,
+     pub max_doc_length: Option&lt;LineLength&gt;,
+     pub ignore_overlong_task_comments: bool,
++    pub ignore_all_comments: bool,
+ }
+ 
+ impl fmt::Display for Settings {
+@@ -22,6 +23,7 @@ impl fmt::Display for Settings {
+                 self.max_line_length,
+                 self.max_doc_length | optional,
+                 self.ignore_overlong_task_comments,
++                self.ignore_all_comments,
+             ]
+         }
+         Ok(())
+diff --git a/crates/ruff_workspace/src/options.rs b/crates/ruff_workspace/src/options.rs
+index f2c15755c1..158f3a992d 100644
+--- a/crates/ruff_workspace/src/options.rs
++++ b/crates/ruff_workspace/src/options.rs
+@@ -560,7 +560,7 @@ pub struct LintOptions {
+     pub future_annotations: Option&lt;bool&gt;,
+ }
+ 
+-pub fn validate_required_version(required_version: &amp;RequiredVersion) -&gt; anyhow::Result&lt;()&gt; {
++pub fn validate_required_version(required_version: &amp;RequiredVersion) -&gt; Result&lt;()&gt; {
+     let ruff_pkg_version = pep440_rs::Version::from_str(RUFF_PKG_VERSION)
+         .expect(&quot;RUFF_PKG_VERSION is not a valid PEP 440 version specifier&quot;);
+     if !required_version.contains(&amp;ruff_pkg_version) {
+@@ -3081,6 +3081,16 @@ pub struct PycodestyleOptions {
+         &quot;#
+     )]
+     pub ignore_overlong_task_comments: Option&lt;bool&gt;,
++
++    /// Whether to ignore all comments when checking line length.
++    #[option(
++        default = &quot;false&quot;,
++        value_type = &quot;bool&quot;,
++        example = r#&quot;
++            ignore-all-comments = true
++        &quot;#
++    )]
++    pub ignore_all_comments: Option&lt;bool&gt;,
+ }
+ 
+ impl PycodestyleOptions {
+@@ -3089,6 +3099,7 @@ impl PycodestyleOptions {
+             max_doc_length: self.max_doc_length,
+             max_line_length: self.max_line_length.unwrap_or(global_line_length),
+             ignore_overlong_task_comments: self.ignore_overlong_task_comments.unwrap_or_default(),
++            ignore_all_comments: self.ignore_all_comments.unwrap_or_default(),
+         }
+     }
+ }
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 22:08:55 UTC
+        Synced at 2026-01-21 23:09:53 UTC
     </footer>
 </body>
 </html>
