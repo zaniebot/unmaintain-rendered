@@ -380,10 +380,139 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
         <div class="timeline-entry">
             <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-21 09:12</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:541 on 2026-01-21 09:17</div>
+            <div class="timeline-body"><p>It&#x27;s okay to not support range formatting but aborting with <code>unimplemented</code> (which shows the user that ruff panicked), seems far from ideal.</p>
+<p>Let&#x27;s handle it the same as for notebooks by making the returned error type more generic</p>
+<pre><code>            if range.is_some() {
+                return Err(FormatCommandError::RangeFormatNotebook(
+                    path.map(Path::to_path_buf),
+                ));
+            }
+</code></pre>
+<p>and name the error <code>RangeFormatNotSupported</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:506 on 2026-01-21 09:19</div>
+            <div class="timeline-body"><p>It&#x27;s fine to leave this to a follow-up, but should we try to format code blocks without a language specifier if they parse successfully?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:523 on 2026-01-21 09:20</div>
+            <div class="timeline-body"><p>I think I&#x27;d prefer aborting with an error, so that ruff sets the correct exit code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:536 on 2026-01-21 09:21</div>
+            <div class="timeline-body"><p><code>ruff_python_trivia</code>&#x27;s dedent rules are Pythono specific. It doesn&#x27;t strip all whitespace. Is this also correct for markdown?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:549 on 2026-01-21 09:25</div>
+            <div class="timeline-body"><p>See the <code>replace_all</code> documentation</p>
+<pre><code>    /// # Fallibility
+    ///
+    /// If you need to write a replacement routine where any individual
+    /// replacement might &quot;fail,&quot; doing so with this API isn&#x27;t really feasible
+    /// because there&#x27;s no way to stop the search process if a replacement
+    /// fails. Instead, if you need this functionality, you should consider
+    /// implementing your own replacement routine:
+    ///
+    /// ```
+    /// use regex::{Captures, Regex};
+    ///
+    /// fn replace_all&lt;E&gt;(
+    ///     re: &amp;Regex,
+    ///     haystack: &amp;str,
+    ///     replacement: impl Fn(&amp;Captures) -&gt; Result&lt;String, E&gt;,
+    /// ) -&gt; Result&lt;String, E&gt; {
+    ///     let mut new = String::with_capacity(haystack.len());
+    ///     let mut last_match = 0;
+    ///     for caps in re.captures_iter(haystack) {
+    ///         let m = caps.get(0).unwrap();
+    ///         new.push_str(&amp;haystack[last_match..m.start()]);
+    ///         new.push_str(&amp;replacement(&amp;caps)?);
+    ///         last_match = m.end();
+    ///     }
+    ///     new.push_str(&amp;haystack[last_match..]);
+    ///     Ok(new)
+    /// }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:554 on 2026-01-21 09:26</div>
+            <div class="timeline-body"><p>It seems unfortunate that we keep returning <code>origional.to_string</code> (which makes <code>replace_all</code> to replace the text even in cases where the code is correctly formatted.</p>
+<p>Ideally, we&#x27;d skip doing any work unless the formatted code has changed. We can probably do so by implementing our own <code>replace_all</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/cli/format.rs</code>:2394 on 2026-01-21 09:28</div>
+            <div class="timeline-body"><p>Let&#x27;s add a helper to <code>CliTest</code> for resolving a file path that&#x27;s relative to the crate root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/cli/format.rs</code>:2415 on 2026-01-21 09:29</div>
+            <div class="timeline-body"><p>Let&#x27;s add this filter to the default <code>CliTest</code> filters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/cli/format.rs</code>:2429 on 2026-01-21 09:31</div>
+            <div class="timeline-body"><p>I&#x27;d slightly prefer to inline the <code>unformatted.md</code> file text into the cli test as we do for other tests and make it much shorter.</p>
+<p>We should write a dedicated integration test to test various markdown formatting behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/cli/format.rs</code>:2490 on 2026-01-21 09:32</div>
+            <div class="timeline-body"><p>Same here. Using the full <code>unformatted.md</code> feels overkill for what we&#x27;re testing here. A much shorter markdown snippet should be sufficient to demonstrate the same functionality and is much less verbose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/resources/test/fixtures/unformatted.md</code>:1 on 2026-01-21 09:43</div>
+            <div class="timeline-body"><p>Let&#x27;s add a test that <code>ruff check markdown.md</code> logs a warning that no python files were found</p>
+<pre><code>❯ cargo run --bin ruff -p ruff check README.md --no-cache -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check README.md --no-cache -v`
+[2026-01-21][10:43:37][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/micha/astral/ruff/pyproject.toml
+[2026-01-21][10:43:37][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2026-01-21][10:43:37][ruff::commands::check][DEBUG] Identified files to lint in: 5.983166ms
+[2026-01-21][10:43:37][ruff::diagnostics][DEBUG] Checking: /Users/micha/astral/ruff/README.md
+[2026-01-21][10:43:37][ruff::commands::check][DEBUG] Checked 1 files in: 1.230625ms
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:93 on 2026-01-21 09:54</div>
+            <div class="timeline-body"><p>Hmm, adding <code>Markdown</code> to <code>PySourceType</code> feels wrong. It&#x27;s not a different Python dialect. It also forces us to handle <code>Markdown</code> in many places where it&#x27;s impossible that we&#x27;ll ever see the <code>Markdown</code>: The <code>PySourceType</code> when formatting a markdown cell will always be <code>Python</code> or <code>Stub</code> but never <code>Markdown</code>, which is different from <code>Ipynb</code> where cells are formatted with <code>PySourceType::Ipynb</code>.</p>
+<p>I think what you want is to add <code>Markdown</code> to <code>SourceType</code>, which is Ruff&#x27;s enum over the file types it supports. We may have to introduce a new <code>FormatSourceType</code> enum that you pass to <code>format_path</code>, like so:</p>
+<pre><code>enum FormatSourceType {
+	Python(PySourceType),
+	Markdown
+</code></pre>
+<p>You may have to create <code>SourceKind</code> manually for the <code>Markdown</code> variant (you won&#x27;t be able to delegate to `SourceKind::from(py_source_type)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:499 on 2026-01-21 09:56</div>
+            <div class="timeline-body"><p>I suggest moving the markdown core logic (given a document, iterate over the code blocks and format each of them) into its own function so that you can write unit tests against it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/diagnostics.rs</code>:247 on 2026-01-21 09:58</div>
+            <div class="timeline-body"><p>I think we need to exclude those files earlier or Ruff stops warning that it didn&#x27;t find any files that it can operate on. We might need to parametrize <code>python_files_in_path</code> with a flag indicating whether markdown files are allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-21 09:58</div>
+            <div class="timeline-body"><p>Nice that you got something working so quickly. I think there&#x27;s a bit more that we need to do to ensure the markdown formatting doesn&#x27;t leak into other tools and we should also improve error handling, aborting isn&#x27;t a great user experience.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 10:04:13 UTC
+        Synced at 2026-01-21 11:02:22 UTC
     </footer>
 </body>
 </html>

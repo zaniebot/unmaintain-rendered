@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extreme slowdown when using types from `pulumi_cloudflare` (~12 min vs sub-second for `pulumi_aws`) - astral-sh/ty #2575</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extreme slowdown when using types from <code>pulumi_cloudflare</code> (~12 min vs sub-second for <code>pulumi_aws</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2575">#2575</a>
+        opened by <a href="https://github.com/michal-stlv">@michal-stlv</a>
+        on 2026-01-21 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/michal-stlv">@michal-stlv</a></div>
+            <div class="timeline-body">Summary
+<p>I&#x27;m experiencing a significant performance issue when type checking code that uses <code>pulumi_cloudflare</code>.</p>
+<p>Using any type from the package causes ty to take ~12 minutes, while just importing it (without using any types) is instant. The much larger <code>pulumi_aws</code> package works fine.</p>
+Reproduction
+<p>Tested on ty 0.0.12, Python 3.12.</p>
+<p><strong>Slow case - using a type from pulumi_cloudflare:</strong></p>
+<pre><code># slow_cf.py
+import pulumi_cloudflare
+
+record = pulumi_cloudflare.Record(
+    &quot;test&quot;,
+    zone_id=&quot;xxx&quot;,
+    name=&quot;test&quot;,
+    type=&quot;A&quot;,
+    content=&quot;1.2.3.4&quot;,
+)
+</code></pre>
+<pre><code>$ ty check slow_cf.py
+All checks passed!
+Took    12m29.81s
+</code></pre>
+<p><strong>Fast case - import only, no usage:</strong></p>
+<pre><code># fast_cf.py
+import pulumi_cloudflare
+</code></pre>
+<pre><code>$ ty check fast_cf.py
+All checks passed!
+Took    0.058s
+</code></pre>
+<p><strong>pulumi_aws works fine:</strong></p>
+<pre><code># aws_test.py
+import pulumi_aws
+
+bucket = pulumi_aws.s3.Bucket(&quot;test&quot;)
+</code></pre>
+<pre><code>$ ty check aws_test.py
+All checks passed!
+Took    0.241s
+</code></pre>
+Environment
+<ul>
+<li>ty: 0.0.12</li>
+<li>Python: 3.12</li>
+<li>pulumi_cloudflare: 6.12.0</li>
+<li>pulumi_aws: 7.16.0</li>
+<li>macOS Tahoe (M3 Max, 36GB)</li>
+</ul>
+Observations
+<p>I looked into why this might be happening (though I could be wrong about the details):</p>
+<ul>
+<li><code>pulumi_cloudflare</code> is smaller (42MB) than <code>pulumi_aws</code> (121MB), yet much slower</li>
+<li><code>pulumi_cloudflare</code> appears to have a more monolithic structure - I noticed <code>_inputs.py</code> is quite large (~88K lines) compared to <code>pulumi_aws</code> which seems to split things across many files</li>
+<li>Both packages use <code>Input[T] = Union[T, Awaitable[T], Output[T]]</code> pattern with TypedDicts</li>
+</ul>
+<p>I found that mypy has a similar issue documented in python/mypy#17231, where Pulumi&#x27;s TypedDict + Union patterns cause performance problems. Pyright apparently handles this better. Not sure if the same root cause applies here.</p>
+<p>This might be related to #240 (large union benchmarks), though I&#x27;m not certain.</p>
+Workaround
+<p>Excluding the folder from ty checking works for now:</p>
+<pre><code>[tool.ty.src]
+exclude = [&quot;path/to/code/using/cloudflare/&quot;]
+</code></pre>
+Questions
+<ul>
+<li>Is this a known pattern that causes issues for ty?</li>
+<li>Any other workarounds besides excluding?</li>
+<li>Any plans for handling this?</li>
+</ul>
+<p>Thanks for the amazing tool!</p>
+Version
+<p>ty 0.0.12 (4b74e4ded 2026-01-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 10:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 11:02:53 UTC
+    </footer>
+</body>
+</html>
