@@ -61,10 +61,100 @@ def get_module() -&gt;  Module[&quot;collections.abc&quot;]:
             <div class="timeline-body"><p>@augustfe I&#x27;m not sure that&#x27;s related at all (I think your issue is  <a href="https://github.com/astral-sh/ty/issues/1136">astral-sh/ty#1136</a>)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2026-01-21 11:25</div>
+            <div class="timeline-body"><p>I like this 👌. And for what it&#x27;s worth; the pyrights do something similar:</p>
+<pre><code>import math
+from typing import reveal_type
+
+reveal_type(math)  # Type of &quot;math&quot; is &quot;Module(&quot;math&quot;)&quot;
+</code></pre>
+<p>https://basedpyright.com/?typeCheckingMode=strict&amp;code=JYWwDg9gTgLgBCAhjAFgKAGZQiOMCeYwAdgOZyiSxxQCmAbrYgDYD6BYtaadjL7hWgAokqAJRw4AYjgAVQXAgY4AIlEoVFAM6qAshAAmAV2bC1yDWJVogA</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 11:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I like this 👌. And for what it&#x27;s worth; the pyrights do something similar:</p>
+</blockquote>
+<p>Right, we already do that too, but I don&#x27;t believe pyright provides what this feature request is asking for, which is a way of expressing that &quot;module-literal&quot; type in user annotations. (Don&#x27;t know about basedpyright.)</p>
+<blockquote>
+<p>are you thinking that you might use this to annotate functions that lazy-load expensive modules to reduce import times?</p>
+</blockquote>
+<p>@KotlinIsland, you upvoted this comment, so I assume the answer is &quot;yes&quot;. This wouldn&#x27;t cover all cases where you use functions to lazy-load modules -- e.g. <a href="https://github.com/python/cpython/blob/4ef30a5871db2043712945e64f33af81938d68dc/Lib/typing.py#L1930-L1935">functions that return specific functions or classes from a lazily loaded module</a> -- we would need to provide a way for users to express function-literal types and class-literal types too in order to be able to annotate those functions. But in the meantime, I guess you can always annotate those functions as returning <code>Callable</code>/<code>type[]</code> types (though these are not as precise as function-literal and class-literal types).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2026-01-21 11:32</div>
+            <div class="timeline-body"><p>As for a use-case, <a href="https://github.com/mpmath/mpmath">mpmath</a> comes to mind, which <a href="https://github.com/sympy/sympy">sympy</a> heavily relies on. It uses module-level polymorphism, and they refer to a polymorphic modules as a &quot;context&quot; (<a href="https://mpmath.readthedocs.io/en/latest/contexts.html">docs</a>).
+At one point I attempted writing stubs for it, but I wasn&#x27;t able to get very far because of this. But with the proposed <code>Module</code> type I think this should be possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 11:33</div>
+            <div class="timeline-body"><p>Ah yeah, you can always annotate module-literal types using <code>Protocol</code>s for that kind of thing but that gets painful pretty quickly. That&#x27;s definitely a reasonable use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2026-01-21 11:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah yeah, you can always annotate module-literal types using <code>Protocol</code>s for that kind of thing but that gets painful pretty quickly. That&#x27;s definitely a reasonable use case.</p>
+</blockquote>
+<p>yes! i&#x27;ve run into this before, same with lazy loading mentioned above with some painful import cycles</p>
+<p>i wonder if there&#x27;s any value in a special form that sucks the nominality off something, a little like <code>CallableTypeOf</code>, and creates a protocol from it</p>
+<pre><code>from ty_extensions import ProtocolOf
+
+class A:
+    a: int
+
+class B:
+    a: int
+
+type P = ProtocolOf[A]
+
+p: P = B()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dangotbanned">@dangotbanned</a> on 2026-01-21 11:51</div>
+            <div class="timeline-body"><p>Just for another example, in (https://github.com/narwhals-dev/narwhals) we&#x27;d really benefit from this since all dependencies are optional.</p>
+<p>For some internal things where we can eat the breakage in typing, something like this hack (<a href="https://github.com/narwhals-dev/narwhals/pull/2051">narwhals-dev/narwhals#2051</a>#discussion_r1969758247) can kinda work.</p>
+<p>But we have <a href="https://github.com/narwhals-dev/narwhals/blob/e4c63f8f7c49a2325174ee78223970607d3c3d08/narwhals/dependencies.py#L47-L126">a bunch of public functions</a> that return entire packages, which:</p>
+<ol>
+<li>Would be unrealistic to stub out correctly for even 1 package (let alone 16! 😭)</li>
+<li>Needs to be expressed as a <code>Module(&quot;package&quot;) | None</code>, so can&#x27;t rely on the inference hack we have elsewhere</li>
+</ol>
+<p>I&#x27;ve not had much hope in expecting <code>pyright</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 11:52</div>
+            <div class="timeline-body"><p>Oh, I forgot -- we actually do already have a way of annotating module-literal types; I don&#x27;t know if this is sufficient?</p>
+<pre><code>from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import collections.abc
+    from ty_extensions import TypeOf
+
+def get_module() -&gt; TypeOf[collections.abc]:
+    import collections.abc
+    return collections.abc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-21 11:53</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 10:04:43 UTC
+        Synced at 2026-01-21 12:01:47 UTC
     </footer>
 </body>
 </html>

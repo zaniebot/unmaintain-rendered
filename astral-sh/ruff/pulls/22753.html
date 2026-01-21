@@ -493,10 +493,72 @@ class Child(Parent): ...  # error
             <div class="timeline-body"><p>I personally find this more useful + consistent with our other patterns, but I don&#x27;t feel strongly.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-21 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:1306 on 2026-01-21 11:08</div>
+            <div class="timeline-body"><p>I know there&#x27;s still a bunch of rules where we emit a separate diagnostic for each element in cases like this, but in general I think we aspire to group them together where possible -- e.g. here we only emit a single diagnostic, even though multiple elements of the union have the incorrect signature:</p>
+<pre><code>% uvx ty check foo.py
+error[unknown-argument]: Argument `x` does not match any known parameter of function `f`
+ --&gt; foo.py:7:10
+  |
+5 | def i(coinflip: bool):
+6 |     func = f if coinflip else g if coinflip else h
+7 |     func(x=42)
+  |          ^^^^
+  |
+info: Union variant `def f() -&gt; Unknown` is incompatible with this call site
+info: Attempted to call union type `(def f() -&gt; Unknown) | (def h(x) -&gt; Unknown)`
+info: rule `unknown-argument` is enabled by default
+
+Found 1 diagnostic
+% cat foo.py
+def f(): ...
+def g(): ...
+def h(x): ...
+
+def i(coinflip: bool):
+    func = f if coinflip else g if coinflip else h
+    func(x=42)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:681 on 2026-01-21 11:10</div>
+            <div class="timeline-body"><p>(this can be a followup): we also need to implement the rule where all methods on <code>Protocol</code> classes that have &quot;trivial bodies&quot; (either <code>...</code>, <code>pass</code>, a docstring, or a combination of those three elements) and have an explicit non-<code>None</code> return type are treated as implicitly abstract even if they are not decorated with <code>@abstractmethod</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:816 on 2026-01-21 11:15</div>
+            <div class="timeline-body"><p>I don&#x27;t think we need to prioritise supporting them since they&#x27;re deprecated, but you could add a note here about <code>abc.abstractproperty</code>, <code>abc.abstractclassmethod</code> and <code>abc.abstractstaticmethod</code>.</p>
+<p>Hmm, and it doesn&#x27;t look like you have any tests for <code>@classmethod</code> or <code>@staticmethod</code> stacked on top of <code>@abstractmethod</code>. We should <em>definitely</em> add those tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1909 on 2026-01-21 11:17</div>
+            <div class="timeline-body"><p>I&#x27;m not totally sure this is the best name:</p>
+<ul>
+<li>(minor) there might be multiple abstract methods that are unimplemented</li>
+<li>(more important) this could equally well be a good name for the rule <a href="https://github.com/astral-sh/ty/issues/1877">astral-sh/ty#1877</a> discusses, but I think that should probably be a separate error code, so we should probably choose a name here that more clearly differentiates the two rules</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:1315 on 2026-01-21 11:18</div>
+            <div class="timeline-body"><p>you might be able to use this nice helper we have: https://github.com/astral-sh/ruff/blob/4e9de95cd83e6ffd4b1af7f4fd36af959c4cac07/crates/ty_python_semantic/src/diagnostic.rs#L127-L149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2026-01-21 11:19</div>
+            <div class="timeline-body"><p>This looks great, thank you</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 20:58:00 UTC
+        Synced at 2026-01-21 12:01:14 UTC
     </footer>
 </body>
 </html>

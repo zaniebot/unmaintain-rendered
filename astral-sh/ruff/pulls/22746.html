@@ -29,6 +29,9 @@ Summary
 
 
 <p>I&#x27;ve added a second grouping step that handles tagged errors in the conformance suite. I decided to change the &quot;unit&quot; of a true positive or false positive to be a test case that is either a single error or a collection of tagged errors. Along with being more similar (I think) to the implementation in the typing repository, this approach also makes it easy to report all of the errors for a tag when e.g. there are two many for a tags requirements. The downside is that the statistics become a little more confusing.</p>
+<p>The essence of the new logic is to first collect all of the lines into mapping from (path, line) to tag name. I then add the same tag to each of the old and new diagnostics that appear on the same line. Next, I group the diagnostics based on a key that default to the path and line but will use the tag if it is present. An instance of <code>GroupedDiagnostics</code> will be considered a true positive, false positive etc. as a single unit, but it may be composed of multiple diagnostics from each of the ty versions and the conformance suite. The new <code>classify</code> method assigns the <code>GroupedDiagnostics</code> instance to one of these groups depending on the presence of each of the sources plus a new check to ensure that the correct number of distinct lines have errors within a tag.</p>
+<p>This means that the classification doesn&#x27;t penalize <code>ty</code> for raising multiple diagnostics on the same line even in cases where <code>ty</code> returns duplicate diagnostics.</p>
+<p>I&#x27;ve also updated the render step so that tagged diagnostics and diagnostics raised on the same line are now shown in the same cell in the table. The benefit here (I think) is that you&#x27;ll be able to see all of the diagnostics removed when a line that raises multiple false positives is fixed.</p>
 Test Plan
 <p>I ran the following locally:</p>
 <pre><code>uv run --no-project --with rich scripts/conformance.py --tests-path ../typing/conformance/ --old-ty uvx ty@0.0.6
@@ -74,10 +77,10 @@ True positives added
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L134">qualifiers_final_annotation.py:134:1</a><br><a href="https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L134">qualifiers_final_annotation.py:134:3</a> | missing-argument<br>unknown-argument | No arguments provided for required parameters <code>x</code>, <code>y</code><br>Argument <code>a</code> does not match any known parameter |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L135">qualifiers_final_annotation.py:135:3</a><br><a href="https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L135">qualifiers_final_annotation.py:135:9</a> | invalid-argument-type<br>invalid-argument-type | Argument is incorrect: Expected <code>int</code>, found <code>Literal[&quot;&quot;]</code><br>Argument is incorrect: Expected <code>int</code>, found <code>Literal[&quot;&quot;]</code> |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L29">typeddicts_class_syntax.py:29:5</a> | invalid-typed-dict-statement | TypedDict class cannot have methods |
-| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128">typeddicts_extra_items.py:128:15</a> | invalid-argument-type | Cannot delete required key &quot;name&quot; from TypedDict <code>MovieEI</code> |
-| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49">typeddicts_operations.py:49:11</a> | invalid-argument-type | Cannot delete required key &quot;name&quot; from TypedDict <code>Movie</code> |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L33">typeddicts_class_syntax.py:33:5</a> | invalid-typed-dict-statement | TypedDict class cannot have methods |
-| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L38">typeddicts_class_syntax.py:38:5</a> | invalid-typed-dict-statement | TypedDict class cannot have methods |</p>
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L38">typeddicts_class_syntax.py:38:5</a> | invalid-typed-dict-statement | TypedDict class cannot have methods |
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128">typeddicts_extra_items.py:128:15</a> | invalid-argument-type | Cannot delete required key &quot;name&quot; from TypedDict <code>MovieEI</code> |
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49">typeddicts_operations.py:49:11</a> | invalid-argument-type | Cannot delete required key &quot;name&quot; from TypedDict <code>Movie</code> |</p>
 
 
 False positives removed
@@ -170,10 +173,15 @@ Formatter (preview)
         <div class="timeline-entry">
             <div class="event">Marked ready for review by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-21 09:21</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-21 11:38</div>
+            <div class="timeline-body"><p>@AlexWaygood @MichaReiser My first pass at this was a little buggy and overcomplicated, but I think that it is in a bit better shape now!</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 10:04:14 UTC
+        Synced at 2026-01-21 12:01:13 UTC
     </footer>
 </body>
 </html>
