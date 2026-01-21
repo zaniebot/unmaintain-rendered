@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-19T13:41:33Z
+updated_at: 2026-01-21T22:52:01Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-19T14:36:03Z
+synced_at: 2026-01-21T23:08:24Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -40,7 +40,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:22_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/)
 
 No changes detected ✅
 
@@ -66,15 +66,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
 strawberry (https://github.com/strawberry-graphql/strawberry)
 + strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 348 diagnostics
-+ Found 350 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- Found 1823 diagnostics
-+ Found 1822 diagnostics
+- Found 345 diagnostics
++ Found 347 diagnostics
 
 
 ```
@@ -135,14 +128,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 1 | 3 | 7 |
-| `invalid-argument-type` | 1 | 2 | 3 |
-| `invalid-assignment` | 0 | 0 | 5 |
-| `unused-ignore-comment` | 4 | 0 | 0 |
-| **Total** | **6** | **5** | **15** |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-return-type` | 0 | 4 | 2 |
+| `invalid-assignment` | 0 | 0 | 4 |
+| `invalid-argument-type` | 0 | 0 | 3 |
+| `unused-ignore-comment` | 2 | 0 | 0 |
+| **Total** | **2** | **4** | **16** |
 
 
-**[Full report with detailed diff](https://fc910ef3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://fc910ef3.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://afd3da90.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://afd3da90.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -210,7 +204,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:5931 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6387 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -382,13 +376,13 @@ Since we'll _have_ to support recursive and stringified types for functional `ty
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:674 on 2026-01-16 16:25_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:676 on 2026-01-16 16:25_
 
 do we have tests for what happens if functional dataclasses with and without `order=True` are passed to `total_ordering()`?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:710 on 2026-01-16 16:29_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:712 on 2026-01-16 16:29_
 
 I think you could reduce duplication between the branches a little bit in this method, e.g.
 
@@ -414,7 +408,7 @@ I think you could reduce duplication between the branches a little bit in this m
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:769 on 2026-01-16 16:30_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:771 on 2026-01-16 16:30_
 
 do we have a test that demonstrates that a `slots=True` functional dataclass is understood as a disjoint base?
 

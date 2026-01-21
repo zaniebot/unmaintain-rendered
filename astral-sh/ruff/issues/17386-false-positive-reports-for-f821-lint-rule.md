@@ -9,9 +9,9 @@ labels:
   - type-inference
 assignees: []
 created_at: 2025-04-14T05:31:41Z
-updated_at: 2025-09-12T15:50:19Z
+updated_at: 2026-01-21T22:38:36Z
 url: https://github.com/astral-sh/ruff/issues/17386
-synced_at: 2026-01-12T15:54:55Z
+synced_at: 2026-01-21T23:08:13Z
 ```
 
 # False positive reports for F821 lint rule
@@ -130,5 +130,11 @@ I'd like to know why this issue is so difficult to fix given the level of sophis
 _Comment by @patrick-kidger on 2025-09-12 15:50_
 
 Have just come across this. As per the [jaxtyping FAQ](https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error) then adding a space at the start of the string -- `Float[Array, " foo"]` -- is my recommended work around. This converts the F821 error into an ignorable F722 error instead.
+
+---
+
+_Comment by @kalk-ak on 2026-01-21 22:38_
+
+Came here because I was facing the same issue
 
 ---

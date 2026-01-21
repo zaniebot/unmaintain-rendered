@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/metaclass
 created_at: 2025-12-31T16:45:36Z
-updated_at: 2026-01-21T13:49:34Z
+updated_at: 2026-01-21T22:43:41Z
 url: https://github.com/astral-sh/ruff/pull/22317
-synced_at: 2026-01-21T14:07:21Z
+synced_at: 2026-01-21T23:08:24Z
 ```
 
 # [ty] Respect `__new__` and metaclass `__call__` return types
@@ -170,8 +170,8 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 
 pytest (https://github.com/pytest-dev/pytest)
 + testing/test_nodes.py:33:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 407 diagnostics
-+ Found 408 diagnostics
+- Found 406 diagnostics
++ Found 407 diagnostics
 
 graphql-core (https://github.com/graphql-python/graphql-core)
 + src/graphql/type/definition.py:438:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
@@ -343,13 +343,26 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 + tests/execution/test_executor.py:111:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:115:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expec
 
-... (truncated 2710 lines) ...
+... (truncated 2693 lines) ...
 ```
 
 </details>
 
 
-No memory usage changes detected ✅
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct metadata = ~49MB
++     struct metadata = ~52MB
+
+
+```
+
+</details>
+
 
 
 
@@ -461,27 +474,25 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 19:47_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 1,177 | 9 | 24 |
-| `possibly-missing-attribute` | 735 | 13 | 26 |
-| `unresolved-attribute` | 249 | 6 | 26 |
+| `invalid-argument-type` | 1,176 | 9 | 22 |
+| `possibly-missing-attribute` | 732 | 13 | 25 |
+| `unresolved-attribute` | 249 | 6 | 24 |
 | `unsupported-operator` | 101 | 2 | 111 |
-| `invalid-return-type` | 63 | 4 | 5 |
+| `invalid-return-type` | 62 | 0 | 6 |
 | `invalid-assignment` | 31 | 1 | 6 |
 | `not-subscriptable` | 30 | 0 | 0 |
 | `too-many-positional-arguments` | 16 | 0 | 0 |
-| `unused-ignore-comment` | 7 | 9 | 0 |
+| `unused-ignore-comment` | 7 | 8 | 0 |
 | `no-matching-overload` | 11 | 0 | 0 |
 | `invalid-key` | 10 | 0 | 0 |
 | `missing-argument` | 3 | 7 | 0 |
-| `invalid-parameter-default` | 1 | 0 | 7 |
 | `redundant-cast` | 1 | 4 | 0 |
-| `invalid-await` | 2 | 0 | 0 |
-| `type-assertion-failure` | 0 | 2 | 0 |
+| `invalid-parameter-default` | 1 | 0 | 0 |
 | `unknown-argument` | 1 | 0 | 0 |
-| **Total** | **2,438** | **57** | **205** |
+| **Total** | **2,431** | **50** | **194** |
 
 
-**[Full report with detailed diff](https://80b83f30.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80b83f30.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://241f118d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://241f118d.ty-ecosystem-ext.pages.dev/timing))
 
 
 

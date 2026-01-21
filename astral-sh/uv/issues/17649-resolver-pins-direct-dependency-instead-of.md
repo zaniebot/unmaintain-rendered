@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T21:48:28Z
-updated_at: 2026-01-21T21:49:04Z
+updated_at: 2026-01-21T22:53:13Z
 url: https://github.com/astral-sh/uv/issues/17649
-synced_at: 2026-01-21T22:07:23Z
+synced_at: 2026-01-21T23:08:30Z
 ```
 
 # Resolver pins direct dependency instead of backtracking, causing Python-incompatible resolution
@@ -135,5 +135,26 @@ _Label `bug` added by @alexjbuck on 2026-01-21 21:48_
 ---
 
 _Renamed from "Resolution selects Python-incompatible transitive dependency instead of backtracking direct dependency" to "Resolver pins direct dependency instead of backtracking, causing Python-incompatible resolution" by @alexjbuck on 2026-01-21 21:49_
+
+---
+
+_Comment by @zanieb on 2026-01-21 22:29_
+
+I think the complaint here is basically that we're
+
+1. Not continuing to resolve after build failures
+2. Backtracking too far on one package before backtracking on another package 
+
+Correct?
+
+---
+
+_Comment by @zanieb on 2026-01-21 22:53_
+
+Some more related issues
+
+- #8157
+- #6281
+- https://github.com/astral-sh/uv/issues/12060
 
 ---

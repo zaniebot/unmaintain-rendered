@@ -2,18 +2,19 @@
 number: 22678
 title: "[ty] Support solving generics involving PEP 695 type aliases"
 type: pull_request
-state: open
+state: merged
 author: bxff
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: fix/pep695-type-alias-solver
 created_at: 2026-01-18T13:12:15Z
-updated_at: 2026-01-21T21:47:52Z
+updated_at: 2026-01-21T22:34:41Z
 url: https://github.com/astral-sh/ruff/pull/22678
-synced_at: 2026-01-21T22:07:17Z
+synced_at: 2026-01-21T23:08:24Z
 ```
 
 # [ty] Support solving generics involving PEP 695 type aliases
@@ -265,5 +266,19 @@ _@bxff reviewed on 2026-01-21 21:31_
 _Review comment by @bxff on `crates/ty_python_semantic/resources/mdtest/generics/pep695/aliases.md`:351 on 2026-01-21 21:31_
 
 Done
+
+---
+
+_Comment by @ibraheemdev on 2026-01-21 22:34_
+
+Thanks!
+
+---
+
+_Merged by @ibraheemdev on 2026-01-21 22:34_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-21 22:34_
 
 ---
