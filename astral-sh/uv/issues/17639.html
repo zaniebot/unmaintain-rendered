@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singular version interval invalidates `requires-dist` for `uv sync --no-install-project` - astral-sh/uv #17639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Singular version interval invalidates <code>requires-dist</code> for <code>uv sync --no-install-project</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17639">#17639</a>
+        opened by <a href="https://github.com/pjonsson">@pjonsson</a>
+        on 2026-01-21 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pjonsson">@pjonsson</a></div>
+            <div class="timeline-body">Summary
+<p>This commit:</p>
+<pre><code>diff --git a/package/pyproject.toml b/package/pyproject.toml
+index 9ffe607c..fae72a39 100644
+--- a/package/pyproject.toml
++++ b/package/pyproject.toml
+@@ -38,7 +38,8 @@ dependencies = [
+     &quot;psycopg[c] &gt;= 3.2.1, &lt; 4&quot;,
+     # FIXME: &lt;ticketnumber&gt;
+     &quot;pystac &gt;= 1.7.3, &lt; 1.12&quot;,
+-    &quot;rasterio &gt;= 1.4.3, &lt; 2&quot;,
++    # FIXME: update to 1.5 with GDAL 3.12.2 upgrade.
++    &quot;rasterio &gt;= 1.4.4, &lt;= 1.4.4&quot;,
+     &quot;shapely &gt;= 2.0.1, &lt; 3&quot;,
+     &quot;SQLAlchemy &gt;= 2.0.24, &lt; 3&quot;,
+     &quot;tqdm &gt;= 4.65.0, &lt; 5&quot;,
+diff --git a/package/uv.lock b/package/uv.lock
+index b9719a35..fe1cb635 100644
+--- a/package/uv.lock
++++ b/package/uv.lock
+@@ -2346,7 +2346,7 @@ requires-dist = [
+     { name = &quot;netcdf4&quot;, specifier = &quot;&gt;=1.6.3,&lt;2&quot; },
+     { name = &quot;psycopg&quot;, extras = [&quot;c&quot;], specifier = &quot;&gt;=3.2.1,&lt;4&quot; },
+     { name = &quot;pystac&quot;, specifier = &quot;&gt;=1.7.3,&lt;1.12&quot; },
+-    { name = &quot;rasterio&quot;, specifier = &quot;&gt;=1.4.3,&lt;2&quot; },
++    { name = &quot;rasterio&quot;, specifier = &quot;&lt;=1.4.4,&gt;=1.4.4&quot; },
+     { name = &quot;shapely&quot;, specifier = &quot;&gt;=2.0.1,&lt;3&quot; },
+     { name = &quot;sqlalchemy&quot;, specifier = &quot;&gt;=2.0.24,&lt;3&quot; },
+     { name = &quot;tqdm&quot;, specifier = &quot;&gt;=4.65.0,&lt;5&quot; },
+</code></pre>
+<p>makes verbose mode <code>uv sync --locked --no-dev --no-install-project --no-binary-package rasterio</code> go from saying this:</p>
+<pre><code>DEBUG uv 0.9.21
+DEBUG Acquired shared lock for `/root/.cache/uv`
+DEBUG Found project root: `/build/package`
+DEBUG No workspace root found, using project root
+DEBUG Acquired exclusive lock for `/build/package`
+DEBUG Using Python request `3.12` from explicit request
+DEBUG Checking for Python environment at: `/app`
+DEBUG Using request timeout of 30s
+DEBUG Searching for Python 3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/usr/bin/python3.12` (first executable in the search path)
+Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: /app
+DEBUG Using base executable for virtual environment: /usr/bin/python3.12
+DEBUG Released lock at `/tmp/uv-2858aec583077cb8.lock`
+DEBUG Acquired exclusive lock for `/app`
+DEBUG Using request timeout of 30s
+DEBUG Found static `requires-dist` for: /build/package/
+DEBUG No workspace root found, using project root
+DEBUG Static `provides-extra` for `package @ editable+.` is up-to-date
+DEBUG Static `requires-dist` for `package @ editable+.` is up-to-date
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 133 packages in 1ms
+DEBUG Omitting `package` from resolution due to `--no-install-project`
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: alembic==1.17.2
+DEBUG Identified uncached distribution: boto3==1.42.19
+&lt;similar lines for the rest of the dependencies in uv.lock&gt;
+</code></pre>
+<p>into saying this:</p>
+<pre><code>...
+DEBUG No workspace root found, using project root
+DEBUG Static `provides-extra` for `package @ editable+.` is up-to-date
+DEBUG Static `requires-dist` for `package @ editable+.` is out-of-date; falling back to distribution database
+DEBUG No static `pyproject.toml` available for: package @ file:///build/package (DynamicField(&quot;version&quot;))
+DEBUG Acquired exclusive lock for `/root/.cache/uv/sdists-v9/editable/f2d181c3b5a4320a`
+DEBUG Computed cache info: Timestamp(SystemTime { tv_sec: 1768833961, tv_nsec: 247762711 }), None, None, {}, {&quot;src&quot;: None}. Most recently modified: pyproject.toml
+DEBUG Preparing metadata for: package @ file:///build/package
+DEBUG Assessing Python executable as base candidate: /usr/bin/python3.12
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /usr/bin/python3.12
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.3
+DEBUG Solving with target Python version: &gt;=3.12.3
+DEBUG Adding direct dependency: hatchling*
+DEBUG Adding direct dependency: hatch-vcs*
+DEBUG No cache entry for: https://pypi.org/simple/hatchling/
+</code></pre>
+<p>and then perform dependency resolution. This fails spectacularly since the package is using hatch-vcs and the package sources and <code>.git</code> directory will only be copied in after the dependencies have been synced:</p>
+<pre><code>WORKDIR /build
+
+COPY --link package/pyproject.toml /build/package/
+COPY --link package/uv.lock /build/package/
+
+RUN cd package &amp;&amp; \
+    uv sync --locked --no-dev --no-install-project \
+        --no-binary-package rasterio
+
+COPY --link /package ./package
+COPY --link /.git ./.git
+</code></pre>
+<p>Bumping the upper constraint one patch level (no Rasterio 1.4.5 released) gives me this commit:</p>
+<pre><code>-- a/package/pyproject.toml
++++ b/package/pyproject.toml
+@@ -39,7 +39,7 @@ dependencies = [
+     # FIXME: &lt;ticketnumber&gt;
+     &quot;pystac &gt;= 1.7.3, &lt; 1.12&quot;,
+     # FIXME: update to 1.5 with GDAL 3.12.2 upgrade.
+-    &quot;rasterio &gt;= 1.4.4, &lt;= 1.4.4&quot;,
++    &quot;rasterio &gt;= 1.4.4, &lt;= 1.4.5&quot;,
+     &quot;shapely &gt;= 2.0.1, &lt; 3&quot;,
+     &quot;SQLAlchemy &gt;= 2.0.24, &lt; 3&quot;,
+     &quot;tqdm &gt;= 4.65.0, &lt; 5&quot;,
+diff --git a/package/uv.lock b/package/uv.lock
+index fe1cb635..4eb04950 100644
+--- a/package/uv.lock
++++ b/package/uv.lock
+@@ -2346,7 +2346,7 @@ requires-dist = [
+     { name = &quot;netcdf4&quot;, specifier = &quot;&gt;=1.6.3,&lt;2&quot; },
+     { name = &quot;psycopg&quot;, extras = [&quot;c&quot;], specifier = &quot;&gt;=3.2.1,&lt;4&quot; },
+     { name = &quot;pystac&quot;, specifier = &quot;&gt;=1.7.3,&lt;1.12&quot; },
+-    { name = &quot;rasterio&quot;, specifier = &quot;&lt;=1.4.4,&gt;=1.4.4&quot; },
++    { name = &quot;rasterio&quot;, specifier = &quot;&gt;=1.4.4,&lt;=1.4.5&quot; },
+     { name = &quot;shapely&quot;, specifier = &quot;&gt;=2.0.1,&lt;3&quot; },
+     { name = &quot;sqlalchemy&quot;, specifier = &quot;&gt;=2.0.24,&lt;3&quot; },
+     { name = &quot;tqdm&quot;, specifier = &quot;&gt;=4.65.0,&lt;5&quot; },
+</code></pre>
+<p>and uv is back to its regular behavior.</p>
+<p>Further testing makes it appear that these intervals give a similar diff to <code>uv.lock</code> and work just fine:</p>
+<ol>
+<li>(-oo, 1.4.4]</li>
+<li>[1.4.4, oo)</li>
+<li>[1.4.4, 1.4.5)</li>
+<li>[1.4.4, 1.4.5]</li>
+<li>(1.4.3, 1.4.4]</li>
+<li>[1.4.3, 1.4.4]</li>
+</ol>
+<p>but for some reason this fails:</p>
+<ol>
+<li>[1.4.4, 1.4.4]</li>
+</ol>
+<p>If I specify <code>rasterio == 1.4.4</code>, that also works fine.</p>
+<p>The debug logs for this issue say uv 0.9.21, but yesterday I did my initial testing with uv 0.9.26 and that gives me the same behavior. My initial testing also included trying to pass <code>--no-editable</code> along with <code>--no-install-project</code>, but that did not help.</p>
+<p>If <code>rasterio &gt;= 1.4.4, &lt;= 1.4.4</code> is not a legal version specifier for some reason, <code>uv</code> should give an error message.</p>
+Platform
+<p>Ubuntu 24.04 x86_64</p>
+Version
+<p>0.9.26 and 0.9.21</p>
+Python version
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/pjonsson">@pjonsson</a> on 2026-01-21 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2026-01-21 14:19</div>
+            <div class="timeline-body"><p>I don&#x27;t know if it&#x27;s related, but looking at my report, it appears the specifier in <code>uv.lock</code> has flipped the order of the upper and lower range for the interval compared to the surrounding lines.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 14:57:32 UTC
+    </footer>
+</body>
+</html>

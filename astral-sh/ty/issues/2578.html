@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty does not flag passing a float to a parameter expecting Decimal, while Pyright correctly catches this as a type error. - astral-sh/ty #2578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty does not flag passing a float to a parameter expecting Decimal, while Pyright correctly catches this as a type error.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2578">#2578</a>
+        opened by <a href="https://github.com/tspecht">@tspecht</a>
+        on 2026-01-21 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tspecht">@tspecht</a></div>
+            <div class="timeline-body">Summary
+<p>Minimal reproducible example:</p>
+<pre><code>from decimal import Decimal                                                                                                          
+
+def process_balance(value: Decimal) -&gt; Decimal:                                                                                      
+    return value * 2                                                                                                                 
+
+# Case 1: Direct float                                                                                                               
+balance: float = 123.45                                                                                                              
+process_balance(balance)  # No error from ty, Pyright catches this                                                                   
+
+# Case 2: float | Literal[0] (common pattern with defaults)                                                                          
+def get_balance(use_default: bool) -&gt; float | int:                                                                                   
+    return 0 if use_default else 123.45                                                                                              
+
+opening_balance = get_balance(True)                                                                                                  
+process_balance(opening_balance)  # No error from ty, Pyright catches this                                                           
+</code></pre>
+<p>Expected behavior:</p>
+<p>ty should report invalid-argument-type for both cases since float is not assignable to Decimal.</p>
+<p>Actual behavior:</p>
+<p>ty reports no errors. Pyright reports:<br>
+Argument of type &quot;float&quot; cannot be assigned to parameter &quot;value&quot; of type &quot;Decimal&quot;<br>
+&quot;float&quot; is not assignable to &quot;Decimal&quot;</p>
+<p>Command:<br>
+<code>ty check example.py</code></p>
+<p><code>ty.toml</code> (if relevant):</p>
+<pre><code># No rules disabled that would affect this                                                                                           
+[rules]                                                                                                                              
+unresolved-import = &quot;ignore&quot;                                                                                                       
+</code></pre>
+Version
+<p>0.0.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-21 14:55</div>
+            <div class="timeline-body"><p>Hi, thanks for the report! I can&#x27;t reproduce this: https://play.ty.dev/5dea368b-6004-4ca0-a4af-f8d8785127fb</p>
+<p>I also can&#x27;t really think of anything that would cause this to happen. Maybe <code>from decimal import Decimal</code> is somehow an unresolved import, since I see you have those silenced? That shouldn&#x27;t be possible, though, since it&#x27;s in the standard library.</p>
+<p>But ty definitely does emit the two expected diagnostics on this snippet, in normal circumstances.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-21 14:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 14:56:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync tries to build packages already installed, and fails - astral-sh/uv #17640</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync tries to build packages already installed, and fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17640">#17640</a>
+        opened by <a href="https://github.com/gaiazaff">@gaiazaff</a>
+        on 2026-01-21 14:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaiazaff">@gaiazaff</a></div>
+            <div class="timeline-body">Summary
+<p>I get an error installing some packages during a normal sync.
+I get this here for <code>antlr4-python3-runtime</code> v4.9.3, but it also happens for <code>pylatexenc==2.10</code> if I do <code>uv sync --upgrade</code>.</p>
+<pre><code>$ source .venv/Scripts/activate
+
+$ uv sync
+Resolved 277 packages in 8ms
+  × Failed to download and build `antlr4-python3-runtime==4.9.3`                                                                                                                  
+  ├─▶ Failed to install requirements from `build-system.requires`                                                                                                                 
+  ├─▶ Failed to download `setuptools==80.10.1`                                                                                                                                    
+  ├─▶ Failed to extract archive: setuptools-80.10.1-py3-none-any.whl                                                                                                              
+  ╰─▶ unexpected BufError                                                                                                                                                         
+  help: `antlr4-python3-runtime` (v4.9.3) was included because [mypackage] (v0.2.2) depends on `docling` (v2.69.0) which depends on `rapidocr` (v3.5.0) which  
+        depends on `omegaconf` (v2.3.0) which depends on `antlr4-python3-runtime`                                                                                                                                                                                                                                                           
+</code></pre>
+<p>to verify what the issue was, I installed the package with pip:</p>
+<pre><code>$ pip install antlr4-python3-runtime                                                                                                                                              
+Collecting antlr4-python3-runtime                                                                                                                                                 
+  Downloading antlr4_python3_runtime-4.13.2-py3-none-any.whl.metadata (304 bytes)                                                                                                 
+Downloading antlr4_python3_runtime-4.13.2-py3-none-any.whl (144 kB)                                                                                                               
+Installing collected packages: antlr4-python3-runtime                                                                                                                             
+Successfully installed antlr4-python3-runtime-4.13.2                                                                                                                              
+</code></pre>
+<p>it worked without issues.
+I even installed setuptools==80.10.1 with pip, without issues.</p>
+<p>But still uv doesn&#x27;t consider it a resolved requirement:</p>
+<pre><code>$ uv sync                                                                                                                                                                         
+Resolved 277 packages in 8ms                                                                                                                                                      
+  × Failed to download and build `antlr4-python3-runtime==4.9.3`
+  ├─▶ Failed to install requirements from `build-system.requires`
+  ├─▶ Failed to download `setuptools==80.10.1`
+  ├─▶ Failed to extract archive: setuptools-80.10.1-py3-none-any.whl
+  ╰─▶ unexpected BufError
+  help: `antlr4-python3-runtime` (v4.9.3) was included because[mypackage] (v0.2.2) depends on `docling` (v2.69.0) which depends on `rapidocr` (v3.5.0) which  
+        depends on `omegaconf` (v2.3.0) which depends on `antlr4-python3-runtime`
+</code></pre>
+<p>I already have antlr4-python3-runtime&gt;4.9.3 actually, and setuptools==80.10.1, and pylatexenc==2.10 in my venv, so none of them are needed!</p>
+Platform
+<p>Windows 11 x86_64</p>
+Version
+<p>0.9.26 (ee4f00362 2026-01-15)</p>
+Python version
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/gaiazaff">@gaiazaff</a> on 2026-01-21 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 14:57:32 UTC
+    </footer>
+</body>
+</html>
