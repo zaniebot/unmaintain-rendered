@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/dict-splat
 created_at: 2026-01-21T02:16:04Z
-updated_at: 2026-01-21T08:26:22Z
+updated_at: 2026-01-21T09:08:13Z
 url: https://github.com/astral-sh/ruff/pull/22781
-synced_at: 2026-01-21T09:03:02Z
+synced_at: 2026-01-21T10:01:51Z
 ```
 
 # [ty] Improve support for kwarg splats in dictionary literals
@@ -332,5 +332,25 @@ Wow, so it's getting worse? I mean, 100 non-deterministic diagnostics that don't
 _Comment by @AlexWaygood on 2026-01-21 08:22_
 
 I wouldn't say it's got worse recently, but yes, it's been very bad since https://github.com/astral-sh/ruff/pull/21551 landed and hasn't got better since. It only happens on specific repos and most of the time it does not manifest as 100 new diagnostics coming or going. Prefect is by far our most non-deterministic repo. I've been rerunning primer often to check if diagnostic changes persist when they're on known flaky repos and I'm unsure whether they're our regular flakes or not.
+
+---
+
+_@dhruvmanila reviewed on 2026-01-21 09:05_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:3593 on 2026-01-21 09:05_
+
+Should this TODO be moved to the new function `unpack_keys_and_items`?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-21 09:08_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:3593 on 2026-01-21 09:08_
+
+I'm not sure I agree with the todo 😆 I think the current way of doing it is fine and may be more efficient and/or less code even when we support generic protocols in the generics solver 
 
 ---

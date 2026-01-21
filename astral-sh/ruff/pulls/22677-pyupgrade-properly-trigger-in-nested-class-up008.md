@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T05:12:07Z
+updated_at: 2026-01-21T09:51:13Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T05:55:43Z
+synced_at: 2026-01-21T10:01:51Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -87,7 +87,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -112,7 +112,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
++ <a href='https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -287,6 +287,85 @@ Traceback (most recent call last):
     super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
           ^^^^^^^^^^^^^^^^^^^^^^
 AttributeError: type object 'Inner' has no attribute 'InnerInner'
+```
+
+---
+
+_@leandrobbraga reviewed on 2026-01-21 09:32_
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/resources/test/fixtures/pyupgrade/UP008.py`:314 on 2026-01-21 09:32_
+
+It was supposed to be with 0-argument, thanks for pointing it.
+
+---
+
+_Comment by @leandrobbraga on 2026-01-21 09:36_
+
+This was a copy-paste indentation error, for some reason I lost the indentation when I copy-pasted, but it was tested properly.
+
+Try linting this code:
+
+```python
+class Base:
+    def __init__(self, foo):
+        self.foo = foo
+
+
+class Outer(Base):
+    def __init__(self, foo):
+        super().__init__(foo)  # Should not trigger UP008
+
+    class Inner(Base):
+        def __init__(self, foo):
+            super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+
+        class InnerInner(Base):
+            def __init__(self, foo):
+                super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+oii = Outer.Inner.InnerInner(1)
+```
+Output:
+
+```console
+> echo 'class Base:
+      def __init__(self, foo):
+          self.foo = foo
+
+
+  class Outer(Base):
+      def __init__(self, foo):
+          super().__init__(foo)  # Should not trigger UP008
+
+      class Inner(Base):
+          def __init__(self, foo):
+              super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+
+          class InnerInner(Base):
+              def __init__(self, foo):
+                  super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+  oii = Outer.Inner.InnerInner(1)' | cargo run -p ruff -- check --select UP008 -
+UP008 Use `super()` instead of `super(__class__, self)`
+  --> -:12:18
+   |
+10 |     class Inner(Base):
+11 |         def __init__(self, foo):
+12 |             super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+   |                  ^^^^^^^^^^^^^^^^^^^
+13 |
+14 |         class InnerInner(Base):
+   |
+help: Remove `super()` parameters
+
+UP008 Use `super()` instead of `super(__class__, self)`
+  --> -:16:22
+   |
+14 |         class InnerInner(Base):
+15 |             def __init__(self, foo):
+16 |                 super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
 ```
 
 ---

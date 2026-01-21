@@ -4,14 +4,15 @@ title: Apply formatting to markdown code blocks
 type: pull_request
 state: open
 author: amyreese
-labels: []
+labels:
+  - preview
 assignees: []
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-21T06:52:23Z
+updated_at: 2026-01-21T09:12:32Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-21T07:52:45Z
+synced_at: 2026-01-21T10:01:51Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -411,5 +412,25 @@ It would be great to also support quarto markdown (qmd) files, where executabili
 \`\`\`python
 \# this isn't 
 \`\`\`
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2026-01-21 09:12_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2026-01-21 09:12_
+
+---
+
+_Review request for @sharkdp removed by @MichaReiser on 2026-01-21 09:12_
+
+---
+
+_Review request for @AlexWaygood removed by @MichaReiser on 2026-01-21 09:12_
+
+---
+
+_Label `preview` added by @MichaReiser on 2026-01-21 09:12_
 
 ---

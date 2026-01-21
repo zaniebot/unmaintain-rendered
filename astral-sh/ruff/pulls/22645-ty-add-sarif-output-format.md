@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: sarif_output
 created_at: 2026-01-17T10:23:58Z
-updated_at: 2026-01-21T05:42:56Z
+updated_at: 2026-01-21T09:10:52Z
 url: https://github.com/astral-sh/ruff/pull/22645
-synced_at: 2026-01-21T05:55:43Z
+synced_at: 2026-01-21T10:01:51Z
 ```
 
 # [ty]: Add Sarif Output Format
@@ -254,5 +254,50 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/sarif.rs`:94 on 2026-01-21 08:55_
+
+`env!("CARGO_PKG_VERSION")` will give you the version of `ruff_db` which is always `0.0.0` and not what you want. You can use `ruff_db::program_version` to get the correct version.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/sarif.rs`:9 on 2026-01-21 09:08_
+
+I don't think this has to be a trait. Instead, this can just be struct with a few public fields. 
+
+```rust
+pub struct RuleMetadata {
+    pub name: Option<LintName>,
+    pub linter: Option<&'static str>,
+    pub summary: &'static str,
+    pub description: Option<&'static str>,
+    pub help_url: Option<String>,
+}
+```
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/sarif.rs`:26 on 2026-01-21 09:09_
+
+```suggestion
+    fn metadata(&self, code: &SecondaryCode) -> Option<dyn RuleMetadata + 'a>;
+```
+
+ty doesn't use secondary codes at all. So this abstraction won't work. Instead, we should pass the `LintName` or `DiagnosticId` instead
+
+---
+
+_@MichaReiser reviewed on 2026-01-21 09:10_
+
+Thank you. It's a bit tough to review this PR because GitHub shows that the entire `sarif` file was deleted. 
+
+I suggest splitting this PR into two:
+
+1. Move the `sarif` code to `ruff_db`. Make only the necessary changes so that Ruff keeps working
+2. Add sarif support to ty
 
 ---

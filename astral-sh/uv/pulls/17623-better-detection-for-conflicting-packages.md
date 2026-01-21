@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/better-conflict-detection
 created_at: 2026-01-20T13:56:12Z
-updated_at: 2026-01-21T08:29:38Z
+updated_at: 2026-01-21T09:13:57Z
 url: https://github.com/astral-sh/uv/pull/17623
-synced_at: 2026-01-21T09:03:15Z
+synced_at: 2026-01-21T10:02:04Z
 ```
 
 # Better detection for conflicting packages
@@ -183,5 +183,45 @@ _@konstin reviewed on 2026-01-21 08:29_
 _Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:28 on 2026-01-21 08:29_
 
 Stuck at the same question of naming :sweat_smile: 
+
+---
+
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:156 on 2026-01-21 09:03_
+
+~~The problem is that when we recurse we need a `&BTreeSet<(WheelFilename, PathBuf)>` instead of a `&BTreeSet<(&WheelFilename, PathBuf)>`, while the initial call has a `&BTreeSet<(WheelFilename, PathBuf)>`, I took the easy way out and cloned (we could do some `IntoIterator` but it doesn't seem worth it).~~ Oh that's the other path
+
+---
+
+_@konstin reviewed on 2026-01-21 09:03_
+
+---
+
+_@konstin reviewed on 2026-01-21 09:04_
+
+---
+
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:148 on 2026-01-21 09:04_
+
+Good catch - That is now redundant due to the `BTreeSet`.
+
+---
+
+_@konstin reviewed on 2026-01-21 09:13_
+
+---
+
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:124 on 2026-01-21 09:13_
+
+I can see some silly case where both wheels contain the exact same 50MB shared library or something, and we'd have to read both to check (where we currently only reflink/hardlink in the default case and don't need to read files from disk at all). It seems very unlikely to have two package that use the same module name with different file contents but the same file sizes, so I opted for the less precise heuristic in this performance critical path.
+
+---
+
+_@konstin reviewed on 2026-01-21 09:13_
+
+---
+
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:57 on 2026-01-21 09:13_
+
+I've renamed the function and made it about paths instead of modules, that matches much better what it's about now.
 
 ---

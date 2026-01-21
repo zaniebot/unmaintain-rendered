@@ -8,13 +8,12 @@ labels:
   - ci
   - ty
 assignees: []
-draft: true
 base: main
 head: wld/handle-tagged-errors-conformance
 created_at: 2026-01-19T21:38:32Z
-updated_at: 2026-01-20T20:20:41Z
+updated_at: 2026-01-21T09:48:03Z
 url: https://github.com/astral-sh/ruff/pull/22746
-synced_at: 2026-01-20T20:55:43Z
+synced_at: 2026-01-21T10:01:51Z
 ```
 
 # [ty] Handle tagged errors in conformance
@@ -219,5 +218,9 @@ _Review requested from @MichaReiser by @AlexWaygood on 2026-01-20 12:46_
 ---
 
 _Converted to draft by @WillDuke on 2026-01-20 20:20_
+
+---
+
+_Marked ready for review by @WillDuke on 2026-01-21 09:21_
 
 ---
