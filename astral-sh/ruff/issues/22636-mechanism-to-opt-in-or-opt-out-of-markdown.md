@@ -7,9 +7,9 @@ author: amyreese
 labels: []
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-20T17:15:13Z
+updated_at: 2026-01-21T00:34:06Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-20T17:37:00Z
+synced_at: 2026-01-21T00:50:35Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -18,7 +18,12 @@ synced_at: 2026-01-20T17:37:00Z
 
 _@amyreese_
 
-_No description provided._
+Once we have more of the feature set completed and want to stabilize support, there are a few paths we could take:
+
+- Require users who want markdown formatting on-by-default to set `extend-include = ["**/*.md"]` in their project config (opt-in).
+- Add a new `format.markdown-code-blocks = true` config option, similar to docstring formatting, that would automatically include `.md` files in the global default search path (opt-in). What do do if the user explicitly passes a `.md` file while the feature is disabled is tbd.
+- Turn it on by default, including `.md` in the global default search path, and allow users to set `exclude = ["**/*.md"]` or similar in their project config if they don't want the feature (opt-out).
+
 
 ---
 
@@ -58,5 +63,13 @@ The main question to me was whether we add `*.md` to the global/default `INCLUDE
 _Comment by @amyreese on 2026-01-20 17:15_
 
 Will ask in the main issue if users want ruff to format markdown files by default or want explicit opt-in
+
+---
+
+_Comment by @Avasam on 2026-01-21 00:34_
+
+Since opinions were requested: I would enable this feature. Formatting code blocks is really neat and I believe something the `dprint` formatter Markdown plugin also does by offloading to its other plugins (similarly with the html/css/ts plugins).
+
+Since I'm using shared configs I don't really care if it's opt-in/out by default. But I'd lean to say opt in until stable/confident enough, then switch in a breaking version.
 
 ---

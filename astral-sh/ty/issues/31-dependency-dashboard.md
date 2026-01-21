@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-19T19:26:07Z
+updated_at: 2026-01-21T00:34:35Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-19T19:29:12Z
+synced_at: 2026-01-21T00:50:29Z
 ```
 
 # Dependency Dashboard
@@ -42,7 +42,7 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook mdformat-mkdocs to v5.1.3
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/uv-pre-commit`, `mdformat-mkdocs`)
 
 ## Pending Status Checks
 
@@ -192,7 +192,7 @@ The following updates await pending status checks. To force their creation now, 
 
 <details><summary>.pre-commit-config.yaml (14)</summary>
 
- - `astral-sh/uv-pre-commit 0.9.24` → [Updates: `0.9.26`]
+ - `astral-sh/uv-pre-commit 0.9.24` → [Updates: `0.9.25`]
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.11` → [Updates: `v0.14.13`]
  - `abravalheri/validate-pyproject v0.24.1`

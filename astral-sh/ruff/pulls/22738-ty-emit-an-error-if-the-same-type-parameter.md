@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: alex/invalid-generic-parameters
 created_at: 2026-01-19T20:26:56Z
-updated_at: 2026-01-19T20:30:25Z
+updated_at: 2026-01-21T00:13:47Z
 url: https://github.com/astral-sh/ruff/pull/22738
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-21T00:50:46Z
 ```
 
 # [ty] Emit an error if the same type parameter appears more than once in a `Generic[]` subscript
@@ -168,5 +168,35 @@ _Review requested from @sharkdp by @AlexWaygood on 2026-01-19 20:30_
 ---
 
 _Review requested from @dcreager by @AlexWaygood on 2026-01-19 20:30_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:14952 on 2026-01-21 00:08_
+
+Why can't we early return for errors? 
+
+---
+
+_@ibraheemdev approved on 2026-01-21 00:08_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-21 00:12_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:14952 on 2026-01-21 00:12_
+
+We do — after setting this we immediately proceed to the next iteration of the loop, and the first thing we do on each iteration of the loop is to `break` if `validated_typevars` is now an `Err` variant. I can add some more `break` statements in if this is unclear? (Or refactor it another way, if you have a more idiomatic suggestion 😄)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:14952 on 2026-01-21 00:13_
+
+I guess there probably is a more obvious way of writing this, I'll push a refactor in the morning!
+
+---
+
+_@AlexWaygood reviewed on 2026-01-21 00:13_
 
 ---

@@ -4,12 +4,14 @@ title: PLC1802 false negative when a sequence is an attribute
 type: issue
 state: open
 author: leandrobbraga
-labels: []
+labels:
+  - bug
+  - rule
 assignees: []
 created_at: 2026-01-20T23:43:47Z
-updated_at: 2026-01-20T23:45:53Z
+updated_at: 2026-01-21T00:33:28Z
 url: https://github.com/astral-sh/ruff/issues/22780
-synced_at: 2026-01-20T23:51:32Z
+synced_at: 2026-01-21T00:50:35Z
 ```
 
 # PLC1802 false negative when a sequence is an attribute
@@ -60,5 +62,19 @@ help: Remove `len`
 Found 1 error.
 [*] 1 fixable with the `--fix` option.
 ```
+
+---
+
+_Comment by @leandrobbraga on 2026-01-21 00:00_
+
+It seems related to ruff giving up on resolving `Expr::Attribute` in `From<&Expr> for ResolvedPythonType` [here](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_semantic/src/analyze/type_inference.rs#L348-L353).
+
+---
+
+_Label `rule` added by @amyreese on 2026-01-21 00:33_
+
+---
+
+_Label `bug` added by @amyreese on 2026-01-21 00:33_
 
 ---

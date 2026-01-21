@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-20T23:24:10Z
+updated_at: 2026-01-21T00:18:11Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-20T23:51:43Z
+synced_at: 2026-01-21T00:50:46Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -296,5 +296,11 @@ _Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints
 ---
 
 _@dcreager reviewed on 2026-01-20 23:14_
+
+---
+
+_Comment by @ibraheemdev on 2026-01-21 00:18_
+
+Looks like the last commit regressed performance again? 
 
 ---

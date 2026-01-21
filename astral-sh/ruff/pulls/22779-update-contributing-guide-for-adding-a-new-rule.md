@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: brent/new-rule-docs
 created_at: 2026-01-20T23:19:27Z
-updated_at: 2026-01-20T23:19:32Z
+updated_at: 2026-01-21T00:41:34Z
 url: https://github.com/astral-sh/ruff/pull/22779
-synced_at: 2026-01-20T23:51:43Z
+synced_at: 2026-01-21T00:50:46Z
 ```
 
 # Update contributing guide for adding a new rule
@@ -37,5 +37,9 @@ Built and viewed the docs locally to make sure they render correctly
 ---
 
 _Label `documentation` added by @ntBre on 2026-01-20 23:19_
+
+---
+
+_@amyreese approved on 2026-01-21 00:41_
 
 ---

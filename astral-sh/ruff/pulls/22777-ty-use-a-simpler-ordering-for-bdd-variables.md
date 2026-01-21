@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/simpler-ordering
 created_at: 2026-01-20T21:28:03Z
-updated_at: 2026-01-20T21:43:26Z
+updated_at: 2026-01-21T00:02:50Z
 url: https://github.com/astral-sh/ruff/pull/22777
-synced_at: 2026-01-20T21:54:18Z
+synced_at: 2026-01-21T00:50:46Z
 ```
 
 # [ty] Use a simpler ordering for BDD variables
@@ -178,5 +178,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 21:43_
 **[Full report with detailed diff](https://3b5e2689.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3b5e2689.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@ibraheemdev approved on 2026-01-21 00:02_
 
 ---

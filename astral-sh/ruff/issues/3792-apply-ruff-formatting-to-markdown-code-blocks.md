@@ -5,12 +5,12 @@ type: issue
 state: open
 author: paddyroddy
 labels:
-  - wish
+  - formatter
 assignees: []
 created_at: 2023-03-29T09:26:30Z
-updated_at: 2026-01-16T01:55:32Z
+updated_at: 2026-01-21T00:11:16Z
 url: https://github.com/astral-sh/ruff/issues/3792
-synced_at: 2026-01-16T03:04:35Z
+synced_at: 2026-01-21T00:50:33Z
 ```
 
 # Apply `ruff` formatting to `markdown` code blocks
@@ -468,5 +468,27 @@ _Assigned to @amyreese by @amyreese on 2026-01-09 01:26_
 ---
 
 _Renamed from "Apply `ruff` to `markdown` code blocks" to "Apply `ruff` formatting to `markdown` code blocks" by @amyreese on 2026-01-16 01:55_
+
+---
+
+_Comment by @amyreese on 2026-01-21 00:10_
+
+Hey folks, I'm working on a prototype of this functionality in #22470 and we were discussing potential options for enabling this feature to users. To start, we will be gating the functionality behind the use of `--preview` as its still in an experimental state, and requiring users to manually run the formatter against a set of `.md` files.
+
+Once we have more of the feature set completed and want to stabilize support, there are a few paths we could take:
+
+- Require users who want markdown formatting on-by-default to set `extend-include = ["**/*.md"]` in their project config (opt-in).
+- Add a new `format.markdown-code-blocks = true` config option, similar to docstring formatting, that would automatically include `.md` files in the global default search path (opt-in). What do do if the user explicitly passes a `.md` file while the feature is disabled is tbd.
+- Turn it on by default, including `.md` in the global default search path, and allow users to set `exclude = ["**/*.md"]` or similar in their project config if they don't want the feature (opt-out).
+
+If you have opinions or preferences, please share them in #22636.
+
+---
+
+_Label `formatter` added by @amyreese on 2026-01-21 00:11_
+
+---
+
+_Label `wish` removed by @amyreese on 2026-01-21 00:11_
 
 ---

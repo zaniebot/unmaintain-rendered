@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-20T23:40:44Z
+updated_at: 2026-01-21T00:28:15Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-20T23:51:43Z
+synced_at: 2026-01-21T00:50:46Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -147,9 +147,9 @@ _Label `rule` added by @ntBre on 2026-01-20 22:48_
 
 _Comment by @leandrobbraga on 2026-01-20 23:40_
 
-This bug seems easy to introduce into the codebase. I did a quick search and found another example in one minute.
+This bug seems easy to introduce into the codebase. I did a quick search and found another example.
 
-PLC1802 won’t trigger if the list is an attribute. PLC1802 detects the use of the len call on a sequence in a boolean test context.
+PLC1802 won’t trigger if the list is an attribute.
 
 https://play.ruff.rs/f9f8f76b-c468-4f4f-a3b8-0bca5850daf1
 
@@ -169,5 +169,11 @@ if len(fruits_class.fruits):
 if len(fruits_list):
     ...
 ```
+
+I opened an [issue](https://github.com/astral-sh/ruff/issues/22780) and I can't think on how to prevent this class of bug.
+
+---
+
+_@amyreese approved on 2026-01-21 00:28_
 
 ---
