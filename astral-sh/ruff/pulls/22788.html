@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: Fix false negative when sequence is an attribute - astral-sh/ruff #22788</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: Fix false negative when sequence is an attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22788">#22788</a>
+        opened by <a href="https://github.com/leandrodamascena">@leandrodamascena</a>
+        on 2026-01-21 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrodamascena">@leandrodamascena</a></div>
+            <div class="timeline-body">
+
+Summary
+<p>Fixes #22780</p>
+<p>PLC1802 was not triggering when the sequence passed to len() was an attribute like <code>self.fruits</code>, for example. I had the similar issue in my code.</p>
+<p>I extended <code>is_indirect_sequence</code> to handle Expr::Attribute in addition to Expr::Name.</p>
+<p>This is my first contribution here, so, happy to make any change.</p>
+Test Plan
+<p>Added test cases to <code>len_as_condition.py </code>and updated the snapshot. And I ran the exact example from the issue:</p>
+<pre><code>$ echo &#x27;class Fruits:
+    fruits: list[str]
+
+    def __init__(self):
+        self.fruits = [&quot;apple&quot;, &quot;orange&quot;]
+
+        if len(self.fruits):
+            ...
+
+fruits = [&quot;apple&quot;, &quot;orange&quot;]
+if len(fruits):
+    ...&#x27; | cargo run -p ruff -- check --select PLC1802 -
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-21 14:40</div>
+            <div class="timeline-body">
+
+<code>ruff-ecosystem</code> results
+Linter (stable)
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href="https://github.com/apache/airflow/blob/a47b69e6c06ba906fb481d799089b59f5f09926d/airflow-core/tests/unit/jobs/test_scheduler_job.py#L3220">airflow-core/tests/unit/jobs/test_scheduler_job.py:3220:16:</a> PLC1802 [*] `len(dag_listener.success)` used as condition without comparison
++ <a href="https://github.com/apache/airflow/blob/a47b69e6c06ba906fb481d799089b59f5f09926d/airflow-core/tests/unit/jobs/test_scheduler_job.py#L3220">airflow-core/tests/unit/jobs/test_scheduler_job.py:3220:45:</a> PLC1802 [*] `len(dag_listener.failure)` used as condition without comparison
+</pre>
+
+</p>
+
+Changes by rule (1 rules affected)
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC1802 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+
+
+Linter (preview)
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href="https://github.com/apache/airflow/blob/a47b69e6c06ba906fb481d799089b59f5f09926d/airflow-core/tests/unit/jobs/test_scheduler_job.py#L3220">airflow-core/tests/unit/jobs/test_scheduler_job.py:3220:16:</a> PLC1802 [*] `len(dag_listener.success)` used as condition without comparison
++ <a href="https://github.com/apache/airflow/blob/a47b69e6c06ba906fb481d799089b59f5f09926d/airflow-core/tests/unit/jobs/test_scheduler_job.py#L3220">airflow-core/tests/unit/jobs/test_scheduler_job.py:3220:45:</a> PLC1802 [*] `len(dag_listener.failure)` used as condition without comparison
+</pre>
+
+</p>
+
+Changes by rule (1 rules affected)
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLC1802 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-21 14:54</div>
+            <div class="timeline-body"><p>Thanks for working on this!</p>
+<p>I commented something similar on the issue, but I&#x27;m a bit skeptical about making this change. I believe the proposed changes will only catch a very specific instance of this problem and could also result in new false positives. For example, how do your changes handle cases like:</p>
+<pre><code># Redefinition in a method
+class C:
+	def foo(self):
+		self.field = []
+		self.update_field()
+		if len(self.field): ...
+
+	def update_field(self):
+		self.field = None
+
+# Conditional definition
+class C:
+	def foo(self, field: SomethingElse | None = None):
+		if self.field is None:
+			self.field = []
+		if len(self.field): ...
+</code></pre>
+<p>I don&#x27;t think it&#x27;s worth the added complexity in the rule code to handle such a small subset of attribute assignments. I also think we&#x27;ll inherit ty&#x27;s improved capabilities around resolving attributes in the future, so I&#x27;d be inclined to wait for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 15:08:19 UTC
+    </footer>
+</body>
+</html>
