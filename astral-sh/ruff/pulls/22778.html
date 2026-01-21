@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>Fixes <a href="https://github.com/astral-sh/ty/issues/2566">astral-sh/ty#2566</a></p>
 <p>Fix a bug where assigning to an instance attribute in a decorated method (like @cache) incorrectly resulted in <code>Unknown | int</code> instead of just <code>int</code> when the attribute was explicitly declared in <code>__init__</code>.</p>
 <p>The bug was in the <code>is_valid_scope</code> closure in <code>implicit_attribute_inner</code>. When looking up class members for the descriptor protocol, it calls <code>implicit_attribute</code> with <code>MethodDecorator::ClassMethod</code>. The previous code relied on the final evaluated type of the method (after all decorators are applied) to determine if it&#x27;s a classmethod. For methods wrapped by <code>@cache</code>, the final type becomes <code>_lru_cache_wrapper[...]</code> instead of <code>FunctionLiteral</code>, which caused incorrect behavior.</p>
-<p>The fix changes the approach to directly iterate through the decorators on the AST node and check if any of their types evaluate to <code>classmethod</code> or <code>staticmethod</code>. This is more reliable because it checks the original decorator types, not the final wrapped result.</p>
+<p>The fix changes the approach to directly iterate through the decorators on the AST node and check if any of their types evaluate to <code>classmethod</code> or <code>staticmethod</code>. This is more reliable because it checks the original decorator types, not the final wrapped result. It also results in fewer cycles, because attribute lookup no longer depends on a full attribute lookup of every method; instead it just depends on the types of the specific decorator nodes on each method.</p>
 <p>Also removes the assumption that unknown decorators might be classmethod/staticmethod aliases. This caused attributes defined in methods with unknown decorators to pollute class-level lookups and potentially override instance-level attributes.</p>
 </div>
         </div>
@@ -503,7 +503,7 @@ sphinx (https://github.com/sphinx-doc/sphinx)
     </div>
 
     <footer>
-        Synced at 2026-01-21 04:59:15 UTC
+        Synced at 2026-01-21 06:56:33 UTC
     </footer>
 </body>
 </html>
