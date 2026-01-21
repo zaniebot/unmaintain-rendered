@@ -4,14 +4,15 @@ title: "fix(install): limit preparer concurrency to prevent file handle exhausti
 type: pull_request
 state: open
 author: denyszhak
-labels: []
+labels:
+  - bug
 assignees: []
 base: main
 head: fix/installer-concurrency
 created_at: 2026-01-20T22:54:03Z
-updated_at: 2026-01-21T11:53:50Z
+updated_at: 2026-01-21T12:07:22Z
 url: https://github.com/astral-sh/uv/pull/17633
-synced_at: 2026-01-21T11:58:56Z
+synced_at: 2026-01-21T12:57:06Z
 ```
 
 # fix(install): limit preparer concurrency to prevent file handle exhaustion
@@ -53,5 +54,31 @@ Not sure why test job is failing, seems unrelated to the change at first.
 _Comment by @konstin on 2026-01-21 11:53_
 
 Yep the failure is unrelated: https://github.com/astral-sh/uv/pull/17637
+
+---
+
+_Label `bug` added by @konstin on 2026-01-21 12:00_
+
+---
+
+_Comment by @konstin on 2026-01-21 12:04_
+
+Interesting, I thought we were already using limits early but it seems we aren't.
+
+CC @charliermarsh for the preparer code.
+
+---
+
+_Review requested from @charliermarsh by @konstin on 2026-01-21 12:04_
+
+---
+
+_@konstin reviewed on 2026-01-21 12:07_
+
+---
+
+_Review comment by @konstin on `crates/uv/src/commands/pip/operations.rs`:752 on 2026-01-21 12:07_
+
+this limits both download and build concurrency by build concurrency. It means that e.g. a machine with 8 threads and default settings would get only 8 parallel downloads instead of 50.
 
 ---

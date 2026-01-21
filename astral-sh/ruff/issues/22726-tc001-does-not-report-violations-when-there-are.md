@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-19T15:59:06Z
-updated_at: 2026-01-19T22:27:03Z
+updated_at: 2026-01-21T12:08:10Z
 url: https://github.com/astral-sh/ruff/issues/22726
-synced_at: 2026-01-19T22:35:04Z
+synced_at: 2026-01-21T12:56:42Z
 ```
 
 # TC001 does not report violations when there are other modules from the same package not violating
@@ -124,5 +124,11 @@ _Label `bug` removed by @ntBre on 2026-01-19 22:27_
 ---
 
 _Label `question` added by @ntBre on 2026-01-19 22:27_
+
+---
+
+_Comment by @samueljsb on 2026-01-21 12:08_
+
+Ahh that makes sense. Having an option to enable this behaviour is good enough for me 🙂  Thanks!
 
 ---

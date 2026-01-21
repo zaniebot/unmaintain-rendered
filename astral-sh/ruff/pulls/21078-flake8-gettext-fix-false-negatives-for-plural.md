@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-21062
 created_at: 2025-10-26T01:31:37Z
-updated_at: 2025-12-29T22:03:22Z
+updated_at: 2026-01-21T12:05:26Z
 url: https://github.com/astral-sh/ruff/pull/21078
-synced_at: 2026-01-12T15:57:15Z
+synced_at: 2026-01-21T12:56:52Z
 ```
 
 # [`flake8-gettext`] Fix false negatives for plural argument of ngettext (`INT001`, `INT002`, `INT003`)
@@ -104,5 +104,17 @@ _Label `rule` added by @ntBre on 2025-12-29 22:03_
 ---
 
 _Label `preview` added by @ntBre on 2025-12-29 22:03_
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:24_
+
+Is it worth if we try to push this PR over the line, given that the changes seem pretty minimal
+
+---
+
+_Comment by @danparizher on 2026-01-21 12:05_
+
+I can take a look this weekend
 
 ---

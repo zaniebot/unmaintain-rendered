@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: konsti/drop-ppc64
 created_at: 2026-01-20T15:08:46Z
-updated_at: 2026-01-21T11:48:07Z
+updated_at: 2026-01-21T12:18:53Z
 url: https://github.com/astral-sh/uv/pull/17626
-synced_at: 2026-01-21T11:58:56Z
+synced_at: 2026-01-21T12:57:06Z
 ```
 
 # Drop PPC64 (big endian) builds
@@ -66,5 +66,13 @@ _Renamed from "Drop PPC64 builds" to "Drop PPC64 (big endian) builds" by @konsti
 _Comment by @konstin on 2026-01-21 11:46_
 
 Could you also have a look at https://discuss.python.org/t/what-platforms-should-wheels-be-provided-for-by-default/105822? The perspective of linux distros on this would be valuable, as it's the basis for the support we have for Linux architectures in Python.
+
+---
+
+_Comment by @tiran on 2026-01-21 12:18_
+
+@konstin I see. Yes, the big endian variant is dead and irrelevant these days.
+
+I got worried because some people use PPC64 to refer to 64bit Power platform in general. I prefer to use `ppc64le` and `ppc64be`, although the latter is not a common arch in platform triplets.
 
 ---

@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: formatter/remove-regex-dependency
 created_at: 2025-12-06T21:49:25Z
-updated_at: 2026-01-21T10:33:38Z
+updated_at: 2026-01-21T12:30:58Z
 url: https://github.com/astral-sh/ruff/pull/21827
-synced_at: 2026-01-21T10:59:59Z
+synced_at: 2026-01-21T12:56:52Z
 ```
 
 # Remove `regex` dependency from `ruff_python_formatter`
@@ -310,5 +310,24 @@ I'll close this PR due to inactivity but please feel free to resubmit a similar 
 ---
 
 _Closed by @MichaReiser on 2026-01-21 10:33_
+
+---
+
+_Comment by @magic-akari on 2026-01-21 12:28_
+
+I forgot to sync some updates. In my repository, I successfully replaced `regex` with `regex-lite` by using `overriding-dependencies` / `patch.crates-io`.
+
+It works very well, and the binary size has been reduced to 1.26 MB.
+
+This already meets my goals for downstream consumers. I’m curious what the ruff repository’s perspective is on this.
+
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 12:30_
+
+> This already meets my goals for downstream consumers. I’m curious what the ruff repository’s perspective is on this.
+
+Sounds great. We might have to do some basic benchmarking on a set of files that use docstrings to see how big the perf regression is. 
 
 ---

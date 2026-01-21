@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-21T09:58:55Z
+updated_at: 2026-01-21T12:00:43Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-21T11:00:00Z
+synced_at: 2026-01-21T12:56:53Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -595,5 +595,25 @@ I think we need to exclude those files earlier or Ruff stops warning that it did
 _@MichaReiser reviewed on 2026-01-21 09:58_
 
 Nice that you got something working so quickly. I think there's a bit more that we need to do to ensure the markdown formatting doesn't leak into other tools and we should also improve error handling, aborting isn't a great user experience.
+
+---
+
+_@harupy reviewed on 2026-01-21 12:00_
+
+---
+
+_Review comment by @harupy on `crates/ruff_python_ast/src/lib.rs`:111 on 2026-01-21 12:00_
+
+Is it possible to support `.mdx` too? In mlflow/mlflow, we use docusaurus where doc pages are written in mdx rather thab plain md
+
+---
+
+_@harupy reviewed on 2026-01-21 12:00_
+
+---
+
+_Review comment by @harupy on `crates/ruff_python_ast/src/lib.rs`:111 on 2026-01-21 12:00_
+
+btw thanks for working on this!
 
 ---

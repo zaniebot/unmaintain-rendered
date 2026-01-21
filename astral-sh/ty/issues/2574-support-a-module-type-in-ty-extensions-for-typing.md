@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-21T01:57:23Z
-updated_at: 2026-01-21T11:54:13Z
+updated_at: 2026-01-21T11:57:23Z
 url: https://github.com/astral-sh/ty/issues/2574
-synced_at: 2026-01-21T11:58:26Z
+synced_at: 2026-01-21T12:56:36Z
 ```
 
 # support a `Module` type in `ty_extensions` for typing specific modules
@@ -147,9 +147,6 @@ For some internal things where we can eat the breakage in typing, something like
 But we have [a bunch of public functions](https://github.com/narwhals-dev/narwhals/blob/e4c63f8f7c49a2325174ee78223970607d3c3d08/narwhals/dependencies.py#L47-L126) that return entire packages, which:
 1. Would be unrealistic to stub out correctly for even 1 package (let alone 16! 😭)
 2. Needs to be expressed as a `Module("package") | None`, so can't rely on the inference hack we have elsewhere
-
-I've not had much hope in expecting `pyright`
-
 
 ---
 

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/delocate
 created_at: 2026-01-06T15:14:48Z
-updated_at: 2026-01-15T20:27:49Z
+updated_at: 2026-01-21T12:39:49Z
 url: https://github.com/astral-sh/uv/pull/17336
-synced_at: 2026-01-15T20:53:28Z
+synced_at: 2026-01-21T12:57:06Z
 ```
 
 # Add support for delocating macOS wheels
@@ -593,5 +593,25 @@ _Review requested from @zanieb by @charliermarsh on 2026-01-15 20:25_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-15 20:25_
+
+---
+
+_@konstin reviewed on 2026-01-21 12:36_
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:529 on 2026-01-21 12:36_
+
+:+1: for the new naming, makes this much easier to follow.
+
+---
+
+_@konstin reviewed on 2026-01-21 12:39_
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:756 on 2026-01-21 12:39_
+
+Maybe that's a different test, what I'm interested in seeing more than the exact shape of the tags is that the eventual string wheel filename is correct, after going through everything include the `WheelFilename`'s internal representation and the `Display` implementation.
 
 ---

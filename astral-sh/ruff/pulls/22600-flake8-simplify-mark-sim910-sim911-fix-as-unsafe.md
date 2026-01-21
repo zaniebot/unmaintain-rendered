@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-19T19:42:02Z
+updated_at: 2026-01-21T12:25:24Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-19T20:31:01Z
+synced_at: 2026-01-21T12:56:53Z
 ```
 
 # [`flake8-simplify`] Mark `SIM910`/`SIM911` fix as unsafe when deleting comments
@@ -123,13 +123,13 @@ _Label `fixes` added by @ntBre on 2026-01-15 18:25_
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs`:318 on 2026-01-15 18:34_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs`:320 on 2026-01-15 18:34_
 
 I think we need to add a `## Fix safety` section to the docs now saying that the fix is unsafe when it would delete comments in the replacement range.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:130 on 2026-01-15 18:35_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:132 on 2026-01-15 18:35_
 
 Same here, I think we'll need a new `## Fix safety` section since the fix was previously always safe.
 
@@ -145,7 +145,7 @@ _@eureka928 reviewed on 2026-01-19 18:02_
 
 ---
 
-_Review comment by @eureka928 on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:130 on 2026-01-19 18:02_
+_Review comment by @eureka928 on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:132 on 2026-01-19 18:02_
 
 @ntBre this is updated, please review if this is good to go
 
@@ -162,5 +162,11 @@ _Review requested from @ntBre by @eureka928 on 2026-01-19 18:02_
 ---
 
 _Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments" to "[`flake8-simplify`] Mark `SIM910`/`SIM911` fix as unsafe when deleting comments" by @amyreese on 2026-01-19 19:42_
+
+---
+
+_Comment by @eureka928 on 2026-01-21 12:25_
+
+@amyreese @ntBre would you review this PR again? I fixed the conflict and make this up-to-date
 
 ---
