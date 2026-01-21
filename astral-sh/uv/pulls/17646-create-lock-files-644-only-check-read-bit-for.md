@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 16769-lockfile-perms
 created_at: 2026-01-21T20:09:30Z
-updated_at: 2026-01-21T20:39:49Z
+updated_at: 2026-01-21T21:04:27Z
 url: https://github.com/astral-sh/uv/pull/17646
-synced_at: 2026-01-21T21:19:24Z
+synced_at: 2026-01-21T22:07:30Z
 ```
 
 # Create lock files 644, only check read bit for locks, respect umask
@@ -66,5 +66,18 @@ cc @EliteTK since this code last changed in https://github.com/astral-sh/uv/pull
 ---
 
 _Label `test:extended` added by @zanieb on 2026-01-21 20:39_
+
+---
+
+_Comment by @dcwatson on 2026-01-21 21:04_
+
+FWIW, I just verified the manual test from #17115 still works:
+
+```
+$ hdiutil create -size 1g -fs ExFAT -volname EXFATDISK exfat.dmg
+$ hdiutil attach exfat.dmg
+$ cd /Volumes/EXFATDISK
+$ uv init --bare --cache-dir build/uv/cache -v
+```
 
 ---

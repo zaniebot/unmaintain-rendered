@@ -4,12 +4,14 @@ title: "Adding a new setting for rule E501 (`ignore-all-comments`)"
 type: issue
 state: open
 author: chirizxc
-labels: []
+labels:
+  - configuration
+  - needs-decision
 assignees: []
 created_at: 2026-01-21T19:28:40Z
-updated_at: 2026-01-21T20:01:41Z
+updated_at: 2026-01-21T21:56:09Z
 url: https://github.com/astral-sh/ruff/issues/22791
-synced_at: 2026-01-21T21:12:39Z
+synced_at: 2026-01-21T22:07:06Z
 ```
 
 # Adding a new setting for rule E501 (`ignore-all-comments`)
@@ -100,5 +102,49 @@ I can give you an example of the [old format](https://black.readthedocs.io/en/st
 <img width="954" height="768" alt="Image" src="https://github.com/user-attachments/assets/01f5c743-043c-496f-bb3d-7ebe162005c5" />
 
 It is unclear why this was not done earlier, but remained unchanged for many years.
+
+---
+
+_Comment by @ntBre on 2026-01-21 21:48_
+
+I guess I can see why you would want a mechanism for finding these lines, but there's often not much you can do to fix it, which I think is why these are skipped in the current implementation (https://github.com/astral-sh/ruff/pull/7692). For example, our `noqa` comments (and ty's) need to be at the end of the line and can't really be moved, unless you somehow restructure the code itself.
+
+---
+
+_Label `configuration` added by @ntBre on 2026-01-21 21:48_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2026-01-21 21:48_
+
+---
+
+_Comment by @chirizxc on 2026-01-21 21:51_
+
+> I guess I can see why you would want a mechanism for finding these lines, but there's often not much you can do to fix it, which I think is why these are skipped in the current implementation ([#7692](https://github.com/astral-sh/ruff/pull/7692)). For example, our `noqa` comments (and ty's) need to be at the end of the line and can't really be moved, unless you somehow restructure the code itself.
+
+This setting will be optional, and most likely only those who need it will use it. This setting will not conflict with others:
+
+<img width="1387" height="936" alt="Image" src="https://github.com/user-attachments/assets/8fde5cd5-01d2-436b-ab5d-befb5b08f1e4" />
+
+---
+
+_Comment by @chirizxc on 2026-01-21 21:54_
+
+The value `line-length = 5` is just an example. In real projects, such as the screenshot above from dishka, you can shift the code slightly so that it fits on the screen and you don't have to scroll
+
+<img width="1670" height="782" alt="Image" src="https://github.com/user-attachments/assets/1d20e585-4083-4fbc-99e7-0f6176495a33" />
+
+vvv
+
+<img width="961" height="457" alt="Image" src="https://github.com/user-attachments/assets/ffd67001-317e-4dec-b973-6f7070e004dd" />
+
+---
+
+_Comment by @chirizxc on 2026-01-21 21:56_
+
+The same flake8 complains about this, we must take this setting into account for commands that have switched to ruff:
+
+<img width="1202" height="233" alt="Image" src="https://github.com/user-attachments/assets/30d25538-ccf5-4576-9edd-7e304e78da93" />
 
 ---

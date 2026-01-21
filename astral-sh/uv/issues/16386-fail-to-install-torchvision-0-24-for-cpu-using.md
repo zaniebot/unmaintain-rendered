@@ -2,15 +2,15 @@
 number: 16386
 title: Fail to install torchvision 0.24 for CPU using accelerator extras (because no wheels for manylinux x86_64 can be found)
 type: issue
-state: open
+state: closed
 author: nathanpainchaud
 labels:
   - question
 assignees: []
 created_at: 2025-10-21T13:37:48Z
-updated_at: 2026-01-09T23:52:07Z
+updated_at: 2026-01-21T21:25:07Z
 url: https://github.com/astral-sh/uv/issues/16386
-synced_at: 2026-01-12T16:02:30Z
+synced_at: 2026-01-21T22:07:22Z
 ```
 
 # Fail to install torchvision 0.24 for CPU using accelerator extras (because no wheels for manylinux x86_64 can be found)
@@ -202,5 +202,19 @@ _Label `bug` removed by @konstin on 2026-01-09 10:43_
 ---
 
 _Label `question` added by @konstin on 2026-01-09 10:43_
+
+---
+
+_Comment by @nathanpainchaud on 2026-01-21 21:25_
+
+The wheels for the [new release of torchvision 0.25](https://github.com/pytorch/vision/releases/tag/v0.25.0) have had their[ version suffixes fixed](https://github.com/pytorch/test-infra/pull/7589), avoiding the non-standard suffixes that lead uv to fail to resolve for torchvision 0.24.
+
+[PyTorch do not plan to release fixed wheels for torchvision 0.24](https://github.com/pytorch/vision/issues/9330#issuecomment-3737792836), so trying to install version 0.24 specifically will still fail with the same error. However, users are unlikely to be stuck on torchvision 0.24 exclusively, since the fixed 0.25 release supports the exact same CUDA versions (12.6, 12.8, and 13.0).
+
+Since the latest release of torchvision now fixes the issue, and users should be able to update to the latest torchvision, I'll mark this as closed.
+
+---
+
+_Closed by @nathanpainchaud on 2026-01-21 21:25_
 
 ---

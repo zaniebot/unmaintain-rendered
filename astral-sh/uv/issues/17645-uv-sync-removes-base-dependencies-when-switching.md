@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T19:40:22Z
-updated_at: 2026-01-21T20:48:38Z
+updated_at: 2026-01-21T21:10:43Z
 url: https://github.com/astral-sh/uv/issues/17645
-synced_at: 2026-01-21T21:17:27Z
+synced_at: 2026-01-21T22:07:23Z
 ```
 
 # `uv sync` removes base dependencies when switching extras (at least impacts typer/typer-slim)
@@ -110,5 +110,15 @@ cc @konstin who has more context on this category of issue.
 _Comment by @zanieb on 2026-01-21 20:48_
 
 Here the issue is not that we're removing base dependencies, but rather that we're not reinstalling `typer` after uninstalling `typer-slim` which overwrites typer's files?
+
+---
+
+_Comment by @pimlock on 2026-01-21 21:10_
+
+> Here the issue is not that we're removing base dependencies, but rather that we're not reinstalling typer after uninstalling typer-slim which overwrites typer's files?
+
+Yes, that's right. I initially thought that `typer` depended on `typer-slim` and that the issue was related to how that relationship was handled, but then I realize that's not the case, these 2 are completely unrelated in terms of deps.
+
+Running with `--verbose` ([here](https://github.com/pimlock/uv-bug-repro/blob/main/repro-output.txt#L190-L192)) was when I realized the issue is that both packages use the same module name `typer` (`venv/lib/python/site-packages/typer`), so by uninstalling `typer-slim` that dir gets deleted.
 
 ---

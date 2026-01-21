@@ -2,16 +2,16 @@
 number: 1332
 title: Issues with kwarg splats inside dictionary literals
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
   - runtime semantics
 assignees: []
 created_at: 2025-10-10T10:51:31Z
-updated_at: 2026-01-08T18:39:51Z
+updated_at: 2026-01-21T21:35:35Z
 url: https://github.com/astral-sh/ty/issues/1332
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-21T22:07:00Z
 ```
 
 # Issues with kwarg splats inside dictionary literals
@@ -123,5 +123,9 @@ _Removed from milestone `Stable` by @carljm on 2026-01-08 18:39_
 ---
 
 _Added to milestone `Pre-stable 1` by @carljm on 2026-01-08 18:39_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-21 21:35_
 
 ---

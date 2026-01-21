@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-21T19:01:44Z
+updated_at: 2026-01-21T21:03:41Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-21T20:04:11Z
+synced_at: 2026-01-21T22:07:17Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -471,5 +471,17 @@ _@dcreager reviewed on 2026-01-21 18:35_
 _Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:1202 on 2026-01-21 18:35_
 
 Assuming my analysis above is correct, I think you're right that sorting would give us a better guarantee of always doing the optimally cheapest ordering of operations. But my worry is that the cost of tracking/calculating the node size, and then doing the sort, would counteract any gain that we'd get.
+
+---
+
+_@ibraheemdev reviewed on 2026-01-21 21:03_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/constraints.rs`:1174 on 2026-01-21 21:03_
+
+Hmm. I suspect there is something more nuanced here, which is that if `a, b, c, d, ...` are in source order (i.e., `a` is the lowest-order variable in the BDD ordering), then applying `(((((a ∨ b) ∨ c) ∨ d) ∨ e) ∨ f) ∨ g` is `O(1)` at each step (after https://github.com/astral-sh/ruff/pull/22777 and assuming disjointness). Even assuming an arbitrary order, the probability that the final step has to traverse the entire LHS is the probability that `g` is the lowest-order variable, while in the distributed approach, you are required to at least traverse one side of the tree entirely, and even the best case has quite low probability (that all the nodes on the LHS are higher-order than the RHS, or vice versa).
+
+That being said, I'm happy to defer to the benchmark results here.
 
 ---
