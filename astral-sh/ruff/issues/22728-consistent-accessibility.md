@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-19T17:23:50Z
-updated_at: 2026-01-20T07:09:55Z
+updated_at: 2026-01-21T19:36:59Z
 url: https://github.com/astral-sh/ruff/issues/22728
-synced_at: 2026-01-20T07:37:37Z
+synced_at: 2026-01-21T20:04:00Z
 ```
 
 # Consistent accessibility
@@ -77,8 +77,11 @@ _Comment by @AndreuCodina on 2026-01-19 17:59_
 For me:
 - If a folder has an underscore, all inside is private.
 - If a file has an underscore, all inside is private.
+- And so on.
 
 It's easier to think about it as the `internal` modifier of C# instead of `private`: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
+
+Exception: Generics, given they have more capabilities with TypeVar/TypeVarTuple/... than using the short syntax.
 
 ---
 

@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-21T18:51:51Z
+updated_at: 2026-01-21T19:01:44Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-21T19:05:04Z
+synced_at: 2026-01-21T20:04:11Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -227,29 +227,19 @@ _Comment by @codspeed-hq[bot] on 2026-01-16 10:30_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **degrade performance by 45.74%**
+### Merging this PR will **not alter performance**
 
-<sub>Comparing <code>dcreager/distributed-ops</code> (18f5b2a) with <code>main</code> (d4123fc)</sub>
+<sub>Comparing <code>dcreager/distributed-ops</code> (003ea9b) with <code>main</code> (f516d47)</sub>
 
 
 
 ### Summary
 
-`❌ 4` regressed benchmarks  
-`✅ 19` untouched benchmarks  
+`✅ 23` untouched benchmarks  
 `⏩ 30` skipped benchmarks[^skipped]  
 
 
-> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
 
-### Performance Changes
-
-|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
-| --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 87.2 s | 160.6 s | -45.74% |
-| ❌ | WallTime | [`` pandas ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apandas&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 61.8 s | 68.7 s | -10.06% |
-| ❌ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 20.8 s | 22.8 s | -8.81% |
-| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -4.59% |
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 

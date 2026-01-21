@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: FURB110
 created_at: 2026-01-20T17:51:10Z
-updated_at: 2026-01-21T16:51:11Z
+updated_at: 2026-01-21T19:22:33Z
 url: https://github.com/astral-sh/ruff/pull/22768
-synced_at: 2026-01-21T17:03:51Z
+synced_at: 2026-01-21T20:04:11Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB110`)
@@ -85,5 +85,37 @@ I think the check may be too aggressive in this case, if I'm reading the diff co
 _@ntBre requested changes on 2026-01-21 16:51_
 
 Thanks! I think the range check is too aggressive in some cases here. We should make sure comments are actually being removed before marking a fix unsafe.
+
+---
+
+_@chirizxc reviewed on 2026-01-21 19:16_
+
+---
+
+_Review comment by @chirizxc on `crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB110_FURB110.py.snap`:116 on 2026-01-21 19:16_
+
+```python
+x, y = 1, 2
+
+z = (
+    # 1
+    x) if (  # 2
+    x
+) else (
+    # Test for y.
+    y
+)
+```
+In examples like these, there will also be deletions.
+
+---
+
+_@chirizxc reviewed on 2026-01-21 19:17_
+
+---
+
+_Review comment by @chirizxc on `crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB110_FURB110.py.snap`:116 on 2026-01-21 19:17_
+
+I'm not sure what the right thing to do is in this case. The current rule may limit some cases, but at least there won't be any deletions in save fixes. 
 
 ---
