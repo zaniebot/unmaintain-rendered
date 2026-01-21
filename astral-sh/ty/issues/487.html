@@ -98,10 +98,60 @@ Version
             <div class="timeline-body"><p>#1613 raises the same scenario, and also suggests that we might be able to automatically introspect the <code>.so</code> and generate some implicit default stubs automatically.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dabelknap">@dabelknap</a> on 2026-01-21 15:28</div>
+            <div class="timeline-body"><p>I&#x27;m also seeing this issue when using pyo3 and maturin.</p>
+<pre><code>$ maturin new -b pyo3 mylib
+$ cd mylib
+</code></pre>
+<p>By default, the contents of <code>src/lib.rs</code> are:</p>
+<pre><code>use pyo3::prelude::*;
+
+/// A Python module implemented in Rust.
+#[pymodule]
+mod mylib {
+    use pyo3::prelude::*;
+
+    /// Formats the sum of two numbers as string.
+    #[pyfunction]
+    fn sum_as_string(a: usize, b: usize) -&gt; PyResult&lt;String&gt; {
+        Ok((a + b).to_string())
+    }
+}
+</code></pre>
+<pre><code>$ uv sync  # Setup a venv and build/install the pyo3 library (using a Homebrew install of Python 3.14 on macOS)
+$ source .venv/bin/activate
+</code></pre>
+<p>Create a test script</p>
+<pre><code># main.py
+from mylib import sum_as_string
+print(sum_as_string(2, 3))
+</code></pre>
+<p>Running the script should be successful:</p>
+<pre><code>(mylib) $ uv run main.py
+5
+(mylib) $
+</code></pre>
+<p>The import is clearly valid, but <code>ty</code> emits an error:</p>
+<pre><code>(mylib) $ ty check
+error[unresolved-attribute]: Module `mylib` has no member `sum_as_string`
+ --&gt; main.py:3:7
+  |
+1 | import mylib as ml
+2 |
+3 | print(ml.sum_as_string(2, 3))
+  |       ^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 19:24:37 UTC
+        Synced at 2026-01-21 16:07:53 UTC
     </footer>
 </body>
 </html>

@@ -178,10 +178,103 @@ Formatter (preview)
             <div class="timeline-body"><p>@AlexWaygood @MichaReiser My first pass at this was a little buggy and overcomplicated, but I think that it is in a bit better shape now!</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:385 on 2026-01-21 14:40</div>
+            <div class="timeline-body"><p>Ruff doesn&#x27;t do a good job right now at formatting nested if-else expressions. But we can help it a bit to make this more readable by adding parentheses</p>
+<pre><code>                        tag=(
+                        	f&quot;{file.name}:{error.group(&#x27;tag&#x27;)}&quot;
+                        	if error.group(&quot;tag&quot;)
+                        	else None
+                      	),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:471 on 2026-01-21 14:41</div>
+            <div class="timeline-body"><p>Nit: I would use a regular loop here to avoid iterating <code>diagnostics</code> multiple times and also because I find it slightly more readable. But maybe that&#x27;s the Rust dev in me.</p>
+<pre><code>				old_diagnostics: list[Diagnostic] = []
+        new_diagnostics: list[Diagnostic] = []
+        expected_diagnostics: list[Diagnostic] = []
+        sources: set[Source] = set()
+
+        for diag in group:
+            sources.add(diag.source)
+            match diag.source:
+                case Source.OLD:
+                    old_diagnostics.append(diag)
+                case Source.NEW:
+                    new_diagnostics.append(diag)
+                case Source.EXPECTED:
+                    expected_diagnostics.append(diag)
+
+        grouped = GroupedDiagnostics(
+            key=key,
+            sources=sources,
+            old=old_diagnostics,
+            new=new_diagnostics,
+            expected=expected_diagnostics,
+        )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:482 on 2026-01-21 14:44</div>
+            <div class="timeline-body"><p>It&#x27;s a bit tricky to say what <code>num_errors</code> means in the presence of <code>E[tag+]</code> and <code>E?</code> where a single expected tag can have multiple errors and some errors are entirely optional.</p>
+<p>But it also seems that we never call <code>compute_stats</code> with <code>Source::Expected</code>.</p>
+<p>Should we remove this code and make <code>compute_stats</code> take a boolean argument instead (new_diagnostics)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:499 on 2026-01-21 14:46</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>non_optional_diagnostics</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:430 on 2026-01-21 14:50</div>
+            <div class="timeline-body"><p>GitHub doesn&#x27;t really allow me to comment on that line but you could simplify your code a good amount by removing <code>None</code> from <code>old</code>, <code>new</code> and <code>expected</code>. Unless I miss a place where you create a <code>GroupedDiagnostics</code> instance where those fields are <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:278 on 2026-01-21 14:53</div>
+            <div class="timeline-body"><pre><code>        elif source in self.sources:
+</code></pre>
+<p>I believe the second part is implicitly given by not taking the first if branch</p>
+<p>It might also be more readable if you nested the conditions like so:</p>
+<pre><code>if source in self.sources:
+	if Source.EXPECTED in self.sources:
+		distinct_lines = ... 
+
+	else:
+		return Classification.FalsePositive
+
+elif Source.EXPECTED in self.sources:
+	return Classification.FALSE_NEGATIVE
+
+else: 
+	return Classification.TRUE_NEGATIVE	
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:273 on 2026-01-21 14:54</div>
+            <div class="timeline-body"><p>I can see how classifying too many diagnostics as false positives can be a bit confusing but I think it&#x27;s the right thing. There&#x27;s at least one false positive.</p>
+<p>It might be better to count them as both a true positive and false positive, but I suspect that this doesn&#x27;t play well with how we use those numbers later on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:489 on 2026-01-21 14:59</div>
+            <div class="timeline-body"><p>Nit: You could consider using a <code>match classification</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-21 15:11</div>
+            <div class="timeline-body"><p>Thank you. This overall makes sense to me. I&#x27;ve a few small nit comments</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 12:01:13 UTC
+        Synced at 2026-01-21 16:07:28 UTC
     </footer>
 </body>
 </html>
