@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: walk-signature
 created_at: 2026-01-07T05:19:20Z
-updated_at: 2026-01-09T06:19:37Z
+updated_at: 2026-01-21T07:12:24Z
 url: https://github.com/astral-sh/ruff/pull/22431
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-21T07:52:45Z
 ```
 
 # [ty] walk all types with `walk_signature`
@@ -195,5 +195,9 @@ I don't think this needs to be walked here as they should be visited by the abov
 ---
 
 _Closed by @mtshiba on 2026-01-09 06:19_
+
+---
+
+_Branch deleted on 2026-01-21 07:12_
 
 ---

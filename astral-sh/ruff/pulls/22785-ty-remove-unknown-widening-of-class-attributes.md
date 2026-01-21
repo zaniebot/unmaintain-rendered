@@ -12,9 +12,9 @@ draft: true
 base: main
 head: cjm/remove-place-widening
 created_at: 2026-01-21T06:11:53Z
-updated_at: 2026-01-21T06:22:01Z
+updated_at: 2026-01-21T07:44:32Z
 url: https://github.com/astral-sh/ruff/pull/22785
-synced_at: 2026-01-21T06:54:06Z
+synced_at: 2026-01-21T07:52:45Z
 ```
 
 # [ty] remove Unknown widening of class attributes
@@ -566,5 +566,19 @@ _Comment by @codspeed-hq[bot] on 2026-01-21 06:22_
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/cjm%2Fremove-place-widening?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 07:44_
+
+The very first result in the ecosystem report looks overly pedantic :) 
+
+```
+[error] invalid-assignment - [:130:9](https://github.com/Toufool/AutoSplit/blob/2ff11ab4e7a90ed9decf018ba3717d772dc0cb95/src/capture_method/VideoCaptureDeviceCaptureMethod.py#L130) - Object of type `Literal[True]` is not assignable to attribute `is_old_image` of type `Literal[False]`
+```
+
+https://github.com/Toufool/AutoSplit/blob/2ff11ab4e7a90ed9decf018ba3717d772dc0cb95/src/capture_method/VideoCaptureDeviceCaptureMethod.py#L130
+
+Do we need to perform literal promotion in more places?
 
 ---

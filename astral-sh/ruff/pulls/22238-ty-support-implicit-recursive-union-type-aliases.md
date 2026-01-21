@@ -12,9 +12,9 @@ draft: true
 base: main
 head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
-updated_at: 2026-01-13T23:20:46Z
+updated_at: 2026-01-21T07:50:11Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-13T23:35:33Z
+synced_at: 2026-01-21T07:52:45Z
 ```
 
 # [ty] support implicit recursive union type aliases
@@ -78,93 +78,39 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 05:12_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/) improved 🎉
 
+The percentage of diagnostics emitted that were expected errors increased from 77.42% to 77.60%. The percentage of expected errors that received a diagnostic increased from 60.49% to 61.12%.
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 672 | 679 | +7 | ⏫ (✅) |
+| False Positives | 196 | 196 | +0 |  |
+| False Negatives | 439 | 432 | -7 | ⏬ (✅) |
+| Total Diagnostics | 868 | 875 | +7 | ⏫ |
+| Precision | 77.42% | 77.60% | +0.18% | ⏫ (✅) |
+| Recall | 60.49% | 61.12% | +0.63% | ⏫ (✅) |
+
+
+
+### True positives added
 
 <details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
 
-```diff
---- old-output.txt	2026-01-07 09:32:44.627070962 +0000
-+++ new-output.txt	2026-01-07 09:32:44.967072566 +0000
-@@ -5,7 +5,7 @@
- _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
- aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `Unknown`
- aliases_explicit.py:67:9: error[not-subscriptable] Cannot subscript non-generic type
--aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `<class 'list[int | None]'>` is already specialized
-+aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `<class 'list[GoodTypeAlias2]'>` is already specialized
- aliases_explicit.py:69:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
- aliases_explicit.py:70:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
- aliases_explicit.py:71:24: error[invalid-type-arguments] Type argument for `ParamSpec` must be either a list of types, `ParamSpec`, `Concatenate`, or `...`
-@@ -13,7 +13,7 @@
- aliases_explicit.py:102:5: error[not-subscriptable] Cannot subscript non-generic type
- aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -> None` does not match asserted type `Unknown`
- aliases_implicit.py:76:9: error[not-subscriptable] Cannot subscript non-generic type
--aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `<class 'list[int | None]'>` is already specialized
-+aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `<class 'list[GoodTypeAlias2]'>` is already specialized
- aliases_implicit.py:78:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
- aliases_implicit.py:79:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
- aliases_implicit.py:80:24: error[invalid-type-arguments] Type argument for `ParamSpec` must be either a list of types, `ParamSpec`, `Concatenate`, or `...`
-@@ -32,7 +32,7 @@
- aliases_newtype.py:11:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["user"]`
- aliases_newtype.py:12:14: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
- aliases_newtype.py:18:11: error[invalid-assignment] Object of type `<NewType pseudo-class 'UserId'>` is not assignable to `type`
--aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `<NewType pseudo-class 'UserId'>`
-+aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `_ClassInfo`, found `<NewType pseudo-class 'UserId'>`
- aliases_newtype.py:26:21: error[invalid-base] Cannot subclass an instance of NewType
- aliases_newtype.py:35:1: error[invalid-newtype] The name of a `NewType` (`BadName`) must match the name of the variable it is assigned to (`GoodName`)
- aliases_newtype.py:41:6: error[invalid-type-form] `GoodNewType1` is a `NewType` and cannot be specialized
-@@ -42,12 +42,19 @@
- aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
- aliases_newtype.py:63:15: error[invalid-newtype] Wrong number of arguments in `NewType` creation, expected 2, found 3
- aliases_newtype.py:65:38: error[invalid-newtype] invalid base for `typing.NewType`: type `Any`
-+aliases_recursive.py:19:12: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | int | float | complex]` is not assignable to `Json`
-+aliases_recursive.py:20:12: error[invalid-assignment] Object of type `list[Unknown | int | float | complex]` is not assignable to `Json`
-+aliases_recursive.py:38:22: error[invalid-assignment] Object of type `tuple[Literal[1], tuple[Literal["1"], Literal[1]], tuple[Literal[1], tuple[Literal[1], list[Unknown | int]]]]` is not assignable to `RecursiveTuple`
-+aliases_recursive.py:39:22: error[invalid-assignment] Object of type `tuple[Literal[1], list[Unknown | int]]` is not assignable to `RecursiveTuple`
-+aliases_recursive.py:50:24: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | list[Unknown | int]]` is not assignable to `RecursiveMapping`
-+aliases_recursive.py:51:24: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | int | list[Unknown | int]]` is not assignable to `RecursiveMapping`
-+aliases_recursive.py:52:24: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | int | dict[Unknown | str, Unknown | str | int | list[Unknown | int]]]` is not assignable to `RecursiveMapping`
- aliases_type_statement.py:10:52: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
- aliases_type_statement.py:17:1: error[unresolved-attribute] Object of type `TypeAliasType` has no attribute `bit_count`
- aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
- aliases_type_statement.py:23:7: error[unresolved-attribute] Object of type `TypeAliasType` has no attribute `other_attrib`
- aliases_type_statement.py:26:18: error[invalid-base] Invalid class base with type `TypeAliasType`
--aliases_type_statement.py:31:22: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `TypeAliasType`
-+aliases_type_statement.py:31:22: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `_ClassInfo`, found `TypeAliasType`
- aliases_type_statement.py:37:22: error[invalid-type-form] Function calls are not allowed in type expressions
- aliases_type_statement.py:38:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
- aliases_type_statement.py:39:22: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
-@@ -923,12 +930,12 @@
- tuples_type_compat.py:33:10: error[invalid-assignment] Object of type `tuple[int, ...]` is not assignable to `tuple[int]`
- tuples_type_compat.py:43:22: error[invalid-assignment] Object of type `tuple[int, ...]` is not assignable to `tuple[int]`
- tuples_type_compat.py:62:26: error[invalid-assignment] Object of type `tuple[int, ...]` is not assignable to `tuple[int, int]`
--tuples_type_compat.py:75:9: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
--tuples_type_compat.py:80:9: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
--tuples_type_compat.py:85:9: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
--tuples_type_compat.py:101:13: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
--tuples_type_compat.py:106:13: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
--tuples_type_compat.py:111:13: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]`
-+tuples_type_compat.py:75:9: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `Func5Input`
-+tuples_type_compat.py:80:9: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `Func5Input`
-+tuples_type_compat.py:85:9: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `Func5Input`
-+tuples_type_compat.py:101:13: error[type-assertion-failure] Type `tuple[int]` does not match asserted type `Func6Input`
-+tuples_type_compat.py:106:13: error[type-assertion-failure] Type `tuple[str, str] | tuple[int, int]` does not match asserted type `Func6Input`
-+tuples_type_compat.py:111:13: error[type-assertion-failure] Type `tuple[int, str, int]` does not match asserted type `Func6Input`
- tuples_type_compat.py:126:13: error[type-assertion-failure] Type `tuple[int | str, str]` does not match asserted type `tuple[int | str, int | str]`
- tuples_type_compat.py:129:13: error[type-assertion-failure] Type `tuple[int | str, int]` does not match asserted type `tuple[int | str, int | str]`
- tuples_type_compat.py:157:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[""], Literal[""]]` is not assignable to `tuple[int, str]`
-@@ -1023,4 +1030,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
- typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
- typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
--Found 1025 diagnostics
-+Found 1032 diagnostics
+| Location | Name | Message |
+|----------|------|---------|
+| [aliases_recursive.py:19:12](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L19) | invalid-assignment | Object of type `dict[Unknown \| str, Unknown \| int \| float \| complex]` is not assignable to `Json` |
+| [aliases_recursive.py:20:12](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L20) | invalid-assignment | Object of type `list[Unknown \| int \| float \| complex]` is not assignable to `Json` |
+| [aliases_recursive.py:38:22](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L38) | invalid-assignment | Object of type `tuple[Literal[1], tuple[Literal["1"], Literal[1]], tuple[Literal[1], tuple[Literal[1], list[Unknown \| int]]]]` is not assignable to `RecursiveTuple` |
+| [aliases_recursive.py:39:22](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L39) | invalid-assignment | Object of type `tuple[Literal[1], list[Unknown \| int]]` is not assignable to `RecursiveTuple` |
+| [aliases_recursive.py:50:24](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L50) | invalid-assignment | Object of type `dict[Unknown \| str, Unknown \| list[Unknown \| int]]` is not assignable to `RecursiveMapping` |
+| [aliases_recursive.py:51:24](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L51) | invalid-assignment | Object of type `dict[Unknown \| str, Unknown \| str \| int \| list[Unknown \| int]]` is not assignable to `RecursiveMapping` |
+| [aliases_recursive.py:52:24](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/aliases_recursive.py#L52) | invalid-assignment | Object of type `dict[Unknown \| str, Unknown \| str \| int \| dict[Unknown \| str, Unknown \| str \| int \| list[Unknown \| int]]]` is not assignable to `RecursiveMapping` |
 
-```
 
 </details>
-
 
 
 
@@ -184,8 +130,8 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 07:01_
 
 ```diff
 more-itertools (https://github.com/more-itertools/more-itertools)
-- more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -> _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
-+ more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -> int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -> _T_co@pow, (base: _SupportsSomeKindOfPow, exp: int | float, mod: None = None) -> Any, (base: _SupportsSomeKindOfPow, exp: int | float | complex, mod: None = None) -> int | float | complex]`
+- more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, [_E_contra, _T_co](base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _T_co](base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _M_contra, _T_co](base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -> _T_co, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
++ more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -> int | float | complex, [_E_contra, _T_co](base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _T_co](base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _M_contra, _T_co](base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -> _T_co, (base: _SupportsSomeKindOfPow, exp: int | float, mod: None = None) -> Any, (base: _SupportsSomeKindOfPow, exp: int | float | complex, mod: None = None) -> int | float | complex]`
 
 attrs (https://github.com/python-attrs/attrs)
 - src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -> Match[bytes] | None] & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
@@ -212,25 +158,8 @@ packaging (https://github.com/pypa/packaging)
 + src/packaging/markers.py:142:46: warning[possibly-missing-attribute] Attribute `value` may be missing on object of type `Variable | Value | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]`
 + src/packaging/markers.py:144:12: error[invalid-return-type] Return type does not match returned value: expected `list[Divergent] | MarkerAtom | str`, found `tuple[Variable | Value | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any], Op | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any], Variable | Value | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]]`
 + src/packaging/markers.py:178:26: warning[possibly-missing-attribute] Attribute `serialize` may be missing on object of type `MarkerVar | Op | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]`
-- Found 23 diagnostics
-+ Found 27 diagnostics
-
-janus (https://github.com/aio-libs/janus)
-- janus/__init__.py:714:18: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
-+ janus/__init__.py:714:18: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-- janus/__init__.py:714:36: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
-+ janus/__init__.py:714:36: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-- janus/__init__.py:717:24: error[invalid-argument-type] Argument to function `heappop` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
-+ janus/__init__.py:717:24: error[invalid-argument-type] Argument to function `heappop` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-
-anyio (https://github.com/agronholm/anyio)
-- src/anyio/_backends/_asyncio.py:360:34: error[invalid-argument-type] Argument to function `getcoroutinestate` is incorrect: Expected `Coroutine[Any, Any, Any]`, found `Generator[Future[object] | None, None, Unknown] | Coroutine[Any, Any, Unknown]`
-+ src/anyio/_backends/_asyncio.py:360:34: error[invalid-argument-type] Argument to function `getcoroutinestate` is incorrect: Expected `Coroutine[Any, Any, Any]`, found `Generator[_TaskYieldType, None, Unknown] | Coroutine[Any, Any, Unknown]`
-+ src/anyio/_backends/_trio.py:1090:28: error[no-matching-overload] No overload of function `fspath` matches arguments
-- src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | (Sequence[str | bytes | PathLike[str] | PathLike[bytes]] & PathLike[object]) | PathLike[str] | PathLike[bytes]`
-+ src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | (Sequence[StrOrBytesPath] & PathLike[object])`
-- Found 93 diagnostics
-+ Found 94 diagnostics
+- Found 24 diagnostics
++ Found 28 diagnostics
 
 aioredis (https://github.com/aio-libs/aioredis)
 + aioredis/client.py:1596:29: error[invalid-argument-type] Argument to function `list_or_args` is incorrect: Argument type `KeysT` does not satisfy upper bound `_StringLikeT` of type variable `_KeyT`
@@ -249,54 +178,28 @@ aioredis (https://github.com/aio-libs/aioredis)
 + aioredis/client.py:3430:34: error[invalid-assignment] Object of type `KeysView[object]` is not assignable to `Sequence[_StringLikeT] | AbstractSet[AnyKeyT@_zaggregate]`
 - aioredis/client.py:4114:55: error[invalid-assignment] Object of type `dict[bytes | str | memoryview[int], Any | None]` is not assignable to `dict[bytes | str | memoryview[int], (dict[str, str], /) -> Awaitable[None]]`
 + aioredis/client.py:4114:55: error[invalid-assignment] Object of type `dict[bytes | str | memoryview[int], Any | None]` is not assignable to `dict[_StringLikeT, (dict[str, str], /) -> Awaitable[None]]`
-- aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo & ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
-+ aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `EncodableT | ResponseError | None`, found `(@Todo & ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
+- aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo & ~bytes) | int | list[Unknown | bytes | memoryview[int] | ... omitted 5 union elements] | ... omitted 4 union elements`
++ aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `EncodableT | ResponseError | None`, found `(@Todo & ~bytes) | int | list[Unknown | bytes | memoryview[int] | ... omitted 5 union elements] | ... omitted 4 union elements`
 - Found 29 diagnostics
 + Found 41 diagnostics
 
-nionutils (https://github.com/nion-software/nionutils)
-+ nion/utils/Geometry.py:328:29: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:328:29: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int, int], (index: Literal[1]) -> tuple[int, int]]) | Overload[(index: SupportsIndex, /) -> tuple[int, int], (index: slice[Any, Any, Any], /) -> tuple[tuple[int, int], ...]]` cannot be called with key of type `Literal[0]` on object of type `IntRectTuple`
-+ nion/utils/Geometry.py:328:42: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:328:42: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int, int], (index: Literal[1]) -> tuple[int, int]]) | Overload[(index: SupportsIndex, /) -> tuple[int, int], (index: slice[Any, Any, Any], /) -> tuple[tuple[int, int], ...]]` cannot be called with key of type `Literal[0]` on object of type `IntRectTuple`
-+ nion/utils/Geometry.py:328:57: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:328:57: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int, int], (index: Literal[1]) -> tuple[int, int]]) | Overload[(index: SupportsIndex, /) -> tuple[int, int], (index: slice[Any, Any, Any], /) -> tuple[tuple[int, int], ...]]` cannot be called with key of type `Literal[1]` on object of type `IntRectTuple`
-+ nion/utils/Geometry.py:328:70: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:328:70: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int, int], (index: Literal[1]) -> tuple[int, int]]) | Overload[(index: SupportsIndex, /) -> tuple[int, int], (index: slice[Any, Any, Any], /) -> tuple[tuple[int, int], ...]]` cannot be called with key of type `Literal[1]` on object of type `IntRectTuple`
-+ nion/utils/Geometry.py:343:44: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:343:44: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[1]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:343:65: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:343:65: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[0]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:348:14: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:348:35: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:348:58: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:348:83: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(index: Literal[0]) -> tuple[int | float, int | float], (index: Literal[1]) -> tuple[int | float, int | float]]) | Overload[(index: SupportsIndex, /) -> tuple[int | float, int | float], (index: slice[Any, Any, Any], /) -> tuple[tuple[int | float, int | float], ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatRectTuple`
-+ nion/utils/Geometry.py:353:26: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:353:35: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:353:52: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:353:61: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:358:30: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:358:39: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:358:55: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:358:64: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:538:31: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[0]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:538:31: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntPointTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[0]` on object of type `IntPointTuple`
-+ nion/utils/Geometry.py:538:41: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[1]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:538:41: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntPointTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[1]` on object of type `IntPointTuple`
-+ nion/utils/Geometry.py:542:31: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[0]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:542:31: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntPointTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[0]` on object of type `IntPointTuple`
-+ nion/utils/Geometry.py:542:41: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntSizeTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[1]` on object of type `IntSizeTuple`
-+ nion/utils/Geometry.py:542:41: error[invalid-argument-type] Method `__getitem__` of type `(bound method IntPointTuple.__getitem__(index: int) -> int) | Overload[(index: SupportsIndex, /) -> int, (index: slice[Any, Any, Any], /) -> tuple[int, ...]]` cannot be called with key of type `Literal[1]` on object of type `IntPointTuple`
-+ nion/utils/Geometry.py:981:33: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:981:33: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:981:43: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:981:43: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:985:33: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:985:33: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[0]` on object of type `FloatPointTuple`
-+ nion/utils/Geometry.py:985:43: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatSizeTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatSizeTuple`
-+ nion/utils/Geometry.py:985:43: error[invalid-argument-type] Method `__getitem__` of type `(bound method FloatPointTuple.__getitem__(index: int) -> int | float) | Overload[(index: SupportsIndex, /) -> int | float, (index: slice[Any, Any, Any], /) -> tuple[int | float, ...]]` cannot be called with key of type `Literal[1]` on object of type `FloatPointTuple`
-- Found 23 diagnostics
-+ Found 63 diagnostics
+janus (https://github.com/aio-libs/janus)
+- janus/__init__.py:714:18: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ janus/__init__.py:714:18: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- janus/__init__.py:714:36: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ janus/__init__.py:714:36: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- janus/__init__.py:717:24: error[invalid-argument-type] Argument to function `heappop` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ janus/__init__.py:717:24: error[invalid-argument-type] Argument to function `heappop` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:360:34: error[invalid-argument-type] Argument to function `getcoroutinestate` is incorrect: Expected `Coroutine[Any, Any, Any]`, found `Generator[Future[object] | None, None, Unknown] | Coroutine[Any, Any, Unknown]`
++ src/anyio/_backends/_asyncio.py:360:34: error[invalid-argument-type] Argument to function `getcoroutinestate` is incorrect: Expected `Coroutine[Any, Any, Any]`, found `Generator[_TaskYieldType, None, Unknown] | Coroutine[Any, Any, Unknown]`
+- src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | (Sequence[str | bytes | PathLike[str] | PathLike[bytes]] & PathLike[object]) | PathLike[str] | PathLike[bytes]`
++ src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | (Sequence[StrOrBytesPath] & PathLike[object])`
+
+beartype (https://github.com/beartype/beartype)
+- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
++ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: StrPath, debug_override: bool, *, optimization: None = None) -> str, (path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str]`
 
 spack (https://github.com/spack/spack)
 - lib/spack/spack/binary_distribution.py:2075:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `Sized`
@@ -307,19 +210,25 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/cmd/blame.py:168:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `StrPath`, found `object`
 - lib/spack/spack/cmd/commands.py:563:34: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/cmd/commands.py:563:34: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/cmd/diff.py:106:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/cmd/diff.py:106:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/cmd/diff.py:107:30: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/cmd/diff.py:107:30: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/cmd/diff.py:108:30: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/cmd/diff.py:108:30: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `AspFunction` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
 - lib/spack/spack/cmd/providers.py:59:40: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/cmd/providers.py:59:40: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
 - lib/spack/spack/config.py:1153:35: error[invalid-argument-type] Argument to function `isfile` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `object`
 + lib/spack/spack/config.py:1153:35: error[invalid-argument-type] Argument to function `isfile` is incorrect: Expected `FileDescriptorOrPath`, found `object`
 - lib/spack/spack/config.py:1155:34: error[invalid-argument-type] Argument to function `isdir` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `object`
 + lib/spack/spack/config.py:1155:34: error[invalid-argument-type] Argument to function `isdir` is incorrect: Expected `FileDescriptorOrPath`, found `object`
-- lib/spack/spack/directives.py:298:15: error[invalid-assignment] Object of type `list[Unknown | ~str]` is not assignable to `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None`
-+ lib/spack/spack/directives.py:298:15: error[invalid-assignment] Object of type `list[Unknown | ~str]` is not assignable to `PatchesType | None`
-+ lib/spack/spack/directives.py:299:37: error[not-iterable] Object of type `PatchesType | None` is not iterable
-- lib/spack/spack/directives.py:299:37: error[not-iterable] Object of type `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None` may not be iterable
-- lib/spack/spack/directives.py:323:26: error[not-iterable] Object of type `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None` may not be iterable
-- lib/spack/spack/directives.py:324:9: error[call-non-callable] Object of type `str` is not callable
-+ lib/spack/spack/directives.py:323:26: error[not-iterable] Object of type `PatchesType | None` is not iterable
+- lib/spack/spack/directives.py:376:15: error[invalid-assignment] Object of type `list[object]` is not assignable to `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None`
++ lib/spack/spack/directives.py:376:15: error[invalid-assignment] Object of type `list[object]` is not assignable to `PatchesType | None`
++ lib/spack/spack/directives.py:377:37: error[not-iterable] Object of type `PatchesType | None` is not iterable
+- lib/spack/spack/directives.py:377:37: error[not-iterable] Object of type `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None` may not be iterable
+- lib/spack/spack/directives.py:401:26: error[not-iterable] Object of type `((type[PackageBase] | Dependency, /) -> None) | str | list[((type[PackageBase] | Dependency, /) -> None) | str] | None` may not be iterable
+- lib/spack/spack/directives.py:402:9: error[call-non-callable] Object of type `str` is not callable
++ lib/spack/spack/directives.py:401:26: error[not-iterable] Object of type `PatchesType | None` is not iterable
 - lib/spack/spack/installer.py:1309:27: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
 + lib/spack/spack/installer.py:1309:27: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `StrOrBytesPath`, found `Unknown | None | str`
 - lib/spack/spack/installer.py:1322:23: error[invalid-argument-type] Argument to function `rename` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
@@ -330,15 +239,12 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/llnl/util/filesystem.py:1668:35: error[invalid-argument-type] Argument to function `exists` is incorrect: Expected `FileDescriptorOrPath`, found `Unknown | Sized`
 - lib/spack/spack/llnl/util/filesystem.py:1674:25: error[invalid-argument-type] Argument to function `move` is incorrect: Expected `str | PathLike[str]`, found `Unknown | Sized`
 + lib/spack/spack/llnl/util/filesystem.py:1674:25: error[invalid-argument-type] Argument to function `move` is incorrect: Expected `StrPath`, found `Unknown | Sized`
-+ lib/spack/spack/llnl/util/filesystem.py:1830:14: error[no-matching-overload] No overload of function `abspath` matches arguments
 - lib/spack/spack/package_base.py:1531:33: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/package_base.py:1531:33: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
 - lib/spack/spack/package_base.py:1539:84: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/package_base.py:1539:84: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-- lib/spack/spack/solver/asp.py:2650:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitVersion | StandardVersion, list[Provenance]].__getitem__(key: GitVersion | StandardVersion, /) -> list[Provenance]` cannot be called with key of type `(Unknown & ~None) | ConcreteVersion` on object of type `dict[GitVersion | StandardVersion, list[Provenance]]`
-+ lib/spack/spack/solver/asp.py:2650:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitOrStandardVersion, list[Provenance]].__getitem__(key: GitOrStandardVersion, /) -> list[Provenance]` cannot be called with key of type `(Unknown & ~None) | ConcreteVersion` on object of type `dict[GitOrStandardVersion, list[Provenance]]`
-- lib/spack/spack/solver/asp.py:3363:21: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitVersion | StandardVersion, list[Provenance]].__getitem__(key: GitVersion | StandardVersion, /) -> list[Provenance]` cannot be called with key of type `(Unknown & ~AlwaysFalsy) | (ConcreteVersion & ~AlwaysFalsy)` on object of type `dict[GitVersion | StandardVersion, list[Provenance]]`
-+ lib/spack/spack/solver/asp.py:3363:21: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitOrStandardVersion, list[Provenance]].__getitem__(key: GitOrStandardVersion, /) -> list[Provenance]` cannot be called with key of type `(Unknown & ~AlwaysFalsy) | (ConcreteVersion & ~AlwaysFalsy)` on object of type `dict[GitOrStandardVersion, list[Provenance]]`
+- lib/spack/spack/solver/asp.py:2519:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitVersion | StandardVersion, list[Provenance]].__getitem__(key: GitVersion | StandardVersion, /) -> list[Provenance]` cannot be called with key of type `ConcreteVersion` on object of type `dict[GitVersion | StandardVersion, list[Provenance]]`
++ lib/spack/spack/solver/asp.py:2519:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitOrStandardVersion, list[Provenance]].__getitem__(key: GitOrStandardVersion, /) -> list[Provenance]` cannot be called with key of type `ConcreteVersion` on object of type `dict[GitOrStandardVersion, list[Provenance]]`
 - lib/spack/spack/test/cmd/deprecate.py:89:45: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/test/cmd/deprecate.py:89:45: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
 - lib/spack/spack/test/cmd/deprecate.py:90:41: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Unknown | Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
@@ -365,38 +271,127 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/test/llnl/util/lock.py:1112:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ReleaseFnType | ContextManager[Unknown]`, found `def write(t, v, tb) -> Unknown`
 + lib/spack/spack/test/llnl/util/lock.py:1121:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ReleaseFnType | ContextManager[Unknown]`, found `def write(t, v, tb) -> Unknown`
 + lib/spack/spack/test/llnl/util/lock.py:1125:48: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ReleaseFnType | ContextManager[Unknown]`, found `def write(t, v, tb) -> Unknown`
-- lib/spack/spack/test/spec_dag.py:814:32: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `def all(iterable: Iterable[object], /) -> bool`
-+ lib/spack/spack/test/spec_dag.py:814:32: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `def all(iterable: Iterable[object], /) -> bool`
-- lib/spack/spack/test/spec_dag.py:818:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `None`
-+ lib/spack/spack/test/spec_dag.py:818:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `None`
-- lib/spack/spack/test/spec_dag.py:820:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `list[str | None]`
-+ lib/spack/spack/test/spec_dag.py:820:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `list[Unknown | None]`
-- lib/spack/spack/test/spec_semantics.py:2106:19: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec | Unknown` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
-+ lib/spack/spack/test/spec_semantics.py:2106:19: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Spec | Unknown` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- lib/spack/spack/test/spec_dag.py:815:32: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `def all(iterable: Iterable[object], /) -> bool`
++ lib/spack/spack/test/spec_dag.py:815:32: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `def all(iterable: Iterable[object], /) -> bool`
+- lib/spack/spack/test/spec_dag.py:819:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `None`
++ lib/spack/spack/test/spec_dag.py:819:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `None`
+- lib/spack/spack/test/spec_dag.py:821:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `str | list[str] | tuple[str, ...]`, found `list[str | None]`
++ lib/spack/spack/test/spec_dag.py:821:29: error[invalid-argument-type] Argument to function `canonicalize` is incorrect: Expected `DepTypes`, found `list[Unknown | None]`
+- lib/spack/spack/test/spec_semantics.py:2121:19: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Unknown | Spec` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/spack/spack/test/spec_semantics.py:2121:19: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Unknown | Spec` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
 - lib/spack/spack/vendor/attr/validators.py:186:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -> Match[bytes] | None] & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + lib/spack/spack/vendor/attr/validators.py:186:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: _FlagsType = 0) -> Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: _FlagsType = 0) -> Match[bytes] | None] & ~AlwaysTruthy & ~AlwaysFalsy) | (str & ~AlwaysFalsy)` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-+ var/spack/test_repos/spack_repo/builtin_mock/build_systems/compiler.py:139:20: error[no-matching-overload] No overload of function `basename` matches arguments
-- Found 4296 diagnostics
-+ Found 4297 diagnostics
+- Found 4336 diagnostics
++ Found 4335 diagnostics
 
 pip (https://github.com/pypa/pip)
-- src/pip/_internal/build_env.py:58:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-+ src/pip/_internal/build_env.py:58:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `StrPath`, found `str | None`
 - src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
 + src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
 - src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
 + src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
-+ src/pip/_internal/utils/logging.py:214:39: error[invalid-argument-type] Argument to function `_is_broken_pipe_error` is incorrect: Expected `type[BaseException]`, found `(type[BaseException] & ~AlwaysFalsy) | (BaseException & ~AlwaysFalsy) | TracebackType`
-+ src/pip/_internal/utils/logging.py:214:50: error[invalid-argument-type] Argument to function `_is_broken_pipe_error` is incorrect: Expected `BaseException`, found `(type[BaseException] & ~AlwaysFalsy) | (BaseException & ~AlwaysFalsy) | TracebackType`
-+ src/pip/_vendor/distlib/compat.py:1048:17: error[invalid-assignment] Object of type `type[BaseException] | BaseException | TracebackType | None` is not assignable to attribute `__cause__
+- src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
++ src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
++ src/pip/_vendor/packaging/markers.py:163:26: warning[possibly-missing-attribute] Attribute `serialize` may be missing on object of type `MarkerVar | Op | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]`
+- src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `Version | str`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
++ src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `UnparsedVersion`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
+- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `str | ModuleType`, found `str | None`
++ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `Package`, found `str | None`
+- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `str | ModuleType`, found `str | None`
++ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `Package`, found `str | None`
++ src/pip/_vendor/rich/control.py:64:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[int, (...) -> str].__getitem__(key: int, /) -> (...) -> str` cannot be called with key of type `str` on object of type `dict[int, (...) -> str]`
+- src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: int | tuple[int] | tuple[int, int] | tuple[int, int, int, int]) -> Table`
++ src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: PaddingDimensions) -> Table`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `StrOrBytesPath`, found `Unknown | None`
+- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
+- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
+- Found 595 diagnostics
++ Found 597 diagnostics
 
-... (truncated 8832 lines) ...
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+
+stone (https://github.com/dropbox/stone)
+- stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `TagRef | (Unknown & ~AstTagRef)`
++ stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToFloat`, found `TagRef | (Unknown & ~AstTagRef)`
+
+yarl (https://github.com/aio-libs/yarl)
+- tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `None | str | Mapping[str, Sequence[str | SupportsInt] | SupportsInt] | Sequence[tuple[str, Sequence[str | SupportsInt] | SupportsInt]]`, found `memoryview[int]`
++ tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `Query`, found `memoryview[int]`
+- tests/test_url_query.py:231:26: error[invalid-argument-type] Argument to bound method `update_query` is incorrect: Expected `None | str | Mapping[str, Sequence[str | SupportsInt] | SupportsInt] | Sequence[tuple[str, Sequence[str | SupportsInt] | SupportsInt]]`, found `memoryview[int]`
++ tests/test_url_query.py:231:26: error[invalid-argument-type] Argument to bound method `update_query` is incorrect: Expected `Query`, found `memoryview[int]`
+- yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `str | SupportsInt`, found `object`
++ yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `SimpleQuery`, found `object`
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `int | str | None`
++ src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `int | str | None`
+- src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
++ src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
+- src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
++ src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
++ paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `StrOrBytesPath`, found `str | None`
+- paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `tuple[str | None, str | None]`
++ paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `_Auth | None`, found `tuple[str | None, str | None]`
+- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
++ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: StrOrBytesPath, dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
+- paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: str | bytes | PathLike[str] | PathLike[bytes], dst: str | bytes | PathLike[str] | PathLike[bytes], *, follow_symlinks: bool = True) -> None`
++ paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: StrOrBytesPath, dst: StrOrBytesPath, *, follow_symlinks: bool = True) -> None`
+- paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
++ paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `FileDescriptorOrPath`, found `Unknown | str | None`
+- paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `int | float | tuple[int | float | None, int | float | None] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Files | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Auth | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Timeout | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Verify | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `bool | str | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Cert | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `str | tuple[str, str] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `int | float | tuple[int | float | None, int | float | None] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Files | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Auth | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Timeout | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Verify | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `bool | str | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Cert | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `str | tuple[str, str] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/utils.py:395:32: error[not-iterable] Object of type `Sequence[Sequence[str]] | None` may not be iterable
++ paasta_tools/utils.py:395:32: error[not-iterable] Object of type `UnsafeDeployBlacklist` is not iterable
+- paasta_tools/utils.py:400:41: error[not-iterable] Object of type `None` is not iterable
++ paasta_tools/utils.py:400:41: error[not-itera
+
+... (truncated 7763 lines) ...
 ```
 
 </details>
 
 
-No memory usage changes detected ✅
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~287MB
+
+
+```
+
+</details>
+
 
 
 
@@ -413,30 +408,30 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 07:03_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-key` | 284 | 2,279 | 0 |
-| `invalid-argument-type` | 319 | 23 | 2,164 |
-| `invalid-assignment` | 24 | 5 | 165 |
-| `no-matching-overload` | 168 | 0 | 0 |
-| `type-assertion-failure` | 9 | 0 | 111 |
-| `possibly-missing-attribute` | 14 | 1 | 91 |
-| `invalid-return-type` | 7 | 0 | 88 |
-| `unresolved-attribute` | 1 | 1 | 50 |
-| `not-subscriptable` | 1 | 39 | 10 |
-| `unused-ignore-comment` | 10 | 28 | 0 |
-| `unsupported-operator` | 10 | 0 | 19 |
-| `not-iterable` | 0 | 3 | 15 |
+| `invalid-key` | 1,987 | 311 | 0 |
+| `invalid-argument-type` | 112 | 21 | 2,071 |
+| `invalid-assignment` | 70 | 5 | 115 |
+| `type-assertion-failure` | 11 | 0 | 113 |
+| `invalid-return-type` | 24 | 1 | 62 |
+| `possibly-missing-attribute` | 11 | 0 | 60 |
+| `unresolved-attribute` | 1 | 1 | 47 |
+| `unused-ignore-comment` | 10 | 27 | 0 |
+| `unsupported-operator` | 10 | 0 | 16 |
+| `not-iterable` | 0 | 3 | 17 |
+| `no-matching-overload` | 18 | 0 | 0 |
 | `invalid-context-manager` | 1 | 0 | 10 |
-| `invalid-parameter-default` | 0 | 0 | 9 |
+| `not-subscriptable` | 1 | 0 | 9 |
 | `invalid-type-form` | 0 | 0 | 9 |
-| `redundant-cast` | 0 | 4 | 1 |
-| `invalid-await` | 2 | 0 | 1 |
+| `redundant-cast` | 0 | 4 | 2 |
 | `invalid-type-arguments` | 0 | 0 | 3 |
+| `invalid-parameter-default` | 0 | 0 | 2 |
 | `missing-typed-dict-key` | 0 | 2 | 0 |
 | `call-non-callable` | 0 | 1 | 0 |
-| **Total** | **850** | **2,386** | **2,746** |
+| `invalid-await` | 0 | 0 | 1 |
+| **Total** | **2,256** | **376** | **2,537** |
 
 
-**[Full report with detailed diff](https://daa420d1.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://daa420d1.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://594c96ab.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://594c96ab.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -447,17 +442,17 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **degrade performance by 7.42%**
+### Merging this PR will **degrade performance by 57.64%**
 
-<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (882c15a) with <code>main</code> (3b61da0)</sub>
+<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (ce8fadf) with <code>main</code> (745dfa6)</sub>
 
 
 
 ### Summary
 
 `⚡ 2` improved benchmarks  
-`❌ 2` regressed benchmarks  
-`✅ 49` untouched benchmarks  
+`❌ 3` regressed benchmarks  
+`✅ 48` untouched benchmarks  
 `🆕 1` new benchmark  
 
 
@@ -467,11 +462,12 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` altair ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Aaltair&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 4.9 s | 5.2 s | -5.29% |
-| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.9 s | 8.5 s | -7.42% |
-| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 70 ms | N/A |
-| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +5.85% |
-| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +17.77% |
+| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -4.83% |
+| ❌ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.6 s | 18 s | -57.64% |
+| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 86.7 s | 94.7 s | -8.45% |
+| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +6.15% |
+| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 69.7 ms | N/A |
+| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +14.62% |
 
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: cjm/claude-md
 created_at: 2026-01-21T06:07:30Z
-updated_at: 2026-01-21T06:07:59Z
+updated_at: 2026-01-21T07:48:34Z
 url: https://github.com/astral-sh/ruff/pull/22784
-synced_at: 2026-01-21T06:54:06Z
+synced_at: 2026-01-21T07:52:45Z
 ```
 
 # [ty] give Claude better test-running instructions
@@ -34,5 +34,18 @@ _Label `internal` added by @carljm on 2026-01-21 06:07_
 ---
 
 _Review requested from @charliermarsh by @carljm on 2026-01-21 06:07_
+
+---
+
+_Review comment by @MichaReiser on `CLAUDE.md`:31 on 2026-01-21 07:48_
+
+It might be more helpful to say when it is needed
+```suggestion
+Run a specific mdtest within a file (use a substring of the Markdown header text) -- Only use this when debugging a single test:
+```
+
+---
+
+_@MichaReiser approved on 2026-01-21 07:48_
 
 ---
