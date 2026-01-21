@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/installer-concurrency
 created_at: 2026-01-20T22:54:03Z
-updated_at: 2026-01-21T12:07:22Z
+updated_at: 2026-01-21T14:07:07Z
 url: https://github.com/astral-sh/uv/pull/17633
-synced_at: 2026-01-21T12:57:06Z
+synced_at: 2026-01-21T15:06:00Z
 ```
 
 # fix(install): limit preparer concurrency to prevent file handle exhaustion
@@ -80,5 +80,16 @@ _@konstin reviewed on 2026-01-21 12:07_
 _Review comment by @konstin on `crates/uv/src/commands/pip/operations.rs`:752 on 2026-01-21 12:07_
 
 this limits both download and build concurrency by build concurrency. It means that e.g. a machine with 8 threads and default settings would get only 8 parallel downloads instead of 50.
+
+---
+
+_@denyszhak reviewed on 2026-01-21 14:07_
+
+---
+
+_Review comment by @denyszhak on `crates/uv/src/commands/pip/operations.rs`:752 on 2026-01-21 14:07_
+
+Thanks, I missed that
+
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix/pep695-type-alias-solver
 created_at: 2026-01-18T13:12:15Z
-updated_at: 2026-01-21T13:30:38Z
+updated_at: 2026-01-21T14:24:19Z
 url: https://github.com/astral-sh/ruff/pull/22678
-synced_at: 2026-01-21T14:07:21Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [ty] Support solving generics involving PEP 695 type aliases
@@ -237,5 +237,9 @@ _@ibraheemdev reviewed on 2026-01-21 02:33_
 ---
 
 _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-21 08:30_
+
+---
+
+_Review requested from @ibraheemdev by @bxff on 2026-01-21 14:24_
 
 ---

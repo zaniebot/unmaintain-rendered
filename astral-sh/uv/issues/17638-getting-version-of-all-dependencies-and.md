@@ -2,15 +2,15 @@
 number: 17638
 title: Getting version of all dependencies and transitive dependencies
 type: issue
-state: open
+state: closed
 author: dbogdoll
 labels:
   - question
 assignees: []
 created_at: 2026-01-21T13:21:36Z
-updated_at: 2026-01-21T13:21:36Z
+updated_at: 2026-01-21T14:43:02Z
 url: https://github.com/astral-sh/uv/issues/17638
-synced_at: 2026-01-21T14:07:26Z
+synced_at: 2026-01-21T15:05:52Z
 ```
 
 # Getting version of all dependencies and transitive dependencies
@@ -39,5 +39,15 @@ _No response_
 ---
 
 _Label `question` added by @dbogdoll on 2026-01-21 13:21_
+
+---
+
+_Comment by @zanieb on 2026-01-21 13:59_
+
+Like `uv export --no-group dev`?
+
+---
+
+_Closed by @dbogdoll on 2026-01-21 14:43_
 
 ---

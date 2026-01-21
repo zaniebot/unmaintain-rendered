@@ -2,18 +2,19 @@
 number: 22753
 title: "[ty] Emit diagnostic for unimplemented abstract method on @final class"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-21T13:49:34Z
+updated_at: 2026-01-21T14:11:20Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-21T14:07:21Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -643,5 +644,21 @@ you might be able to use this nice helper we have: https://github.com/astral-sh/
 _@AlexWaygood approved on 2026-01-21 11:19_
 
 This looks great, thank you
+
+---
+
+_@AlexWaygood approved on 2026-01-21 14:01_
+
+---
+
+_Merged by @charliermarsh on 2026-01-21 14:11_
+
+---
+
+_Closed by @charliermarsh on 2026-01-21 14:11_
+
+---
+
+_Branch deleted on 2026-01-21 14:11_
 
 ---

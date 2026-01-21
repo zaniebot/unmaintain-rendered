@@ -12,9 +12,9 @@ draft: true
 base: main
 head: cjm/remove-place-widening
 created_at: 2026-01-21T06:11:53Z
-updated_at: 2026-01-21T07:44:32Z
+updated_at: 2026-01-21T14:33:13Z
 url: https://github.com/astral-sh/ruff/pull/22785
-synced_at: 2026-01-21T07:52:45Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [ty] remove Unknown widening of class attributes
@@ -580,5 +580,11 @@ The very first result in the ecosystem report looks overly pedantic :)
 https://github.com/Toufool/AutoSplit/blob/2ff11ab4e7a90ed9decf018ba3717d772dc0cb95/src/capture_method/VideoCaptureDeviceCaptureMethod.py#L130
 
 Do we need to perform literal promotion in more places?
+
+---
+
+_Comment by @carljm on 2026-01-21 14:33_
+
+Yes, I expected we would need literal promotion but wanted to see the ecosystem report; that's why this is in draft mode :)
 
 ---

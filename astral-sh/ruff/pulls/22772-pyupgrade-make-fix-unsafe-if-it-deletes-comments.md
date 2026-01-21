@@ -4,14 +4,15 @@ title: "[`pyupgrade`] Make fix unsafe if it deletes comments (`UP045`, `UP007`)"
 type: pull_request
 state: open
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
 base: main
 head: __UP
 created_at: 2026-01-20T18:07:45Z
-updated_at: 2026-01-20T18:24:23Z
+updated_at: 2026-01-21T14:54:07Z
 url: https://github.com/astral-sh/ruff/pull/22772
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP045`, `UP007`)
@@ -58,16 +59,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:24_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 [*] Use `X | None` for type annotations
 </pre>
 
 </p>
@@ -92,16 +93,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:24_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 [*] Use `X | None` for type annotations
-+ <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 Use `X | None` for type annotations
-- <a href='https://github.com/apache/superset/blob/e1fa3745174e8bfb4ecc7ff5e19963ea55a132a8/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/charts/client_processing.py#L285'>superset/charts/client_processing.py:285:17:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L292'>superset/db_engine_specs/snowflake.py:292:26:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/db_engine_specs/snowflake.py#L314'>superset/db_engine_specs/snowflake.py:314:26:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L2634'>superset/models/helpers.py:2634:17:</a> UP045 [*] Use `X | None` for type annotations
++ <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 Use `X | None` for type annotations
+- <a href='https://github.com/apache/superset/blob/238bebebeced9bd238d8281f7c966ab132e293f7/superset/models/helpers.py#L897'>superset/models/helpers.py:897:29:</a> UP045 [*] Use `X | None` for type annotations
 </pre>
 
 </p>
@@ -119,5 +120,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:24_
 
 
 
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs`:157 on 2026-01-21 14:18_
+
+We also need to update the documentation for both rules, right?
+
+---
+
+_@ntBre requested changes on 2026-01-21 14:18_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-21 14:18_
+
+---
+
+_@chirizxc reviewed on 2026-01-21 14:31_
+
+---
+
+_Review comment by @chirizxc on `crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs`:157 on 2026-01-21 14:31_
+
+Yes, I forget about it😅
 
 ---

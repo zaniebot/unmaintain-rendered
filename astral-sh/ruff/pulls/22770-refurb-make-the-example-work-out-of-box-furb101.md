@@ -2,16 +2,18 @@
 number: 22770
 title: "[`refurb`] Make the example work out of box (`FURB101`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - documentation
 assignees: []
+merged: true
 base: main
 head: patch-2
 created_at: 2026-01-20T17:57:22Z
-updated_at: 2026-01-20T18:11:32Z
+updated_at: 2026-01-21T14:28:33Z
 url: https://github.com/astral-sh/ruff/pull/22770
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [`refurb`] Make the example work out of box (`FURB101`)
@@ -61,5 +63,47 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:11_
 
 
 
+
+---
+
+_Comment by @ntBre on 2026-01-21 14:23_
+
+I'm not particularly opposed to the changes here, but this one seems to work out of the box already: https://play.ruff.rs/13e042e0-ebc9-4233-bf04-078488b4786e
+
+---
+
+_Label `documentation` added by @ntBre on 2026-01-21 14:23_
+
+---
+
+_Comment by @chirizxc on 2026-01-21 14:25_
+
+> I'm not particularly opposed to the changes here, but this one seems to work out of the box already: [play.ruff.rs/13e042e0-ebc9-4233-bf04-078488b4786e](https://play.ruff.rs/13e042e0-ebc9-4233-bf04-078488b4786e)
+
+It's more for people who copy code into their IDE and have the code highlighted in red
+
+---
+
+_Comment by @chirizxc on 2026-01-21 14:27_
+
+(I did just that when I was looking for rules that delete comments in safe fixes)
+
+---
+
+_Comment by @ntBre on 2026-01-21 14:28_
+
+Ah okay fair enough, still seems like an improvement!
+
+---
+
+_@ntBre approved on 2026-01-21 14:28_
+
+---
+
+_Merged by @ntBre on 2026-01-21 14:28_
+
+---
+
+_Closed by @ntBre on 2026-01-21 14:28_
 
 ---

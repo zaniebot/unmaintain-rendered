@@ -7,11 +7,12 @@ author: leandrobbraga
 labels:
   - bug
   - rule
+  - type-inference
 assignees: []
 created_at: 2026-01-20T23:43:47Z
-updated_at: 2026-01-21T13:17:00Z
+updated_at: 2026-01-21T14:49:37Z
 url: https://github.com/astral-sh/ruff/issues/22780
-synced_at: 2026-01-21T14:07:10Z
+synced_at: 2026-01-21T15:05:36Z
 ```
 
 # PLC1802 false negative when a sequence is an attribute
@@ -97,5 +98,25 @@ _Label `rule` added by @amyreese on 2026-01-21 00:33_
 ---
 
 _Label `bug` added by @amyreese on 2026-01-21 00:33_
+
+---
+
+_Comment by @ntBre on 2026-01-21 14:03_
+
+I think this would probably follow a code path more like `is_indirect_sequence`
+
+https://github.com/astral-sh/ruff/blob/9f34b4634d407b4a2fd1257bfea65f5b4c0eacf0/crates/ruff_linter/src/rules/pylint/rules/len_test.rs#L130-L133
+
+than `is_sequence`, which uses `ResolvedPythonType` because we have to resolve the definition and other assignments to the attribute. I think it would be very tricky to do that reliably without type inference.
+
+---
+
+_Label `type-inference` added by @ntBre on 2026-01-21 14:03_
+
+---
+
+_Comment by @leandrodamascena on 2026-01-21 14:49_
+
+I had the same problem and was about to open a new issue, but I found this one. I just submitted a PR for review.
 
 ---

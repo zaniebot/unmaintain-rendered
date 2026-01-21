@@ -9,9 +9,9 @@ labels:
   - great writeup
 assignees: []
 created_at: 2026-01-15T15:28:39Z
-updated_at: 2026-01-20T09:39:22Z
+updated_at: 2026-01-21T14:38:49Z
 url: https://github.com/astral-sh/uv/issues/17485
-synced_at: 2026-01-20T10:43:30Z
+synced_at: 2026-01-21T15:05:52Z
 ```
 
 # 401s against private Artifactory repository
@@ -289,5 +289,11 @@ I understand we're using artifactory's [get-user-encrypted-password][1] API to o
 
 
 [1]: https://jfrog.com/help/r/jfrog-rest-apis/get-user-encrypted-password
+
+---
+
+_Comment by @konstin on 2026-01-21 14:38_
+
+Could you open a ticket with JFrog with the authentication backend information? My best guess is that this is a bug that only occurs in artifactory in the combination of this auth backend and the parallel requests from uv.
 
 ---

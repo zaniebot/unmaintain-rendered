@@ -8,9 +8,9 @@ labels:
   - core
 assignees: []
 created_at: 2022-09-29T09:42:17Z
-updated_at: 2026-01-21T13:52:58Z
+updated_at: 2026-01-21T14:02:09Z
 url: https://github.com/astral-sh/ruff/issues/283
-synced_at: 2026-01-21T14:07:07Z
+synced_at: 2026-01-21T15:05:33Z
 ```
 
 # Meta issue: plugin system
@@ -949,5 +949,21 @@ It’s different for something that’s integrated into your code (like e.g. the
 PS: for anyone still caring about Flake8 and consequently pyproject.toml support, technically there are no blockers anymore according to this: https://github.com/PyCQA/flake8/issues/234#issuecomment-812800722
 - [Python 3.11+ has tomllib](https://docs.python.org/3/library/tomllib.html)
 - [pip 25.3 removed setup.py support](https://pip.pypa.io/en/stable/news/#v25-3)
+
+---
+
+_Comment by @leandrodamascena on 2026-01-21 13:57_
+
+You're right about `pyproject.toml` - Flake8 doesn't support it natively. My plugin uses pyproject.toml for packaging (hatch/uv), but yeah, Flake8 config still needs .flake8 or setup.cfg. Not perfect.
+
+I went with `Flake8` mainly because of reach. Most Python projects I've seen already have Flake8 in their CI or pre-commit setup, even IDE with plugin, so adding a plugin is just one extra dependency. Since I can't control what external users have installed, meeting them where they are seemed like the safer bet.
+
+`Fixit` looks interesting - I'll check it out. My only hesitation is that it's less common, so shipping a `Fixit` plugin means asking users to add another tool to their setup. With `Flake8`, we have more people already have it somewhere in their workflow.
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 14:01_
+
+Thanks for raising awareness for your use case. I'd like to ask you to keep discussions on this issue limited because many users are subscribed to it. Feel free to open a new discussion to discuss flake8/fixit and other alternatives.
 
 ---

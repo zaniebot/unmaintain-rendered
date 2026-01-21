@@ -2,16 +2,18 @@
 number: 22773
 title: "[`pyupgrade`] Make fix unsafe if it deletes comments (`UP041`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: UP041
 created_at: 2026-01-20T18:19:54Z
-updated_at: 2026-01-20T18:30:43Z
+updated_at: 2026-01-21T14:12:11Z
 url: https://github.com/astral-sh/ruff/pull/22773
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP041`)
@@ -57,5 +59,33 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:30_
 
 
 
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-21 14:04_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pyupgrade/rules/timeout_error_alias.rs`:44 on 2026-01-21 14:05_
+
+```suggestion
+/// within the exception expression range.
+```
+
+I'd probably err on the slightly shorter side like in your other PRs. I think it's clear enough why deleting comments is bad.
+
+---
+
+_@ntBre approved on 2026-01-21 14:07_
+
+Thanks! I just had one nit about the message that I'll apply.
+
+---
+
+_Merged by @ntBre on 2026-01-21 14:12_
+
+---
+
+_Closed by @ntBre on 2026-01-21 14:12_
 
 ---

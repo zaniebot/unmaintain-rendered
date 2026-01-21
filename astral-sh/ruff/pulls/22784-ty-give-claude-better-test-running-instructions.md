@@ -2,17 +2,18 @@
 number: 22784
 title: "[ty] give Claude better test-running instructions"
 type: pull_request
-state: open
+state: merged
 author: carljm
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: cjm/claude-md
 created_at: 2026-01-21T06:07:30Z
-updated_at: 2026-01-21T07:48:34Z
+updated_at: 2026-01-21T14:55:05Z
 url: https://github.com/astral-sh/ruff/pull/22784
-synced_at: 2026-01-21T07:52:45Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [ty] give Claude better test-running instructions
@@ -47,5 +48,17 @@ Run a specific mdtest within a file (use a substring of the Markdown header text
 ---
 
 _@MichaReiser approved on 2026-01-21 07:48_
+
+---
+
+_Merged by @carljm on 2026-01-21 14:55_
+
+---
+
+_Closed by @carljm on 2026-01-21 14:55_
+
+---
+
+_Branch deleted on 2026-01-21 14:55_
 
 ---

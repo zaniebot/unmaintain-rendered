@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/defer-namedtuple
 created_at: 2026-01-19T11:42:59Z
-updated_at: 2026-01-19T15:35:49Z
+updated_at: 2026-01-21T14:55:43Z
 url: https://github.com/astral-sh/ruff/pull/22718
-synced_at: 2026-01-19T16:27:07Z
+synced_at: 2026-01-21T15:05:46Z
 ```
 
 # [ty] Support recursive and stringified annotations in functional `typing.NamedTuple`s
@@ -325,5 +325,77 @@ yeah, that would be great!
 _Comment by @AlexWaygood on 2026-01-19 15:35_
 
 (this PR _is_ one that I'd love @carljm and/or @dcreager to take a quick look at 😅)
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:182 on 2026-01-21 14:14_
+
+super nit
+
+```suggestion
+When `NamedTuple` is used directly as a base class without being assigned to a variable first, it's a
+```
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:231 on 2026-01-21 14:19_
+
+This means the `X` in `next`'s type annotation, not the `X` that names the `NamedTuple`, right?
+
+
+```suggestion
+# The string "X" in "next"'s type refers to the internal name, not "BadNode", so it won't resolve:
+```
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/class.rs`:5717 on 2026-01-21 14:23_
+
+I like how the cycle function is right next to the tracked function itself. 
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/class.rs`:5785 on 2026-01-21 14:25_
+
+Does this suggest that it's okay to have a dangling call outside of a base class list, but then the call _cannot_ have forward/string references?
+
+Something like
+
+```py
+def foo(base):
+    class Point(base): ...
+    return Point
+
+foo(NamedTuple("Good", (("x", int), ("y", int))))             # okay
+foo(NamedTuple("Bad", (("x", "Forward"), ("y", "Forward"))))  # bad
+
+class Forward: ...
+```
+
+(Or are dangling calls only allowed in base class lists?)
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/generics.rs`:1743 on 2026-01-21 14:49_
+
+I was going to suggest making `seen` a field of the SpecBuilder, to reduce the churn on these method signatures. But on second thought I'm not sure it would be worth it — the naive approach would mean that if we call `infer_map` more than once with the same formal/actual type, we would skip all inference work for the second and later calls. But the result is important, since we use it to produce "invalid argument" diagnostics. So you'd have to make `seen` a map, and store the method result, so that we still return the same result for later (cached) calls. And at that point I'm not convinced it's worth the effort just to avoid a new method argument.
+
+---
+
+_@dcreager approved on 2026-01-21 14:50_
+
+No concerns with the implementation, just some clarifying questions for my own curiosity
+
+---
+
+_@AlexWaygood reviewed on 2026-01-21 14:54_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5785 on 2026-01-21 14:54_
+
+Dangling calls are allowed in arbitrary locations, but I _think_ they can only cause _problematic cycles_ if they appear in class bases or other locations where we know we will need to defer inference (such as the bases list passed to `type()` calls -- see https://github.com/astral-sh/ty/issues/2564).
+
+I would not describe myself as 100% confident that this is correct, so if you can think of any other examples where this PR branch stack-overflows or panics, I'd love to know about them 😆
 
 ---

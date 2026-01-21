@@ -10,9 +10,9 @@ draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-21T13:53:12Z
+updated_at: 2026-01-21T14:45:06Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-21T14:07:33Z
+synced_at: 2026-01-21T15:05:59Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file for pylock.toml export
@@ -601,7 +601,7 @@ _Comment by @codspeed-hq[bot] on 2026-01-21 01:47_
 
 ### Merging this PR will **not alter performance**
 
-<sub>Comparing <code>gaborbernat:toml-extra</code> (3b10b90) with <code>main</code> (ba13064)</sub>
+<sub>Comparing <code>gaborbernat:toml-extra</code> (147dec1) with <code>main</code> (7c9c75d)</sub>
 
 
 
@@ -633,5 +633,27 @@ What do you mean here exactly? Just so I fix the right thing 😅
 
  For now trying to understand the reason for that soke failing test.
 
+
+---
+
+_Comment by @gaborbernat on 2026-01-21 14:24_
+
+> For now trying to understand the reason for that soke failing test.
+
+Ah https://github.com/jax-ml/jax/issues/34532
+
+---
+
+_Comment by @konstin on 2026-01-21 14:25_
+
+> For now trying to understand the reason for that soke failing test.
+
+That's caused by jaxlib: https://github.com/jax-ml/jax/issues/34532, it's fixed on main.
+
+> > Once the `extra` vs. `extras` part is working
+> 
+> What do you mean here exactly? Just so I fix the right thing 😅
+
+Half the task here is figuring that out :sweat_smile: We know that list of extras of the lockfile, the top level extras, use `in extras`, but some of those extras need to be propagated to internal extras that use `extra == `. The implementation needs to figure out which is which and rewrite the markers accordingly, using information from the resolver.
 
 ---

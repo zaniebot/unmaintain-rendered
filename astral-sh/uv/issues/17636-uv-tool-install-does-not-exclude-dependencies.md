@@ -6,11 +6,12 @@ state: open
 author: FredrikBakken
 labels:
   - bug
+  - needs-decision
 assignees: []
 created_at: 2026-01-21T09:58:52Z
-updated_at: 2026-01-21T09:58:52Z
+updated_at: 2026-01-21T14:31:20Z
 url: https://github.com/astral-sh/uv/issues/17636
-synced_at: 2026-01-21T11:00:05Z
+synced_at: 2026-01-21T15:05:52Z
 ```
 
 # `uv tool install` does not exclude dependencies defined in `exclude_dependencies`
@@ -44,5 +45,27 @@ Python 3.14.2
 ---
 
 _Label `bug` added by @FredrikBakken on 2026-01-21 09:58_
+
+---
+
+_Comment by @zanieb on 2026-01-21 14:19_
+
+`exclude-dependencies` isn't standard metadata and is only respected during operations within that project, not operations installing that project as a package.
+
+We could consider reading it for local paths.
+
+---
+
+_Label `needs-decision` added by @zanieb on 2026-01-21 14:19_
+
+---
+
+_Comment by @FredrikBakken on 2026-01-21 14:31_
+
+Awesome, @zanieb !
+
+To provide some more context to the situation - it is a CLI tool that we use to communicate with Databricks using `databricks-connect`, however, since we also have another dependency that depends on `pyspark`, we're encountering a race condition between these two dependencies so that we have what feels like a 50/50 chance of getting a `AnalyzeArgument`-error. This is a known issue and also described here: https://docs.databricks.com/aws/en/dev-tools/databricks-connect/python/troubleshooting#conflicting-pyspark-installations
+
+The solution for us has been to add `pyspark` to the `exclude_dependencies` definitions to avoid this conflict.
 
 ---

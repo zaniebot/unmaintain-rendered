@@ -2,14 +2,14 @@
 number: 2525
 title: "Emit diagnostic for unimplemented abstract method on @final class"
 type: issue
-state: open
+state: closed
 author: vepain
 labels: []
 assignees: []
 created_at: 2026-01-15T21:43:37Z
-updated_at: 2026-01-20T02:41:32Z
+updated_at: 2026-01-21T14:11:20Z
 url: https://github.com/astral-sh/ty/issues/2525
-synced_at: 2026-01-20T03:42:31Z
+synced_at: 2026-01-21T15:05:30Z
 ```
 
 # Emit diagnostic for unimplemented abstract method on @final class
@@ -81,5 +81,9 @@ _Renamed from "False negative for unimplemented abstract method for classes deco
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-20 02:41_
+
+---
+
+_Closed by @charliermarsh on 2026-01-21 14:11_
 
 ---
