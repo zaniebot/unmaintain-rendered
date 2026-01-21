@@ -2,16 +2,18 @@
 number: 22774
 title: "[`pyupgrade`] Make fix unsafe if it deletes comments (`UP039`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: UP039
 created_at: 2026-01-20T18:26:26Z
-updated_at: 2026-01-20T18:42:19Z
+updated_at: 2026-01-21T13:54:45Z
 url: https://github.com/astral-sh/ruff/pull/22774
-synced_at: 2026-01-20T18:47:35Z
+synced_at: 2026-01-21T14:07:21Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP039`)
@@ -57,5 +59,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:42_
 
 
 
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-21 13:54_
+
+---
+
+_@ntBre approved on 2026-01-21 13:54_
+
+---
+
+_Merged by @ntBre on 2026-01-21 13:54_
+
+---
+
+_Closed by @ntBre on 2026-01-21 13:54_
 
 ---

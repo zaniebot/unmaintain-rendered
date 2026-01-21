@@ -8,9 +8,9 @@ labels:
   - core
 assignees: []
 created_at: 2022-09-29T09:42:17Z
-updated_at: 2026-01-09T08:39:03Z
+updated_at: 2026-01-21T13:52:58Z
 url: https://github.com/astral-sh/ruff/issues/283
-synced_at: 2026-01-12T15:54:40Z
+synced_at: 2026-01-21T14:07:07Z
 ```
 
 # Meta issue: plugin system
@@ -907,5 +907,47 @@ _Comment by @jcampbell05 on 2026-01-09 08:35_
 Just a thought but would it be possible for Ruff to develop a API for Rust or even just WASM plugins, then this idea of lightweight syntax / DSL could be served by such a plugin ?
 
 https://tartanllama.xyz/posts/wasm-plugins/
+
+---
+
+_Comment by @leandrodamascena on 2026-01-21 12:59_
+
+Hey folks, I just wanted to add another use case here. I work on an SDK that needs custom lint rules to catch domain-specific issues - things that don't make sense as upstream rules but are critical for our users.
+
+I use Ruff daily and love it - it's become essential for my workflow. But without plugin support, I had to fall back to Flake8 just for these custom rules. It works, but now users need two linters instead of one.
+
+I get that plugin support is complex (performance, sandboxing, API stability), but the lack of it is a real blocker for teams with internal standards or SDK/framework-specific rules. Would love to see this move forward, even if it's a limited/experimental API to start.
+
+---
+
+_Comment by @CarrotManMatt on 2026-01-21 13:22_
+
+> I had to fall back to Flake8 just for these custom rules
+
+For temporary plugin support [Fixit](https://fixit.readthedocs.io) using [LibCST](https://libcst.readthedocs.io) has been much more ergonomic to develop with rather than Flake8
+
+---
+
+_Comment by @leandrodamascena on 2026-01-21 13:27_
+
+> > I had to fall back to Flake8 just for these custom rules
+> 
+> For temporary plugin support [Fixit](https://fixit.readthedocs.io) using [LibCST](https://libcst.readthedocs.io) has been much more ergonomic to develop with rather than Flake8
+
+Hi @CarrotManMatt, thanks for the reply. I wasn't familiar with `Fixit`, it looks good, but adoption seems quite low yet, doesn't it? I'm just looking at pypi stats numbers..
+
+The supply chain is important in this case because it's not about internal customers that I can control, but rather an external audience, and Flak8 is much more popular.
+
+---
+
+_Comment by @flying-sheep on 2026-01-21 13:35_
+
+Flake8 still doesn’t have pyproject.toml support, right? Idk, I’d rather trust something that follows established community standards than something that’s only relevant because it was there first and has inertia.
+
+It’s different for something that’s integrated into your code (like e.g. the testing framework), but the only issue with linters is that each added linter has to parse and traverse your codebase independently, so I wouldn’t add Fixit if I’d *also* need Flake8, but next to Ruff, I’d definitely prefer Fixit if necessary.
+
+PS: for anyone still caring about Flake8 and consequently pyproject.toml support, technically there are no blockers anymore according to this: https://github.com/PyCQA/flake8/issues/234#issuecomment-812800722
+- [Python 3.11+ has tomllib](https://docs.python.org/3/library/tomllib.html)
+- [pip 25.3 removed setup.py support](https://pip.pypa.io/en/stable/news/#v25-3)
 
 ---

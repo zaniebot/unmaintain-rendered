@@ -2,17 +2,18 @@
 number: 2576
 title: Bump version to 0.0.13
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - release
 assignees: []
+merged: true
 base: main
 head: micha/bump-0.0.13
 created_at: 2026-01-21T10:51:31Z
-updated_at: 2026-01-21T11:04:03Z
+updated_at: 2026-01-21T13:05:31Z
 url: https://github.com/astral-sh/ty/pull/2576
-synced_at: 2026-01-21T11:58:27Z
+synced_at: 2026-01-21T14:07:04Z
 ```
 
 # Bump version to 0.0.13
@@ -140,5 +141,17 @@ _@AlexWaygood approved on 2026-01-21 11:02_
 _Comment by @AlexWaygood on 2026-01-21 11:02_
 
 Thank you!
+
+---
+
+_Merged by @MichaReiser on 2026-01-21 13:05_
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 13:05_
+
+---
+
+_Branch deleted on 2026-01-21 13:05_
 
 ---

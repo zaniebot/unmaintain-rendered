@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/metaclass
 created_at: 2025-12-31T16:45:36Z
-updated_at: 2026-01-21T04:29:29Z
+updated_at: 2026-01-21T13:49:34Z
 url: https://github.com/astral-sh/ruff/pull/22317
-synced_at: 2026-01-21T04:56:55Z
+synced_at: 2026-01-21T14:07:21Z
 ```
 
 # [ty] Respect `__new__` and metaclass `__call__` return types
@@ -43,18 +43,18 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 16:47_
 
 ## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/) improved 🎉
 
-The percentage of diagnostics emitted that were expected errors increased from 77.42% to 77.74%. The percentage of expected errors that received a diagnostic increased from 60.49% to 60.67%.
+The percentage of diagnostics emitted that were expected errors increased from 77.47% to 77.79%. The percentage of expected errors that received a diagnostic increased from 60.67% to 60.85%.
 
 ### Summary
 
 | Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
-| True Positives  | 672 | 674 | +2 | ⏫ (✅) |
+| True Positives  | 674 | 676 | +2 | ⏫ (✅) |
 | False Positives | 196 | 193 | -3 | ⏬ (✅) |
-| False Negatives | 439 | 437 | -2 | ⏬ (✅) |
-| Total Diagnostics | 868 | 867 | -1 | ⏬ |
-| Precision | 77.42% | 77.74% | +0.32% | ⏫ (✅) |
-| Recall | 60.49% | 60.67% | +0.18% | ⏫ (✅) |
+| False Negatives | 437 | 435 | -2 | ⏬ (✅) |
+| Total Diagnostics | 870 | 869 | -1 | ⏬ |
+| Precision | 77.47% | 77.79% | +0.32% | ⏫ (✅) |
+| Recall | 60.67% | 60.85% | +0.18% | ⏫ (✅) |
 
 
 
@@ -343,7 +343,7 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 + tests/execution/test_executor.py:111:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:115:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expec
 
-... (truncated 2734 lines) ...
+... (truncated 2710 lines) ...
 ```
 
 </details>
@@ -462,10 +462,10 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 19:47_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `invalid-argument-type` | 1,177 | 9 | 24 |
-| `possibly-missing-attribute` | 738 | 13 | 26 |
+| `possibly-missing-attribute` | 735 | 13 | 26 |
 | `unresolved-attribute` | 249 | 6 | 26 |
-| `unsupported-operator` | 100 | 2 | 111 |
-| `invalid-return-type` | 62 | 0 | 5 |
+| `unsupported-operator` | 101 | 2 | 111 |
+| `invalid-return-type` | 63 | 4 | 5 |
 | `invalid-assignment` | 31 | 1 | 6 |
 | `not-subscriptable` | 30 | 0 | 0 |
 | `too-many-positional-arguments` | 16 | 0 | 0 |
@@ -476,11 +476,12 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 19:47_
 | `invalid-parameter-default` | 1 | 0 | 7 |
 | `redundant-cast` | 1 | 4 | 0 |
 | `invalid-await` | 2 | 0 | 0 |
+| `type-assertion-failure` | 0 | 2 | 0 |
 | `unknown-argument` | 1 | 0 | 0 |
-| **Total** | **2,439** | **51** | **205** |
+| **Total** | **2,438** | **57** | **205** |
 
 
-**[Full report with detailed diff](https://2a962561.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://2a962561.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://80b83f30.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80b83f30.ty-ecosystem-ext.pages.dev/timing))
 
 
 

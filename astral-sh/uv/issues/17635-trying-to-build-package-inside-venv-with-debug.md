@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T00:53:25Z
-updated_at: 2026-01-21T00:54:10Z
+updated_at: 2026-01-21T13:12:28Z
 url: https://github.com/astral-sh/uv/issues/17635
-synced_at: 2026-01-21T02:01:23Z
+synced_at: 2026-01-21T14:07:26Z
 ```
 
 # Trying to build package inside venv with debug python build fails with "the built wheel .. is not compatbile with the current Python ..."
@@ -21,7 +21,7 @@ _@ikrommyd_
 
 ### Summary
 
-I'm trying to install https://github.com/cms-nanoAOD/correctionlib in a local venv created with `uv venv` with `uv pip install .`. which normally works fine. However, this time I created my venv using a debug + thread sanitized local build of python using `uv venv -p /Users/iason/.pyenv/versions/3.14t-dev-tsan-debug/bin/python`.
+I'm trying to install https://github.com/cms-nanoAOD/correctionlib in a local venv created with `uv venv` with `uv pip install .`. which normally works fine. However, this time I created my venv using a debug local build of python using `uv venv -p /Users/iason/.pyenv/versions/3.14t-dev-debug/bin/python`.
 Trying to install the package now with `uv pip install -v .` errors with 
 ```
 The built wheel `correctionlib-2.7.1.dev14+gb6a34853d.d20260121-cp314-cp314-macosx_26_0_arm64.whl` is not compatible with the current Python 3.14 on macos aarch64

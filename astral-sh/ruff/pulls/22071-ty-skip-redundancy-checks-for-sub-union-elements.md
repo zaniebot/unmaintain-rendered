@@ -2,7 +2,7 @@
 number: 22071
 title: "[ty] Skip redundancy checks for sub-union-elements"
 type: pull_request
-state: open
+state: closed
 author: MichaReiser
 labels:
   - performance
@@ -12,9 +12,9 @@ draft: true
 base: main
 head: micha/union-builder-sub-unions
 created_at: 2025-12-19T07:54:14Z
-updated_at: 2025-12-27T14:04:04Z
+updated_at: 2026-01-21T13:41:28Z
 url: https://github.com/astral-sh/ruff/pull/22071
-synced_at: 2026-01-12T15:57:40Z
+synced_at: 2026-01-21T14:07:21Z
 ```
 
 # [ty] Skip redundancy checks for sub-union-elements
@@ -227,5 +227,15 @@ Yeah, they look suspicious.
 ---
 
 _Converted to draft by @MichaReiser on 2025-12-22 14:06_
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 13:41_
+
+I don't see getting time to look at this anytime soon, so I'll close the PR but I'll open a follow up issue, because the improvement on seems promising.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 13:41_
 
 ---

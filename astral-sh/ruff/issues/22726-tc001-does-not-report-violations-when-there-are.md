@@ -2,15 +2,15 @@
 number: 22726
 title: TC001 does not report violations when there are other modules from the same package not violating
 type: issue
-state: open
+state: closed
 author: samueljsb
 labels:
   - question
 assignees: []
 created_at: 2026-01-19T15:59:06Z
-updated_at: 2026-01-21T12:08:10Z
+updated_at: 2026-01-21T13:42:53Z
 url: https://github.com/astral-sh/ruff/issues/22726
-synced_at: 2026-01-21T12:56:42Z
+synced_at: 2026-01-21T14:07:10Z
 ```
 
 # TC001 does not report violations when there are other modules from the same package not violating
@@ -130,5 +130,9 @@ _Label `question` added by @ntBre on 2026-01-19 22:27_
 _Comment by @samueljsb on 2026-01-21 12:08_
 
 Ahh that makes sense. Having an option to enable this behaviour is good enough for me 🙂  Thanks!
+
+---
+
+_Closed by @ntBre on 2026-01-21 13:42_
 
 ---

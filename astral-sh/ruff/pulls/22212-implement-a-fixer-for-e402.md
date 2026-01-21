@@ -10,9 +10,9 @@ draft: true
 base: main
 head: e402-fixer
 created_at: 2025-12-26T19:05:54Z
-updated_at: 2026-01-21T10:36:58Z
+updated_at: 2026-01-21T13:32:42Z
 url: https://github.com/astral-sh/ruff/pull/22212
-synced_at: 2026-01-21T10:59:59Z
+synced_at: 2026-01-21T14:07:21Z
 ```
 
 # Implement a fixer for E402
@@ -76,5 +76,11 @@ Thanks for working on this. I'll close this PR due to inactivity. Feel free to r
 ---
 
 _Closed by @MichaReiser on 2026-01-21 10:36_
+
+---
+
+_Comment by @ntBre on 2026-01-21 13:32_
+
+Oops, I think this one was waiting on my review. Sorry @PeterJCLaw for the delay! If you'd still like me to have a look, please let me know, and I will reopen and add this back to my review queue.
 
 ---
