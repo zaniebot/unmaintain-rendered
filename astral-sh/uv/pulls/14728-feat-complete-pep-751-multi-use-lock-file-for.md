@@ -10,9 +10,9 @@ draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-21T01:47:21Z
+updated_at: 2026-01-21T02:35:33Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-21T02:01:30Z
+synced_at: 2026-01-21T03:00:43Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file for pylock.toml export
@@ -597,9 +597,20 @@ _Renamed from "feat: Complete PEP 751 multi-use lock file implementation for pyl
 _Comment by @codspeed-hq[bot] on 2026-01-21 01:47_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-<!-- __CODSPEED_ERROR_PERFORMANCE_REPORT_COMMENT__ -->
-## Unable to generate the performance report
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/uv/branches/gaborbernat%3Atoml-extra?utm_source=github&utm_medium=comment&utm_content=header)
 
-There was an internal error while processing the run's data. We're working on fixing the issue. Feel free to contact us on Discord or at [support@codspeed.io](mailto:support@codspeed.io) if the issue persists.
+### Merging this PR will **not alter performance**
+
+<sub>Comparing <code>gaborbernat:toml-extra</code> (0c2d2c1) with <code>main</code> (ba13064)</sub>
+
+
+
+### Summary
+
+`✅ 5` untouched benchmarks  
+
+
+
+
 
 ---

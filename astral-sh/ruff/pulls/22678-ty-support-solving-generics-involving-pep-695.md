@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix/pep695-type-alias-solver
 created_at: 2026-01-18T13:12:15Z
-updated_at: 2026-01-18T16:22:52Z
+updated_at: 2026-01-21T02:33:06Z
 url: https://github.com/astral-sh/ruff/pull/22678
-synced_at: 2026-01-18T17:26:31Z
+synced_at: 2026-01-21T03:00:30Z
 ```
 
 # [ty] Support solving generics involving PEP 695 type aliases
@@ -532,5 +532,33 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:33_
 ---
 
 _Renamed from "[ty] Support solving generics involving PEP 695 type aliases (#1851)" to "[ty] Support solving generics involving PEP 695 type aliases" by @AlexWaygood on 2026-01-18 16:22_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/generics.rs`:2085 on 2026-01-21 02:28_
+
+This seems unrelated to the type alias change? Handling of unions is a known limitation of the current constraint solver, I don't think it should be addressed in this PR.
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/generics.rs`:1748 on 2026-01-21 02:31_
+
+I'd prefer if we put this branch into the match statement directly (as the first branch, if necessary).
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/generics.rs`:2078 on 2026-01-21 02:32_
+
+```suggestion
+            // Expand type aliases in the actual type.
+            //
+            // This is placed at the end of the match block to avoid expanding the type alias
+            // when it can be matched directly against a type variable in the formal type,
+            // e.g., `reveal_type(alias)` should reveal the type alias, not its value type.
+```
+
+---
+
+_@ibraheemdev reviewed on 2026-01-21 02:33_
 
 ---
