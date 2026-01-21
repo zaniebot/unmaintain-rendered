@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver pins direct dependency instead of backtracking, causing Python-incompatible resolution - astral-sh/uv #17649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolver pins direct dependency instead of backtracking, causing Python-incompatible resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17649">#17649</a>
+        opened by <a href="https://github.com/alexjbuck">@alexjbuck</a>
+        on 2026-01-21 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alexjbuck">@alexjbuck</a></div>
+            <div class="timeline-body">Summary
+<p>This is related to many existing issues that are closed as &quot;working as designed&quot; related to <code>numba</code> and incorrect resolution, however I think this is a bit different.</p>
+<p>Prior issues:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8863 - Closed as duplicate</li>
+<li>https://github.com/astral-sh/uv/issues/14484 - Closed</li>
+<li>https://github.com/astral-sh/uv/issues/4022 - Design discussion: uv intentionally ignores requires-python upper
+bounds</li>
+</ul>
+Minimal reproduction
+<pre><code># pyproject.toml
+[project]
+name = &quot;uv-resolution-bug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;openai-whisper&gt;=20250625&quot;, &quot;numpy&gt;=1.26.4&quot;]
+</code></pre>
+The issue
+<p>Expected: at some point uv should try backtracking numpy when the latest resolution (2.4.1 in this case) is unable to resolve.</p>
+<p>Actual: uv locks numpy at 2.4.1, backtracks numba to 0.53.1, which pulls llvmlite 0.36.0 (Python &lt;3.10 only), and fails at build time without ever attempting earlier versions of numpy.</p>
+<p>Output</p>
+<pre><code>$ rm -rf .venv uv.lock &amp;&amp; uv sync
+$ uv sync
+  Using CPython 3.12.11
+  Creating virtual environment at: .venv
+  Resolved 43 packages in 7ms
+    × Failed to build `llvmlite==0.36.0`
+    ├─▶ The build backend returned an error
+    ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+        [stderr]
+        ...
+        RuntimeError: Cannot install on Python version 3.12.11; only versions &gt;=3.6,&lt;3.10 are supported.
+
+        hint: This usually indicates a problem with the package or the build environment.
+    help: `llvmlite` (v0.36.0) was included because `uv-resolution-bug` (v0.1.0) depends on
+          `openai-whisper` (v20250625) which depends on `numba` (v0.53.1) which depends on `llvmlite`
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/24780142/verbose.log"><code>uv sync --verbose</code></a></p>
+Workaround
+<p>Adding an upper bound to numpy or adding a lower bound to numba allows resolving. The thing that feels wrong about this is that the valid resolution <em>is</em> within the defined space. <code>numpy==2.3.5</code> satisfies <code>numpy&gt;=1.26.4</code> and there&#x27;s no explicit bounds on numba (in the minimal example), but <code>uv</code> fails to find this resolution, and apparently fails to do so because it locks in numpy 2.4.1 and doesn&#x27;t backtrack to find an earlier numpy version that works.</p>
+Working versions
+<pre><code>[project]
+name = &quot;uv-resolution-bug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;numba&gt;=0.63.1&quot;,
+    &quot;numpy&gt;=1.26.4&quot;,
+    &quot;openai-whisper&gt;=20250625&quot;,
+]
+</code></pre>
+<p>or</p>
+<pre><code>[project]
+name = &quot;uv-resolution-bug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;numpy&gt;=1.26.4,&lt;2.4&quot;,
+    &quot;openai-whisper&gt;=20250625&quot;
+]
+</code></pre>
+The difference
+<p>The prior issues focus on uv ignoring <code>requires-python</code> upper bounds. This issue is about <strong>uv not
+backtracking a direct dependency when a lower (but still satisfying) version would resolve the conflict</strong>.</p>
+<p>Specifically:</p>
+<ul>
+<li>With just <code>openai-whisper&gt;=20250625</code>: uv correctly resolves <code>numpy==2.3.5</code>, <code>numba==0.63.1</code></li>
+<li>With <code>openai-whisper&gt;=20250625</code> + <code>numpy&gt;=1.26.4</code> from a clean sync (no venv, no lockfile): uv selects <code>numpy==2.4.1</code>, then backtracks numba until it finds</li>
+</ul>
+<p><code>numba==0.53.1</code> (which has no numpy upper bound but requires Python &lt;3.10)</p>
+<p>The constraint <code>numpy&gt;=1.26.4</code> is satisfied by <code>numpy==2.3.5</code>, yet uv doesn&#x27;t backtrack numpy and instead keeps backtracking numba until it hits a version incompatible with Python 3.12.</p>
+Environment
+<ul>
+<li>uv: 0.9.26 (ee4f00362 2026-01-15)</li>
+<li>OS: macOS 14 (Darwin 24.6.0 arm64)</li>
+<li>Python: 3.12.11</li>
+</ul>
+Platform
+<p>Darwin 24.6.0 arm64</p>
+Version
+<p>uv 0.9.26 (ee4f00362 2026-01-15)</p>
+Python version
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/alexjbuck">@alexjbuck</a> on 2026-01-21 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from &quot;Resolution selects Python-incompatible transitive dependency instead of backtracking direct dependency&quot; to &quot;Resolver pins direct dependency instead of backtracking, causing Python-incompatible resolution&quot; by <a href="https://github.com/alexjbuck">@alexjbuck</a> on 2026-01-21 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 22:11:17 UTC
+    </footer>
+</body>
+</html>
