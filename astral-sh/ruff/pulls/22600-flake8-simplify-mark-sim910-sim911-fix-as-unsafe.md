@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-21T12:25:24Z
+updated_at: 2026-01-21T17:30:35Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-21T12:56:53Z
+synced_at: 2026-01-21T18:05:28Z
 ```
 
 # [`flake8-simplify`] Mark `SIM910`/`SIM911` fix as unsafe when deleting comments
@@ -168,5 +168,23 @@ _Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting 
 _Comment by @eureka928 on 2026-01-21 12:25_
 
 @amyreese @ntBre would you review this PR again? I fixed the conflict and make this up-to-date
+
+---
+
+_@amyreese requested changes on 2026-01-21 17:19_
+
+Please remove the `pr_summary` markdown files.
+
+---
+
+_Review requested from @amyreese by @eureka928 on 2026-01-21 17:30_
+
+---
+
+_Comment by @eureka928 on 2026-01-21 17:30_
+
+> Please remove the `pr_summary` markdown files.
+
+Updated! it was mistake
 
 ---

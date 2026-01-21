@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: completions-exception-context
 created_at: 2026-01-20T20:34:23Z
-updated_at: 2026-01-21T08:32:49Z
+updated_at: 2026-01-21T17:32:18Z
 url: https://github.com/astral-sh/ruff/pull/22775
-synced_at: 2026-01-21T09:03:02Z
+synced_at: 2026-01-21T18:05:28Z
 ```
 
 # [ty] Improve completion rankings for raise-from/except contexts
@@ -138,5 +138,21 @@ _Review request for @AlexWaygood removed by @MichaReiser on 2026-01-21 08:32_
 ---
 
 _Review requested from @BurntSushi by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:833 on 2026-01-21 17:31_
+
+I kind of wonder whether it'd made sense to only constructs these if we know we'll need them. Since I'd expect the common case is that we won't. But I think that's easy enough to do if this shows up on a profile.
+
+---
+
+_@BurntSushi approved on 2026-01-21 17:32_
+
+LGTM!
+
+> This does regress the completions when no character is typed after the raise keyword raise <CURSOR> but I think that's a reasonable trade-off to greatly simplify the implementation with AST-traversal rather than extending the token-based approach.
+
+Can you add a test with a comment about this? (Pretty much just saying what you've said here.)
 
 ---

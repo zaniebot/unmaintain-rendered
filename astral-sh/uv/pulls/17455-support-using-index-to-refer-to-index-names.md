@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/index-by-name
 created_at: 2026-01-13T23:35:35Z
-updated_at: 2026-01-21T16:27:37Z
+updated_at: 2026-01-21T17:54:45Z
 url: https://github.com/astral-sh/uv/pull/17455
-synced_at: 2026-01-21T17:04:04Z
+synced_at: 2026-01-21T18:05:41Z
 ```
 
 # Support using `--index` to refer to index names
@@ -196,5 +196,94 @@ _Comment by @zanieb on 2026-01-21 16:27_
 > On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package's indexes next.
 
 So `--name` resolves to an index in the opposite order in which index priority is applied during resolution?
+
+---
+
+_Comment by @EliteTK on 2026-01-21 17:09_
+
+> > Moreover, due to the fact that --index  works identically to --index =..., the side effect is that the index will appear twice in the uv-receipt.toml
+> 
+> This seems problematic?
+
+This doesn't cause any issues at the moment but we could de-duplicate things such that only the first index for each unique URL is kept in the order they would have been kept before. I don't think the name is itself used for anything? That being said, this seems like an issue with how `uv tool install` works as you can also replicate the same receipt (with a duplicate entry) in other ways.
+
+I'm happy to fix it though, do you want me to do it as part of this PR?
+
+> > This means that if you reference a workspace index in a package add command, it will get copied to the package. This behaviour matches what would happen if you pass the full index including a name. I wasn't completely sure what to do here, but I feel as if it might be confusing to have them behave differently.
+> 
+> Is it necessary for it to be copied into the child package? Or if you added it to the child package without doing so would the parent index still be used properly?
+
+It's definitely an option not to add it to the child package. The right index will be picked up as the name resolution order is project then workspace, so if the project doesn't have an index with that name, the workspace one will be picked.
+
+But there is this issue: #17610, which is somewhat related.
+
+I feel that if we were to fix this, we should fix this in a way which is agnostic to whether the index was mentioned by name, or fully written out with a conflicting name. Although we can also just mark the index as having originated by name and then not write it back in those situations. But we have to be careful as you can specify a `--default-index` by name but the original index may have been a non-default one, in which case it would be wrong to not write it back.
+
+> > When resolving the name of an index within a pyproject.toml, the lowering code resolves it by looking at the current file first, and then the workspace file.
+> > On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package's indexes next.
+> 
+> So `--name` resolves to an index in the opposite order in which index priority is applied during resolution?
+
+No, `--index <name>` resolves in the order of index priority during resolution, which I felt made sense initially, but the approach used by the lowering code (still uses priority, but it puts package indexes in front of the workspace indexes, which is the reverse) also makes sense.
+
+---
+
+_Comment by @zanieb on 2026-01-21 17:39_
+
+@EliteTK can we ship this under a preview flag so we don't need to wait until 0.10 to merge?
+
+---
+
+_Comment by @zanieb on 2026-01-21 17:40_
+
+> No, --index <name> resolves in the order of index priority during resolution, which I felt made sense initially, but the approach used by the lowering code (still uses priority, but it puts package indexes in front of the workspace indexes, which is the reverse) also makes sense.
+
+I don't understand how to reconcile this comment with your original one?
+
+---
+
+_@zanieb reviewed on 2026-01-21 17:44_
+
+---
+
+_Review comment by @zanieb on `crates/uv-cli/src/options.rs`:189 on 2026-01-21 17:44_
+
+I think this could be a bit less descriptive of the code and more of the intent? LIke
+
+```suggestion
+/// Resolve index options into a prioritized list of [`Index`].
+/// 
+/// Index name references are resolved to index URLs using values from the file system.
+///
+/// The default index is placed after all other indexes.
+```
+
+---
+
+_@zanieb reviewed on 2026-01-21 17:45_
+
+---
+
+_Review comment by @zanieb on `crates/uv-cli/src/options.rs`:208 on 2026-01-21 17:45_
+
+Do you know _why_ we do this in the other code? It's pretty janky. It doesn't respect our `Printer`, it doesn't print the error chain, etc.
+
+---
+
+_Comment by @EliteTK on 2026-01-21 17:54_
+
+> @EliteTK can we ship this under a preview flag so we don't need to wait until 0.10 to merge?
+
+Yeah, no objections here.
+
+> > No, --index  resolves in the order of index priority during resolution, which I felt made sense initially, but the approach used by the lowering code (still uses priority, but it puts package indexes in front of the workspace indexes, which is the reverse) also makes sense.
+> 
+> I don't understand how to reconcile this comment with your original one?
+
+I will adjust it for clarity, but the section you referenced mentions that this PR uses the "second strategy" which refers to:
+
+"On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package's indexes next."
+
+
 
 ---

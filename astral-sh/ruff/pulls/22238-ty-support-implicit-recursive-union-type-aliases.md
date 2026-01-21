@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
-updated_at: 2026-01-21T11:38:43Z
+updated_at: 2026-01-21T17:54:40Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-21T11:58:43Z
+synced_at: 2026-01-21T18:05:27Z
 ```
 
 # [ty] support implicit recursive union type aliases
@@ -79,18 +79,18 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 05:12_
 
 ## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/) improved 🎉
 
-The percentage of diagnostics emitted that were expected errors increased from 77.42% to 77.60%. The percentage of expected errors that received a diagnostic increased from 60.49% to 61.12%.
+The percentage of diagnostics emitted that were expected errors increased from 77.47% to 77.65%. The percentage of expected errors that received a diagnostic increased from 60.67% to 61.30%.
 
 ### Summary
 
 | Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
-| True Positives  | 672 | 679 | +7 | ⏫ (✅) |
+| True Positives  | 674 | 681 | +7 | ⏫ (✅) |
 | False Positives | 196 | 196 | +0 |  |
-| False Negatives | 439 | 432 | -7 | ⏬ (✅) |
-| Total Diagnostics | 868 | 875 | +7 | ⏫ |
-| Precision | 77.42% | 77.60% | +0.18% | ⏫ (✅) |
-| Recall | 60.49% | 61.12% | +0.63% | ⏫ (✅) |
+| False Negatives | 437 | 430 | -7 | ⏬ (✅) |
+| Total Diagnostics | 870 | 877 | +7 | ⏫ |
+| Precision | 77.47% | 77.65% | +0.18% | ⏫ (✅) |
+| Recall | 60.67% | 61.30% | +0.63% | ⏫ (✅) |
 
 
 
@@ -196,6 +196,32 @@ anyio (https://github.com/agronholm/anyio)
 - src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | (Sequence[str | bytes | PathLike[str] | PathLike[bytes]] & PathLike[object]) | PathLike[str] | PathLike[bytes]`
 + src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | (Sequence[StrOrBytesPath] & PathLike[object])`
 
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
++ src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
+- src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
++ src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
+- src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
++ src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
++ src/pip/_vendor/packaging/markers.py:163:26: warning[possibly-missing-attribute] Attribute `serialize` may be missing on object of type `MarkerVar | Op | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]`
+- src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `Version | str`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
++ src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `UnparsedVersion`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
+- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `str | ModuleType`, found `str | None`
++ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `Package`, found `str | None`
+- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `str | ModuleType`, found `str | None`
++ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `Package`, found `str | None`
++ src/pip/_vendor/rich/control.py:64:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[int, (...) -> str].__getitem__(key: int, /) -> (...) -> str` cannot be called with key of type `str` on object of type `dict[int, (...) -> str]`
+- src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: int | tuple[int] | tuple[int, int] | tuple[int, int, int, int]) -> Table`
++ src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: PaddingDimensions) -> Table`
+- src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `StrOrBytesPath`, found `Unknown | None`
+- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
+- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
++ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
+- Found 595 diagnostics
++ Found 597 diagnostics
+
 spack (https://github.com/spack/spack)
 - lib/spack/spack/binary_distribution.py:2075:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `Sized`
 + lib/spack/spack/binary_distribution.py:2075:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `StrPath`, found `Sized`
@@ -279,31 +305,9 @@ spack (https://github.com/spack/spack)
 - Found 4336 diagnostics
 + Found 4335 diagnostics
 
-pip (https://github.com/pypa/pip)
-- src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
-+ src/pip/_internal/metadata/pkg_resources.py:128:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
-- src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IResourceProvider | None`, found `InMemoryMetadata`
-+ src/pip/_internal/metadata/pkg_resources.py:149:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MetadataType`, found `InMemoryMetadata`
-- src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
-+ src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
-+ src/pip/_vendor/packaging/markers.py:163:26: warning[possibly-missing-attribute] Attribute `serialize` may be missing on object of type `MarkerVar | Op | tuple[MarkerVar, Op, MarkerVar] | Sequence[Any]`
-- src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `Version | str`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
-+ src/pip/_vendor/pkg_resources/__init__.py:3466:40: error[invalid-argument-type] Argument to bound method `contains` is incorrect: Expected `UnparsedVersion`, found `(str & ~Distribution) | (tuple[str, ...] & ~Distribution) | Unknown`
-- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `str | ModuleType`, found `str | None`
-+ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:14:31: error[invalid-argument-type] Argument to function `path` is incorrect: Expected `Package`, found `str | None`
-- src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `str | ModuleType`, found `str | None`
-+ src/pip/_vendor/pyproject_hooks/_in_process/__init__.py:20:29: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `Package`, found `str | None`
-+ src/pip/_vendor/rich/control.py:64:13: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[int, (...) -> str].__getitem__(key: int, /) -> (...) -> str` cannot be called with key of type `str` on object of type `dict[int, (...) -> str]`
-- src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: int | tuple[int] | tuple[int, int] | tuple[int, int, int, int]) -> Table`
-+ src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -> None`, found `def padding(self, padding: PaddingDimensions) -> Table`
-- src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None`
-+ src/pip/_vendor/urllib3/contrib/securetransport.py:671:31: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `StrOrBytesPath`, found `Unknown | None`
-- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
-- src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | None`, found `Unknown | None | VerifyMode | bool`
-+ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
-+ src/pip/_vendor/urllib3/util/ssl_.py:182:62: error[invalid-argument-type] Argument to function `wrap_socket` is incorrect: Expected `StrOrBytesPath | None`, found `Unknown | None | VerifyMode | bool`
-- Found 595 diagnostics
-+ Found 597 diagnostics
+beartype (https://github.com/beartype/beartype)
+- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
++ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: StrPath, debug_override: bool, *, optimization: None = None) -> str, (path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str]`
 
 bandersnatch (https://github.com/pypa/bandersnatch)
 - src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
@@ -313,10 +317,6 @@ stone (https://github.com/dropbox/stone)
 - stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `TagRef | (Unknown & ~AstTagRef)`
 + stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToFloat`, found `TagRef | (Unknown & ~AstTagRef)`
 
-beartype (https://github.com/beartype/beartype)
-- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
-+ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: StrPath, debug_override: bool, *, optimization: None = None) -> str, (path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str]`
-
 yarl (https://github.com/aio-libs/yarl)
 - tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `None | str | Mapping[str, Sequence[str | SupportsInt] | SupportsInt] | Sequence[tuple[str, Sequence[str | SupportsInt] | SupportsInt]]`, found `memoryview[int]`
 + tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `Query`, found `memoryview[int]`
@@ -324,6 +324,14 @@ yarl (https://github.com/aio-libs/yarl)
 + tests/test_url_query.py:231:26: error[invalid-argument-type] Argument to bound method `update_query` is incorrect: Expected `Query`, found `memoryview[int]`
 - yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `str | SupportsInt`, found `object`
 + yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `SimpleQuery`, found `object`
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `int | str | None`
++ src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `int | str | None`
+- src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
++ src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
+- src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
++ src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
 
 black (https://github.com/psf/black)
 - src/black/trans.py:466:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
@@ -335,65 +343,45 @@ black (https://github.com/psf/black)
 - src/blib2to3/pytree.py:149:13: error[unresolved-attribute] Unresolved attribute `parent` on type `object`
 + src/blib2to3/pytree.py:149:13: error[invalid-assignment] Object of type `Node` is not assignable to attribute `parent` on type `object | NL`
 
-aiortc (https://github.com/aiortc/aiortc)
-- src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `int | str | None`
-+ src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `int | str | None`
-- src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
-+ src/aiortc/sdp.py:486:48: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
-- src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
-+ src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
-
 python-htmlgen (https://github.com/srittau/python-htmlgen)
 - htmlgen/form.py:271:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `str | None`
 + htmlgen/form.py:271:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToFloat`, found `str | None`
 - htmlgen/form.py:456:34: error[unresolved-attribute] Object of type `str | bytes | Generator` has no attribute `children`
 + htmlgen/form.py:456:34: error[unresolved-attribute] Object of type `GenValue` has no attribute `children`
 
-graphql-core (https://github.com/graphql-python/graphql-core)
-- src/graphql/execution/execute.py:1654:42: error[invalid-await] `Awaitable[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult` is not awaitable
-+ src/graphql/execution/execute.py:1654:42: error[invalid-await] `Awaitable[DeferredGroupedFieldSetResult] | DeferredGroupedFieldSetResult` is not awaitable
-- src/graphql/execution/execute.py:1657:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | CoroutineType[Any, Any, ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult])`
-+ src/graphql/execution/execute.py:1657:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | CoroutineType[Any, Any, DeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[DeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[DeferredGroupedFieldSetResult])`
-- src/graphql/execution/execute.py:1809:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `BoxedAwaitableOrValue[StreamItemResult] | (() -> BoxedAwaitableOrValue[StreamItemResult])`, found `BoxedAwaitableOrValue[StreamItemResult | CoroutineType[Any, Any, StreamItemResult]]`
-+ src/graphql/execution/execute.py:1809:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `StreamItemRecord`, found `BoxedAwaitableOrValue[CoroutineType[Any, Any, StreamItemResult] | StreamItemResult]`
-- src/graphql/execution/incremental_graph.py:349:27: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | StreamItemsResult`, found `object`
-+ src/graphql/execution/incremental_graph.py:349:27: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `IncrementalDataRecordResult`, found `object`
-- src/graphql/utilities/build_client_schema.py:264:81: error[invalid-assignment] Object of type `dict[str, ((IntrospectionScalarType | IntrospectionObjectType | IntrospectionInterfaceType | ... omitted 3 union elements, /) -> GraphQLNamedType) | ((scalar_introspection: IntrospectionScalarType) -> GraphQLScalarType) | ((object_introspection: IntrospectionObjectType) -> GraphQLObjectType) | ... omitted 4 union elements]` is not assignable to `dict[str, (IntrospectionScalarType | IntrospectionObjectType | IntrospectionInterfaceType | ... omitted 3 union elements, /) -> GraphQLNamedType]`
-+ src/graphql/utilities/build_client_schema.py:264:81: error[invalid-assignment] Object of type `dict[str, ((IntrospectionType, /) -> GraphQLNamedType) | ((scalar_introspection: IntrospectionScalarType) -> GraphQLScalarType) | ((object_introspection: IntrospectionObjectType) -> GraphQLObjectType) | ... omitted 4 union elements]` is not assignable to `dict[str, (IntrospectionType, /) -> GraphQLNamedType]`
-- src/graphql/utilities/lexicographic_sort_schema.py:55:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLList[Unknown] | GraphQLNonNull[Unknown] | GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/utilities/lexicographic_sort_schema.py:55:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLList[Unknown] | GraphQLNonNull[Unknown] | GraphQLNamedType` does not satisfy upper bound `GraphQLNullableType` of type variable `GNT_co`
-+ src/graphql/utilities/type_info.py:194:21: error[no-matching-overload] No overload of function `get_nullable_type` matches arguments
-+ src/graphql/validation/rules/values_of_correct_type.py:70:17: error[no-matching-overload] No overload of function `get_nullable_type` matches arguments
-- tests/type/test_validation.py:74:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ tests/type/test_validation.py:74:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLNullableType` of type variable `GNT_co`
-- Found 641 diagnostics
-+ Found 643 diagnostics
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
++ paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `StrOrBytesPath`, found `str | None`
+- paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `tuple[str | None, str | None]`
++ paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `_Auth | None`, found `tuple[str | None, str | None]`
+- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
++ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: StrOrBytesPath, dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
+- paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: str | bytes | PathLike[str] | PathLike[bytes], dst: str | bytes | PathLike[str] | PathLike[bytes], *, follow_symlinks: bool = True) -> None`
++ paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: StrOrBytesPath, dst: StrOrBytesPath, *, follow_symlinks: bool = True) -> None`
+- paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
++ paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `FileDescriptorOrPath`, found `Unknown | str | None`
+- paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `int | float | tuple[int | float | None, int | float | None] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Files | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Auth | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Timeout | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Verify | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `bool | str | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
++ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Cert | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `str | tuple[str, str] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
+- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[
 
-kopf (https://github.com/nolar/kopf)
-- kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_pykube(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
-+ kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_pykube(*, logger: Logger, **_: Any) -> ConnectionInfo | None`
-- kopf/_core/intents/registries.py:285:17: error[invalid-argument-type] Argumen
-
-... (truncated 5684 lines) ...
+... (truncated 5842 lines) ...
 ```
 
 </details>
 
 
-
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
-
-```diff
-sphinx (https://github.com/sphinx-doc/sphinx)
-- TOTAL MEMORY USAGE: ~301MB
-+ TOTAL MEMORY USAGE: ~287MB
-
-
-```
-
-</details>
-
+No memory usage changes detected ✅
 
 
 
@@ -410,30 +398,30 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 07:03_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 89 | 21 | 2,059 |
+| `invalid-argument-type` | 151 | 20 | 2,071 |
 | `invalid-key` | 0 | 311 | 0 |
-| `invalid-assignment` | 66 | 5 | 115 |
+| `invalid-assignment` | 66 | 5 | 111 |
 | `type-assertion-failure` | 10 | 0 | 113 |
-| `invalid-return-type` | 24 | 4 | 63 |
-| `possibly-missing-attribute` | 9 | 3 | 61 |
+| `invalid-return-type` | 28 | 0 | 59 |
+| `possibly-missing-attribute` | 18 | 0 | 63 |
 | `unresolved-attribute` | 0 | 1 | 49 |
-| `unused-ignore-comment` | 9 | 27 | 0 |
+| `unused-ignore-comment` | 8 | 28 | 0 |
 | `unsupported-operator` | 10 | 0 | 16 |
 | `not-iterable` | 0 | 3 | 17 |
 | `no-matching-overload` | 18 | 0 | 0 |
 | `invalid-context-manager` | 1 | 0 | 10 |
+| `invalid-await` | 9 | 0 | 1 |
 | `invalid-type-form` | 0 | 0 | 9 |
 | `not-subscriptable` | 0 | 0 | 9 |
 | `redundant-cast` | 0 | 4 | 2 |
-| `invalid-await` | 0 | 2 | 1 |
 | `invalid-type-arguments` | 0 | 0 | 3 |
 | `invalid-parameter-default` | 0 | 0 | 2 |
 | `missing-typed-dict-key` | 0 | 2 | 0 |
 | `call-non-callable` | 0 | 1 | 0 |
-| **Total** | **236** | **384** | **2,529** |
+| **Total** | **319** | **375** | **2,535** |
 
 
-**[Full report with detailed diff](https://edc5336d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://edc5336d.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://03eb32ff.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://03eb32ff.ty-ecosystem-ext.pages.dev/timing))
 
 
 

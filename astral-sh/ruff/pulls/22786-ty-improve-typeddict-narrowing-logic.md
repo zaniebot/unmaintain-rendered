@@ -11,9 +11,9 @@ draft: true
 base: main
 head: improve-typed-dict-narrowing
 created_at: 2026-01-21T11:32:49Z
-updated_at: 2026-01-21T11:50:10Z
+updated_at: 2026-01-21T17:43:09Z
 url: https://github.com/astral-sh/ruff/pull/22786
-synced_at: 2026-01-21T11:58:43Z
+synced_at: 2026-01-21T18:05:28Z
 ```
 
 # [ty] improve `TypedDict` narrowing logic
@@ -182,5 +182,16 @@ I don't know the details of why this isn't done, but my guess is that it's to av
 I previously made a change to reject type aliases with meaningless infinite recursion and replace them with `Divergent`, so I think `Type::as_{TypeVariant}` can safely expand `TypeAlias`.
 
 I'd like to start working on whether this idea works.
+
+---
+
+_Comment by @mtshiba on 2026-01-21 17:43_
+
+> A bigger problem is that `Type::as_{TypeVariant}` doesn't expand `TypeAlias` to check that the value type is the target type variant. This is probably what blocks the narrowing shown above. I don't know the details of why this isn't done, but my guess is that it's to avoid infinitely expanding type aliases? I previously made a change to reject type aliases with meaningless infinite recursion and replace them with `Divergent`, so I think `Type::as_{TypeVariant}` can safely expand `TypeAlias`.
+> 
+> I'd like to start working on whether this idea works.
+
+Basically it works but implicit recursive type aliases cause panics, which means we should merge https://github.com/astral-sh/ruff/pull/22238 first (and lazy evaluate more implicit type aliases).
+
 
 ---
