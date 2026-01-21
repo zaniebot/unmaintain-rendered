@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/handle-tagged-errors-conformance
 created_at: 2026-01-19T21:38:32Z
-updated_at: 2026-01-21T09:48:03Z
+updated_at: 2026-01-21T11:38:44Z
 url: https://github.com/astral-sh/ruff/pull/22746
-synced_at: 2026-01-21T10:01:51Z
+synced_at: 2026-01-21T11:58:43Z
 ```
 
 # [ty] Handle tagged errors in conformance
@@ -36,6 +36,12 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 <!-- What's the purpose of the change? What does it do, and why? -->
 
 I've added a second grouping step that handles tagged errors in the conformance suite. I decided to change the "unit" of a true positive or false positive to be a test case that is either a single error or a collection of tagged errors. Along with being more similar (I think) to the implementation in the typing repository, this approach also makes it easy to report all of the errors for a tag when e.g. there are two many for a tags requirements. The downside is that the statistics become a little more confusing.  
+
+The essence of the new logic is to first collect all of the lines into mapping from (path, line) to tag name. I then add the same tag to each of the old and new diagnostics that appear on the same line. Next, I group the diagnostics based on a key that default to the path and line but will use the tag if it is present. An instance of `GroupedDiagnostics` will be considered a true positive, false positive etc. as a single unit, but it may be composed of multiple diagnostics from each of the ty versions and the conformance suite. The new `classify` method assigns the `GroupedDiagnostics` instance to one of these groups depending on the presence of each of the sources plus a new check to ensure that the correct number of distinct lines have errors within a tag.
+
+This means that the classification doesn't penalize `ty` for raising multiple diagnostics on the same line even in cases where `ty` returns duplicate diagnostics. 
+
+I've also updated the render step so that tagged diagnostics and diagnostics raised on the same line are now shown in the same cell in the table. The benefit here (I think) is that you'll be able to see all of the diagnostics removed when a line that raises multiple false positives is fixed.
 
 ## Test Plan
 
@@ -93,10 +99,10 @@ The percentage of diagnostics emitted that were expected errors increased from 7
 | [qualifiers_final_annotation.py:134:1](https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L134)<br>[qualifiers_final_annotation.py:134:3](https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L134) | missing-argument<br>unknown-argument | No arguments provided for required parameters `x`, `y`<br>Argument `a` does not match any known parameter |
 | [qualifiers_final_annotation.py:135:3](https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L135)<br>[qualifiers_final_annotation.py:135:9](https://github.com/python/typing/blob/main/conformance/tests/qualifiers_final_annotation.py#L135) | invalid-argument-type<br>invalid-argument-type | Argument is incorrect: Expected `int`, found `Literal[""]`<br>Argument is incorrect: Expected `int`, found `Literal[""]` |
 | [typeddicts_class_syntax.py:29:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L29) | invalid-typed-dict-statement | TypedDict class cannot have methods |
-| [typeddicts_extra_items.py:128:15](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128) | invalid-argument-type | Cannot delete required key "name" from TypedDict `MovieEI` |
-| [typeddicts_operations.py:49:11](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49) | invalid-argument-type | Cannot delete required key "name" from TypedDict `Movie` |
 | [typeddicts_class_syntax.py:33:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L33) | invalid-typed-dict-statement | TypedDict class cannot have methods |
 | [typeddicts_class_syntax.py:38:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L38) | invalid-typed-dict-statement | TypedDict class cannot have methods |
+| [typeddicts_extra_items.py:128:15](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128) | invalid-argument-type | Cannot delete required key "name" from TypedDict `MovieEI` |
+| [typeddicts_operations.py:49:11](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49) | invalid-argument-type | Cannot delete required key "name" from TypedDict `Movie` |
 
 
 </details>
@@ -222,5 +228,11 @@ _Converted to draft by @WillDuke on 2026-01-20 20:20_
 ---
 
 _Marked ready for review by @WillDuke on 2026-01-21 09:21_
+
+---
+
+_Comment by @WillDuke on 2026-01-21 11:38_
+
+@AlexWaygood @MichaReiser My first pass at this was a little buggy and overcomplicated, but I think that it is in a bit better shape now!
 
 ---

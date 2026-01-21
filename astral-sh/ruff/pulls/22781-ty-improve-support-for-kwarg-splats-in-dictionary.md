@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/dict-splat
 created_at: 2026-01-21T02:16:04Z
-updated_at: 2026-01-21T09:08:13Z
+updated_at: 2026-01-21T11:21:34Z
 url: https://github.com/astral-sh/ruff/pull/22781
-synced_at: 2026-01-21T10:01:51Z
+synced_at: 2026-01-21T11:58:43Z
 ```
 
 # [ty] Improve support for kwarg splats in dictionary literals
@@ -352,5 +352,17 @@ _@AlexWaygood reviewed on 2026-01-21 09:08_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:3593 on 2026-01-21 09:08_
 
 I'm not sure I agree with the todo 😆 I think the current way of doing it is fine and may be more efficient and/or less code even when we support generic protocols in the generics solver 
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:10070 on 2026-01-21 11:20_
+
+do we not want to pass in the type context of the outer mapping when inferring the type of the inner mapping here?
+
+---
+
+_@AlexWaygood approved on 2026-01-21 11:21_
+
+Code looks good (with one question); haven't looked at the ecosystem report though
 
 ---

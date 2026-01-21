@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
-updated_at: 2026-01-21T10:02:39Z
+updated_at: 2026-01-21T11:38:43Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-21T10:59:59Z
+synced_at: 2026-01-21T11:58:43Z
 ```
 
 # [ty] support implicit recursive union type aliases
@@ -530,5 +529,24 @@ I see this was marked draft -- I'm assuming that means you don't feel it is read
 _Comment by @mtshiba on 2026-01-21 08:35_
 
 It appears that the interaction of recent changes with the changes in this PR has caused `TypedDict` narrowing to stop working. I'm investigating the cause.
+
+---
+
+_Comment by @mtshiba on 2026-01-21 11:33_
+
+I opened https://github.com/astral-sh/ruff/pull/22786. Please check that out first.
+
+---
+
+_Comment by @mtshiba on 2026-01-21 11:37_
+
+> I see this was marked draft -- I'm assuming that means you don't feel it is ready for review/merge yet?
+
+Everything else seems basically fine, so I'll mark it as ready for review.
+
+
+---
+
+_Marked ready for review by @mtshiba on 2026-01-21 11:38_
 
 ---

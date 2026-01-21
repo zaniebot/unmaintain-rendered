@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T20:39:39Z
+updated_at: 2026-01-21T11:19:19Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T20:55:43Z
+synced_at: 2026-01-21T11:58:43Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -592,5 +592,74 @@ _@charliermarsh reviewed on 2026-01-20 20:13_
 _Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:1306 on 2026-01-20 20:13_
 
 I personally find this more useful + consistent with our other patterns, but I don't feel strongly.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-21 11:08_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1306 on 2026-01-21 11:08_
+
+I know there's still a bunch of rules where we emit a separate diagnostic for each element in cases like this, but in general I think we aspire to group them together where possible -- e.g. here we only emit a single diagnostic, even though multiple elements of the union have the incorrect signature:
+
+```
+% uvx ty check foo.py
+error[unknown-argument]: Argument `x` does not match any known parameter of function `f`
+ --> foo.py:7:10
+  |
+5 | def i(coinflip: bool):
+6 |     func = f if coinflip else g if coinflip else h
+7 |     func(x=42)
+  |          ^^^^
+  |
+info: Union variant `def f() -> Unknown` is incompatible with this call site
+info: Attempted to call union type `(def f() -> Unknown) | (def h(x) -> Unknown)`
+info: rule `unknown-argument` is enabled by default
+
+Found 1 diagnostic
+% cat foo.py
+def f(): ...
+def g(): ...
+def h(x): ...
+
+def i(coinflip: bool):
+    func = f if coinflip else g if coinflip else h
+    func(x=42)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:681 on 2026-01-21 11:10_
+
+(this can be a followup): we also need to implement the rule where all methods on `Protocol` classes that have "trivial bodies" (either `...`, `pass`, a docstring, or a combination of those three elements) and have an explicit non-`None` return type are treated as implicitly abstract even if they are not decorated with `@abstractmethod`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:816 on 2026-01-21 11:15_
+
+I don't think we need to prioritise supporting them since they're deprecated, but you could add a note here about `abc.abstractproperty`, `abc.abstractclassmethod` and `abc.abstractstaticmethod`.
+
+Hmm, and it doesn't look like you have any tests for `@classmethod` or `@staticmethod` stacked on top of `@abstractmethod`. We should _definitely_ add those tests!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:1909 on 2026-01-21 11:17_
+
+I'm not totally sure this is the best name:
+- (minor) there might be multiple abstract methods that are unimplemented
+- (more important) this could equally well be a good name for the rule https://github.com/astral-sh/ty/issues/1877 discusses, but I think that should probably be a separate error code, so we should probably choose a name here that more clearly differentiates the two rules
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1315 on 2026-01-21 11:18_
+
+you might be able to use this nice helper we have: https://github.com/astral-sh/ruff/blob/4e9de95cd83e6ffd4b1af7f4fd36af959c4cac07/crates/ty_python_semantic/src/diagnostic.rs#L127-L149
+
+---
+
+_@AlexWaygood approved on 2026-01-21 11:19_
+
+This looks great, thank you
 
 ---
