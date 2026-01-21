@@ -2,7 +2,7 @@
 number: 20628
 title: "[`flake8-bandit`] Fix false negative with implicit string concatenation (`S608`)"
 type: pull_request
-state: open
+state: closed
 author: UgoM
 labels:
   - rule
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-s608-with-implicit-concatenation
 created_at: 2025-09-29T12:29:02Z
-updated_at: 2025-11-25T13:24:33Z
+updated_at: 2026-01-21T10:25:16Z
 url: https://github.com/astral-sh/ruff/pull/20628
-synced_at: 2026-01-12T15:57:06Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`flake8-bandit`] Fix false negative with implicit string concatenation (`S608`)
@@ -112,5 +112,15 @@ Is this doing the correct thing if one of the operands is an f-string, for examp
 _@dylwil3 requested changes on 2025-11-25 13:24_
 
 Thanks for finding this and submitting a PR! I agree that there is a bug, but I'm not sure that this solution is correct. Could you increase the test coverage here and see if we're properly handling things like f-string operands and ternary expression operands etc. here?
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:25_
+
+Thanks for your contribution. I'll close this due to inactivity. Feel free to re-submit the PR with the feedback addressed and referencing this PR
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:25_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-21T07:52:35Z
+updated_at: 2026-01-21T09:57:25Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-21T09:02:51Z
+synced_at: 2026-01-21T10:59:48Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -86,5 +86,11 @@ if this feature was disabled by default, a vast majority of people who don't che
 ---
 
 _Label `configuration` added by @MichaReiser on 2026-01-21 07:52_
+
+---
+
+_Comment by @paddyroddy on 2026-01-21 09:57_
+
+I would definitely be using this feature when available. My feeling is it is probably better to be opt-out. I would happily just let ruff do its thing. I can see some people who have opinions to let them be won over by automatic linting. The only exception I can see is where your quite short example spans many lines in markdown due to many arguments in a function (for example). But that could be "fixed" by adjusting the characters per row.
 
 ---

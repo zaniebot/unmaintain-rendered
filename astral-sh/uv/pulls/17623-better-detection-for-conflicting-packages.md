@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/better-conflict-detection
 created_at: 2026-01-20T13:56:12Z
-updated_at: 2026-01-21T09:13:57Z
+updated_at: 2026-01-21T10:32:49Z
 url: https://github.com/astral-sh/uv/pull/17623
-synced_at: 2026-01-21T10:02:04Z
+synced_at: 2026-01-21T11:00:13Z
 ```
 
 # Better detection for conflicting packages
@@ -106,7 +106,7 @@ Maybe for now just merge as is, or copy the code and adjust it, and then I will 
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:28 on 2026-01-20 18:54_
+_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:27 on 2026-01-20 18:54_
 
 Maybe the `struct` should itself also be renamed to more closely reflect its use... Although I am not sure what that name should be.
 
@@ -144,7 +144,7 @@ Technically the wheel clone could be dropped here too if you feel like it. But i
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:124 on 2026-01-20 23:03_
+_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:148 on 2026-01-20 23:03_
 
 It seems justifiable to compare contents lazily if the sizes match and aren't zero.
 
@@ -180,7 +180,7 @@ _@konstin reviewed on 2026-01-21 08:29_
 
 ---
 
-_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:28 on 2026-01-21 08:29_
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:27 on 2026-01-21 08:29_
 
 Stuck at the same question of naming :sweat_smile: 
 
@@ -210,7 +210,7 @@ _@konstin reviewed on 2026-01-21 09:13_
 
 ---
 
-_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:124 on 2026-01-21 09:13_
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:148 on 2026-01-21 09:13_
 
 I can see some silly case where both wheels contain the exact same 50MB shared library or something, and we'd have to read both to check (where we currently only reflink/hardlink in the default case and don't need to read files from disk at all). It seems very unlikely to have two package that use the same module name with different file contents but the same file sizes, so I opted for the less precise heuristic in this performance critical path.
 
@@ -223,5 +223,53 @@ _@konstin reviewed on 2026-01-21 09:13_
 _Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:57 on 2026-01-21 09:13_
 
 I've renamed the function and made it about paths instead of modules, that matches much better what it's about now.
+
+---
+
+_@konstin reviewed on 2026-01-21 09:54_
+
+---
+
+_Review comment by @konstin on `crates/uv-installer/src/installer.rs`:202 on 2026-01-21 09:54_
+
+Ideally we'd be resilient to errors and report as much as we can, but I'll cut scope here due to the nature of this feature as a check for something that's broken configuration.
+
+---
+
+_Comment by @konstin on 2026-01-21 10:03_
+
+Thank you for the great review!
+
+I added an explicit check for files directly in site-packages now too.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 10:31_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:148 on 2026-01-21 10:31_
+
+Hmm... I guess we could get into the statistics of this and add a size cut off. (Files aren't uniformly random, so it's slightly more complicated than this but...) Larger files with identical sizes are less likely to have identical contents than smaller files with identical sizes. Or we could just limit how many initial bytes we compare.
+
+But I think it may be a little bit much. I'd just leave it be for now. Just wanted to write down my thoughts.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 10:32_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-install-wheel/src/linker.rs`:148 on 2026-01-21 10:32_
+
+I think this:
+
+```
+/// It's unlikely that two modules overlap with different contents but their files all have
+/// the same length, so we use this heuristic in this performance critical path to avoid
+/// reading potentially large files.
+```
+
+is the key insight here. That it's unlikely that every single file will have the same size but there will be a difference.
 
 ---

@@ -2,7 +2,7 @@
 number: 21102
 title: "Fix some false positive for `is_non_empty_f_string`"
 type: pull_request
-state: open
+state: closed
 author: IDrokin117
 labels:
   - bug
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: feature/gh-21048
 created_at: 2025-10-27T19:44:53Z
-updated_at: 2025-10-30T14:00:37Z
+updated_at: 2026-01-21T10:29:42Z
 url: https://github.com/astral-sh/ruff/pull/21102
-synced_at: 2026-01-12T15:57:16Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # Fix some false positive for `is_non_empty_f_string`
@@ -118,5 +118,9 @@ _Comment by @codspeed-hq[bot] on 2025-10-29 14:47_
 _@MichaReiser requested changes on 2025-10-30 14:00_
 
 Thank. I'll mark this as requested changes to make it easier to track the state of this PR. Please request re-review once you addressed the changes from the inline comments.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:29_
 
 ---

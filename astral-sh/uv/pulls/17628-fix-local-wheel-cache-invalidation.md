@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix-local-wheel-cache-invalidation
 created_at: 2026-01-20T15:23:54Z
-updated_at: 2026-01-20T18:05:11Z
+updated_at: 2026-01-21T10:46:48Z
 url: https://github.com/astral-sh/uv/pull/17628
-synced_at: 2026-01-20T18:40:35Z
+synced_at: 2026-01-21T11:00:13Z
 ```
 
 # Fix local wheel cache invalidation
@@ -63,5 +63,13 @@ Include file modification times (mtime) in the cache hash for local distribution
 _Comment by @zanieb on 2026-01-20 18:05_
 
 Was this authored by using an LLM? Could you disclose how you decided on this design and iterated on the fix?
+
+---
+
+_Comment by @danilohorta on 2026-01-21 10:46_
+
+I did use LLM tools to iterate through the solution space and draft/validate alternative approaches, but the investigation, design choice, and code changes were mine. My first iteration was to disable venv caching whenever local files/projects were present, but that was too broad for my use case. As a middle ground, I now fold file timestamps for local wheel/source archive files into the env hash, so rebuilding a local wheel at the same path invalidates the cache while keeping caching on for the rest.
+
+I’m intentionally not including local project directories yet because a directory’s mtime is a noisy proxy: it can change for incidental file churn (temp files, build outputs, IDE caches, etc.) and may not change for content-only edits. This change only tracks concrete files. If you think it’s worth covering local projects too, I’m happy to discuss other signals (e.g., a targeted file list like pyproject.toml/lockfiles, or content hashing).
 
 ---

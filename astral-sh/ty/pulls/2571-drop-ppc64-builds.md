@@ -11,9 +11,9 @@ merged: true
 base: main
 head: konsti/drop-ppc64
 created_at: 2026-01-20T15:16:15Z
-updated_at: 2026-01-21T08:31:42Z
+updated_at: 2026-01-21T10:34:55Z
 url: https://github.com/astral-sh/ty/pull/2571
-synced_at: 2026-01-21T09:02:46Z
+synced_at: 2026-01-21T10:59:43Z
 ```
 
 # Drop PPC64 builds
@@ -63,5 +63,11 @@ _Closed by @MichaReiser on 2026-01-21 08:31_
 ---
 
 _Branch deleted on 2026-01-21 08:31_
+
+---
+
+_Comment by @konstin on 2026-01-21 10:34_
+
+The PR that added it is https://github.com/astral-sh/ruff/pull/45. My understanding is that we added it since it was supported by manylinux, where manylinux added it because it was supported by CentOS 7. The next version, CentOS 8, dropped support for big endian PPC64, and now even LLVM has dropped support (https://discourse.llvm.org/t/end-of-support-for-64-bit-big-endian-linux-on-powerpc/77164). PPC64 continuous to exist in one manylinux version, though that may be misleading in the sense that it's not getting removed from old version, but isn't supported by manylinux anymore? I opened a DPO thread to get some broader discussion on target support: https://discuss.python.org/t/what-platforms-should-wheels-be-provided-for-by-default/105822
 
 ---

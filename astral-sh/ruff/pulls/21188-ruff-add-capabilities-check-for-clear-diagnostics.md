@@ -2,16 +2,16 @@
 number: 21188
 title: "[`ruff`] Add capabilities check for `clear_diagnostics_for_document`"
 type: pull_request
-state: open
+state: closed
 author: TaKO8Ki
 labels: []
 assignees: []
 base: main
 head: add-capabilities-check-for-clear_diagnostics_for_document
 created_at: 2025-11-01T19:16:07Z
-updated_at: 2025-11-03T14:50:50Z
+updated_at: 2026-01-21T10:32:06Z
 url: https://github.com/astral-sh/ruff/pull/21188
-synced_at: 2026-01-12T15:57:18Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`ruff`] Add capabilities check for `clear_diagnostics_for_document`
@@ -88,5 +88,15 @@ I'm not sure this is correct. This is probably a bit surprising but notebook cel
 Would you mind extending your test plan to cover 
 * Closing a notebook that has diagnostics
 * Removing a cell that contains diagnostics
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:32_
+
+Thank you for working on this. I'll close this PR due to inactivity. Feel free to resubmit this PR with the changes addressed, and we'll happily take another look.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:32_
 
 ---

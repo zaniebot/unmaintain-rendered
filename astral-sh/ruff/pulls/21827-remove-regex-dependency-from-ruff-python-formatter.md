@@ -2,16 +2,16 @@
 number: 21827
 title: "Remove `regex` dependency from `ruff_python_formatter`"
 type: pull_request
-state: open
+state: closed
 author: magic-akari
 labels: []
 assignees: []
 base: main
 head: formatter/remove-regex-dependency
 created_at: 2025-12-06T21:49:25Z
-updated_at: 2025-12-08T13:00:35Z
+updated_at: 2026-01-21T10:33:38Z
 url: https://github.com/astral-sh/ruff/pull/21827
-synced_at: 2026-01-12T15:57:34Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # Remove `regex` dependency from `ruff_python_formatter`
@@ -298,5 +298,17 @@ _Comment by @BurntSushi on 2025-12-08 13:00_
 The `regex` crate has a number of options for decreasing binary size. I'd rather see those options explored before switching to something hand-written here. I actually think the regexes simplify things quite a bit.
 
 In particular, I don't think these regexes need to be "fast"? So the first thing I'd try here is switching to [`regex-lite`](https://docs.rs/regex-lite). It should considerably reduce binary size.
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:33_
+
+Thank you for looking into this. 
+
+I'll close this PR due to inactivity but please feel free to resubmit a similar PR migrating to `regex-lite` or with an updated summary explaining why that path isn't feasible. 
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:33_
 
 ---

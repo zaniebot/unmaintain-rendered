@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-09-24T05:50:42Z
-updated_at: 2025-09-24T08:30:51Z
+updated_at: 2026-01-21T10:19:50Z
 url: https://github.com/astral-sh/uv/issues/16009
-synced_at: 2026-01-12T16:02:21Z
+synced_at: 2026-01-21T11:00:05Z
 ```
 
 # Hashes in simple package index defined as dist-info/core-metadata ignored
@@ -95,5 +95,15 @@ Ignore me. I misunderstood something and the existing behaviour is correct.
 ---
 
 _Closed by @adisbladis on 2025-09-24 08:30_
+
+---
+
+_Comment by @emillon on 2026-01-21 10:19_
+
+Hello, I wonder exactly the same (why hashes in the HTML page are not used) and found this issue.
+
+Can you explain why the existing behaviour is correct?
+
+Thanks!
 
 ---

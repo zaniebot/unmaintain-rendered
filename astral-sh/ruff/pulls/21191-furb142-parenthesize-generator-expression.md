@@ -2,7 +2,7 @@
 number: 21191
 title: "FURB142: Parenthesize generator expression arguments in fixer to preserve scoping"
 type: pull_request
-state: open
+state: closed
 author: sohamukute
 labels:
   - bug
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: FURB142
 created_at: 2025-11-01T20:12:15Z
-updated_at: 2025-11-10T12:10:51Z
+updated_at: 2026-01-21T10:26:32Z
 url: https://github.com/astral-sh/ruff/pull/21191
-synced_at: 2026-01-12T15:57:18Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # FURB142: Parenthesize generator expression arguments in fixer to preserve scoping
@@ -135,5 +135,9 @@ _@MichaReiser requested changes on 2025-11-10 12:10_
 Requesting changes to make it clear that this PR has unaddressed feedback and isn't waiting for a review. 
 
 Once you've updated the PR, please re-request review.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:26_
 
 ---

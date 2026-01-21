@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T09:51:13Z
+updated_at: 2026-01-21T10:44:35Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T10:01:51Z
+synced_at: 2026-01-21T11:00:00Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -367,5 +367,29 @@ UP008 Use `super()` instead of `super(__class__, self)`
 15 |             def __init__(self, foo):
 16 |                 super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
 ```
+
+---
+
+_@generalmimon reviewed on 2026-01-21 10:05_
+
+---
+
+_Review comment by @generalmimon on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:141 on 2026-01-21 10:05_
+
+What's the point of accepting an attribute in the second argument? This `second_arg_id` is required to be equal to the name of the "parent argument" (`parent_arg`), which is typically `self`:
+
+https://github.com/astral-sh/ruff/blob/ff11db466dc5fae8272a026e86638b04505855cb/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L147
+
+I think it doesn't make sense to accept wild stuff like `super(..., a.b.c.self)`.
+
+---
+
+_@leandrobbraga reviewed on 2026-01-21 10:44_
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:141 on 2026-01-21 10:44_
+
+That's correct, I removed the match on `Expr::Attribute` for the second parameter.
 
 ---

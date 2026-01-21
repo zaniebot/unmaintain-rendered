@@ -2,7 +2,7 @@
 number: 15578
 title: "[`pylint`] Better diagnostic range (`PLR1702`)"
 type: pull_request
-state: open
+state: closed
 author: InSyncWithFoo
 labels:
   - breaking
@@ -12,9 +12,9 @@ draft: true
 base: main
 head: PLR1702
 created_at: 2025-01-19T00:19:11Z
-updated_at: 2025-01-19T14:54:55Z
+updated_at: 2026-01-21T10:38:52Z
 url: https://github.com/astral-sh/ruff/pull/15578
-synced_at: 2026-01-12T15:55:51Z
+synced_at: 2026-01-21T10:59:58Z
 ```
 
 # [`pylint`] Better diagnostic range (`PLR1702`)
@@ -304,5 +304,15 @@ _Comment by @InSyncWithFoo on 2025-01-19 14:52_
 That would be the correct decision. I just realized I had a off-by-one bug... (or is it?)
 
 This is not breaking though. The rule is in preview.
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:38_
+
+Thanks for working on this. I'll close this PR due to inactivity. 
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:38_
 
 ---

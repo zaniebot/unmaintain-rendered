@@ -2,7 +2,7 @@
 number: 20772
 title: "implement unused variable export and class member (fixes #20766)"
 type: pull_request
-state: open
+state: closed
 author: phiresky
 labels:
   - rule
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: unused-extras
 created_at: 2025-10-08T17:47:11Z
-updated_at: 2025-10-09T07:03:01Z
+updated_at: 2026-01-21T10:27:20Z
 url: https://github.com/astral-sh/ruff/pull/20772
-synced_at: 2026-01-12T15:57:09Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # implement unused variable export and class member (fixes #20766)
@@ -85,5 +85,9 @@ _Label `rule` added by @ntBre on 2025-10-08 19:52_
 ---
 
 _Label `needs-decision` added by @ntBre on 2025-10-08 19:52_
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:27_
 
 ---

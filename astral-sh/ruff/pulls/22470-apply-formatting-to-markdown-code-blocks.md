@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-21T09:12:32Z
+updated_at: 2026-01-21T09:58:55Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-21T10:01:51Z
+synced_at: 2026-01-21T11:00:00Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -432,5 +432,168 @@ _Review request for @AlexWaygood removed by @MichaReiser on 2026-01-21 09:12_
 ---
 
 _Label `preview` added by @MichaReiser on 2026-01-21 09:12_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:541 on 2026-01-21 09:17_
+
+It's okay to not support range formatting but aborting with `unimplemented` (which shows the user that ruff panicked), seems far from ideal. 
+
+Let's handle it the same as for notebooks by making the returned error type more generic 
+
+```rust
+            if range.is_some() {
+                return Err(FormatCommandError::RangeFormatNotebook(
+                    path.map(Path::to_path_buf),
+                ));
+            }
+```
+
+and name the error `RangeFormatNotSupported`
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:506 on 2026-01-21 09:19_
+
+It's fine to leave this to a follow-up, but should we try to format code blocks without a language specifier if they parse successfully?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:523 on 2026-01-21 09:20_
+
+I think I'd prefer aborting with an error, so that ruff sets the correct exit code
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:536 on 2026-01-21 09:21_
+
+`ruff_python_trivia`'s dedent rules are Pythono specific. It doesn't strip all whitespace. Is this also correct for markdown?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:549 on 2026-01-21 09:25_
+
+See the `replace_all` documentation
+
+
+```
+    /// # Fallibility
+    ///
+    /// If you need to write a replacement routine where any individual
+    /// replacement might "fail," doing so with this API isn't really feasible
+    /// because there's no way to stop the search process if a replacement
+    /// fails. Instead, if you need this functionality, you should consider
+    /// implementing your own replacement routine:
+    ///
+    /// ```
+    /// use regex::{Captures, Regex};
+    ///
+    /// fn replace_all<E>(
+    ///     re: &Regex,
+    ///     haystack: &str,
+    ///     replacement: impl Fn(&Captures) -> Result<String, E>,
+    /// ) -> Result<String, E> {
+    ///     let mut new = String::with_capacity(haystack.len());
+    ///     let mut last_match = 0;
+    ///     for caps in re.captures_iter(haystack) {
+    ///         let m = caps.get(0).unwrap();
+    ///         new.push_str(&haystack[last_match..m.start()]);
+    ///         new.push_str(&replacement(&caps)?);
+    ///         last_match = m.end();
+    ///     }
+    ///     new.push_str(&haystack[last_match..]);
+    ///     Ok(new)
+    /// }
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:554 on 2026-01-21 09:26_
+
+It seems unfortunate that we keep returning `origional.to_string` (which makes `replace_all` to replace the text even in cases where the code is correctly formatted. 
+
+Ideally, we'd skip doing any work unless the formatted code has changed. We can probably do so by implementing our own `replace_all`
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/tests/cli/format.rs`:2394 on 2026-01-21 09:28_
+
+Let's add a helper to `CliTest` for resolving a file path that's relative to the crate root.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/tests/cli/format.rs`:2415 on 2026-01-21 09:29_
+
+Let's add this filter to the default `CliTest` filters
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/tests/cli/format.rs`:2429 on 2026-01-21 09:31_
+
+I'd slightly prefer to inline the `unformatted.md` file text into the cli test as we do for other tests and make it much shorter. 
+
+We should write a dedicated integration test to test various markdown formatting behaviors. 
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/tests/cli/format.rs`:2490 on 2026-01-21 09:32_
+
+Same here. Using the full `unformatted.md` feels overkill for what we're testing here. A much shorter markdown snippet should be sufficient to demonstrate the same functionality and is much less verbose.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/resources/test/fixtures/unformatted.md`:1 on 2026-01-21 09:43_
+
+Let's add a test that `ruff check markdown.md` logs a warning that no python files were found
+
+
+```
+❯ cargo run --bin ruff -p ruff check README.md --no-cache -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check README.md --no-cache -v`
+[2026-01-21][10:43:37][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/micha/astral/ruff/pyproject.toml
+[2026-01-21][10:43:37][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2026-01-21][10:43:37][ruff::commands::check][DEBUG] Identified files to lint in: 5.983166ms
+[2026-01-21][10:43:37][ruff::diagnostics][DEBUG] Checking: /Users/micha/astral/ruff/README.md
+[2026-01-21][10:43:37][ruff::commands::check][DEBUG] Checked 1 files in: 1.230625ms
+All checks passed!
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_ast/src/lib.rs`:93 on 2026-01-21 09:54_
+
+Hmm, adding `Markdown` to `PySourceType` feels wrong. It's not a different Python dialect. It also forces us to handle `Markdown` in many places where it's impossible that we'll ever see the `Markdown`: The `PySourceType` when formatting a markdown cell will always be `Python` or `Stub` but never `Markdown`, which is different from `Ipynb` where cells are formatted with `PySourceType::Ipynb`.
+
+I think what you want is to add `Markdown` to `SourceType`, which is Ruff's enum over the file types it supports. We may have to introduce a new `FormatSourceType` enum that you pass to `format_path`, like so:
+
+```rust
+enum FormatSourceType {
+	Python(PySourceType),
+	Markdown
+```
+
+
+You may have to create `SourceKind` manually for the `Markdown` variant (you won't be able to delegate to `SourceKind::from(py_source_type)
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/commands/format.rs`:499 on 2026-01-21 09:56_
+
+I suggest moving the markdown core logic (given a document, iterate over the code blocks and format each of them) into its own function so that you can write unit tests against it. 
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/diagnostics.rs`:247 on 2026-01-21 09:58_
+
+I think we need to exclude those files earlier or Ruff stops warning that it didn't find any files that it can operate on. We might need to parametrize `python_files_in_path` with a flag indicating whether markdown files are allowed.
+
+---
+
+_@MichaReiser reviewed on 2026-01-21 09:58_
+
+Nice that you got something working so quickly. I think there's a bit more that we need to do to ensure the markdown formatting doesn't leak into other tools and we should also improve error handling, aborting isn't a great user experience.
 
 ---

@@ -12,9 +12,9 @@ draft: true
 base: main
 head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
-updated_at: 2026-01-21T08:35:39Z
+updated_at: 2026-01-21T10:02:39Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-21T09:03:02Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [ty] support implicit recursive union type aliases
@@ -197,10 +197,6 @@ anyio (https://github.com/agronholm/anyio)
 - src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | (Sequence[str | bytes | PathLike[str] | PathLike[bytes]] & PathLike[object]) | PathLike[str] | PathLike[bytes]`
 + src/anyio/_backends/_trio.py:1098:30: error[invalid-argument-type] Argument to function `convert_item` is incorrect: Expected `StrOrBytesPath`, found `str | bytes | PathLike[str] | PathLike[bytes] | (Sequence[StrOrBytesPath] & PathLike[object])`
 
-beartype (https://github.com/beartype/beartype)
-- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
-+ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: StrPath, debug_override: bool, *, optimization: None = None) -> str, (path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str]`
-
 spack (https://github.com/spack/spack)
 - lib/spack/spack/binary_distribution.py:2075:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `Sized`
 + lib/spack/spack/binary_distribution.py:2075:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `StrPath`, found `Sized`
@@ -318,6 +314,10 @@ stone (https://github.com/dropbox/stone)
 - stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `TagRef | (Unknown & ~AstTagRef)`
 + stone/frontend/ir_generator.py:902:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToFloat`, found `TagRef | (Unknown & ~AstTagRef)`
 
+beartype (https://github.com/beartype/beartype)
+- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
++ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: StrPath, debug_override: bool, *, optimization: None = None) -> str, (path: StrPath, debug_override: None = None, *, optimization: Any | None = None) -> str]`
+
 yarl (https://github.com/aio-libs/yarl)
 - tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `None | str | Mapping[str, Sequence[str | SupportsInt] | SupportsInt] | Sequence[tuple[str, Sequence[str | SupportsInt] | SupportsInt]]`, found `memoryview[int]`
 + tests/test_update_query.py:324:24: error[invalid-argument-type] Argument to bound method `with_query` is incorrect: Expected `Query`, found `memoryview[int]`
@@ -325,6 +325,16 @@ yarl (https://github.com/aio-libs/yarl)
 + tests/test_url_query.py:231:26: error[invalid-argument-type] Argument to bound method `update_query` is incorrect: Expected `Query`, found `memoryview[int]`
 - yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `str | SupportsInt`, found `object`
 + yarl/_query.py:51:66: error[invalid-argument-type] Argument to function `query_var` is incorrect: Expected `SimpleQuery`, found `object`
+
+black (https://github.com/psf/black)
+- src/black/trans.py:466:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
++ src/black/trans.py:466:20: error[invalid-return-type] Return type does not match returned value: expected `TMatchResult`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
+- src/black/trans.py:980:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
++ src/black/trans.py:980:20: error[invalid-return-type] Return type does not match returned value: expected `TMatchResult`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
+- src/black/trans.py:1107:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `(Ok[None] & Top[Err[Unknown]]) | Err[CannotTransform]`
++ src/black/trans.py:1107:20: error[invalid-return-type] Return type does not match returned value: expected `TMatchResult`, found `(Ok[None] & Top[Err[Unknown]]) | Err[CannotTransform]`
+- src/blib2to3/pytree.py:149:13: error[unresolved-attribute] Unresolved attribute `parent` on type `object`
++ src/blib2to3/pytree.py:149:13: error[invalid-assignment] Object of type `Node` is not assignable to attribute `parent` on type `object | NL`
 
 aiortc (https://github.com/aiortc/aiortc)
 - src/aiortc/rtcpeerconnection.py:132:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `int | str | None`
@@ -334,45 +344,38 @@ aiortc (https://github.com/aiortc/aiortc)
 - src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
 + src/aiortc/sdp.py:524:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToInt`, found `str | None`
 
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
-+ paasta_tools/cli/cmds/local_run.py:1092:17: error[invalid-argument-type] Argument to function `execlpe` is incorrect: Expected `StrOrBytesPath`, found `str | None`
-- paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `tuple[str | None, str | None]`
-+ paasta_tools/cli/cmds/push_to_registry.py:264:34: error[invalid-argument-type] Argument to bound method `head` is incorrect: Expected `_Auth | None`, found `tuple[str | None, str | None]`
-- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
-+ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: StrOrBytesPath, dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
-- paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: str | bytes | PathLike[str] | PathLike[bytes], dst: str | bytes | PathLike[str] | PathLike[bytes], *, follow_symlinks: bool = True) -> None`
-+ paasta_tools/cli/fsm_cmd.py:45:5: error[invalid-assignment] Object of type `def symlink_aware_copymode(...) -> Unknown` is not assignable to attribute `copymode` of type `def copymode(src: StrOrBytesPath, dst: StrOrBytesPath, *, follow_symlinks: bool = True) -> None`
-- paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
-+ paasta_tools/config_utils.py:196:18: error[invalid-argument-type] Argument to function `chdir` is incorrect: Expected `FileDescriptorOrPath`, found `Unknown | str | None`
-- paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
-+ paasta_tools/long_running_service_tools.py:358:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsRichComparison` of type variable `SupportsRichComparisonT`
-- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `int | float | tuple[int | float | None, int | float | None] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Files | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Auth | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Timeout | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Verify | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `bool | str | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `_Cert | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:45:37: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `str | tuple[str, str] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `Mapping[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements] | Iterable[tuple[str, SupportsRead[str | bytes] | str | bytes | ... omitted 3 union elements]] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `tuple[str, str] | ((PreparedRequest, /) -> PreparedRequest) | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `int | float | tuple[int | float | None, int | float | None] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Files | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Auth | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Timeout | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Verify | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `bool | str | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-+ paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `_Cert | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/tron/client.py:51:38: error[invalid-argument-type] Argument to function `post` is incorrect: Expected `str | tuple[str, str] | None`, found `Unknown | str | dict[Unknown | str, Unknown | str]`
-- paasta_tools/utils.py:395:32: error[not-iterable] Object of type `Sequence[Sequence[str]] | None` may not be iterable
-+ paasta_tools/utils.py:395:32: error[not-iterable] Object of type `UnsafeDeployBlacklist` is not iterable
-- paasta_tools/utils.py:400:41: error[not-iterable] Object of type `None` is not iterable
-+ paasta_tools/utils.py:400:41: error[not-itera
+python-htmlgen (https://github.com/srittau/python-htmlgen)
+- htmlgen/form.py:271:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `str | None`
++ htmlgen/form.py:271:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `ConvertibleToFloat`, found `str | None`
+- htmlgen/form.py:456:34: error[unresolved-attribute] Object of type `str | bytes | Generator` has no attribute `children`
++ htmlgen/form.py:456:34: error[unresolved-attribute] Object of type `GenValue` has no attribute `children`
 
-... (truncated 7763 lines) ...
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/execution/execute.py:1654:42: error[invalid-await] `Awaitable[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult` is not awaitable
++ src/graphql/execution/execute.py:1654:42: error[invalid-await] `Awaitable[DeferredGroupedFieldSetResult] | DeferredGroupedFieldSetResult` is not awaitable
+- src/graphql/execution/execute.py:1657:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | CoroutineType[Any, Any, ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult])`
++ src/graphql/execution/execute.py:1657:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | CoroutineType[Any, Any, DeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[DeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[DeferredGroupedFieldSetResult])`
+- src/graphql/execution/execute.py:1809:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `BoxedAwaitableOrValue[StreamItemResult] | (() -> BoxedAwaitableOrValue[StreamItemResult])`, found `BoxedAwaitableOrValue[StreamItemResult | CoroutineType[Any, Any, StreamItemResult]]`
++ src/graphql/execution/execute.py:1809:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `StreamItemRecord`, found `BoxedAwaitableOrValue[CoroutineType[Any, Any, StreamItemResult] | StreamItemResult]`
+- src/graphql/execution/incremental_graph.py:349:27: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | StreamItemsResult`, found `object`
++ src/graphql/execution/incremental_graph.py:349:27: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `IncrementalDataRecordResult`, found `object`
+- src/graphql/utilities/build_client_schema.py:264:81: error[invalid-assignment] Object of type `dict[str, ((IntrospectionScalarType | IntrospectionObjectType | IntrospectionInterfaceType | ... omitted 3 union elements, /) -> GraphQLNamedType) | ((scalar_introspection: IntrospectionScalarType) -> GraphQLScalarType) | ((object_introspection: IntrospectionObjectType) -> GraphQLObjectType) | ... omitted 4 union elements]` is not assignable to `dict[str, (IntrospectionScalarType | IntrospectionObjectType | IntrospectionInterfaceType | ... omitted 3 union elements, /) -> GraphQLNamedType]`
++ src/graphql/utilities/build_client_schema.py:264:81: error[invalid-assignment] Object of type `dict[str, ((IntrospectionType, /) -> GraphQLNamedType) | ((scalar_introspection: IntrospectionScalarType) -> GraphQLScalarType) | ((object_introspection: IntrospectionObjectType) -> GraphQLObjectType) | ... omitted 4 union elements]` is not assignable to `dict[str, (IntrospectionType, /) -> GraphQLNamedType]`
+- src/graphql/utilities/lexicographic_sort_schema.py:55:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLList[Unknown] | GraphQLNonNull[Unknown] | GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/utilities/lexicographic_sort_schema.py:55:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLList[Unknown] | GraphQLNonNull[Unknown] | GraphQLNamedType` does not satisfy upper bound `GraphQLNullableType` of type variable `GNT_co`
++ src/graphql/utilities/type_info.py:194:21: error[no-matching-overload] No overload of function `get_nullable_type` matches arguments
++ src/graphql/validation/rules/values_of_correct_type.py:70:17: error[no-matching-overload] No overload of function `get_nullable_type` matches arguments
+- tests/type/test_validation.py:74:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ tests/type/test_validation.py:74:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLNullableType` of type variable `GNT_co`
+- Found 641 diagnostics
++ Found 643 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_pykube(*, logger: Logger | LoggerAdapter[Any], **_: Any) -> ConnectionInfo | None`
++ kopf/_core/intents/registries.py:276:17: error[invalid-argument-type] Argument is incorrect: Expected `(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, /) -> object`, found `def login_via_pykube(*, logger: Logger, **_: Any) -> ConnectionInfo | None`
+- kopf/_core/intents/registries.py:285:17: error[invalid-argument-type] Argumen
+
+... (truncated 5684 lines) ...
 ```
 
 </details>
@@ -408,30 +411,30 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 07:03_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-key` | 1,987 | 311 | 0 |
-| `invalid-argument-type` | 112 | 21 | 2,071 |
-| `invalid-assignment` | 70 | 5 | 115 |
-| `type-assertion-failure` | 11 | 0 | 113 |
-| `invalid-return-type` | 24 | 1 | 62 |
-| `possibly-missing-attribute` | 11 | 0 | 60 |
-| `unresolved-attribute` | 1 | 1 | 47 |
-| `unused-ignore-comment` | 10 | 27 | 0 |
+| `invalid-argument-type` | 89 | 21 | 2,059 |
+| `invalid-key` | 0 | 311 | 0 |
+| `invalid-assignment` | 66 | 5 | 115 |
+| `type-assertion-failure` | 10 | 0 | 113 |
+| `invalid-return-type` | 24 | 4 | 63 |
+| `possibly-missing-attribute` | 9 | 3 | 61 |
+| `unresolved-attribute` | 0 | 1 | 49 |
+| `unused-ignore-comment` | 9 | 27 | 0 |
 | `unsupported-operator` | 10 | 0 | 16 |
 | `not-iterable` | 0 | 3 | 17 |
 | `no-matching-overload` | 18 | 0 | 0 |
 | `invalid-context-manager` | 1 | 0 | 10 |
-| `not-subscriptable` | 1 | 0 | 9 |
 | `invalid-type-form` | 0 | 0 | 9 |
+| `not-subscriptable` | 0 | 0 | 9 |
 | `redundant-cast` | 0 | 4 | 2 |
+| `invalid-await` | 0 | 2 | 1 |
 | `invalid-type-arguments` | 0 | 0 | 3 |
 | `invalid-parameter-default` | 0 | 0 | 2 |
 | `missing-typed-dict-key` | 0 | 2 | 0 |
 | `call-non-callable` | 0 | 1 | 0 |
-| `invalid-await` | 0 | 0 | 1 |
-| **Total** | **2,256** | **376** | **2,537** |
+| **Total** | **236** | **384** | **2,529** |
 
 
-**[Full report with detailed diff](https://594c96ab.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://594c96ab.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://edc5336d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://edc5336d.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -442,17 +445,17 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **degrade performance by 57.64%**
+### Merging this PR will **degrade performance by 5.46%**
 
-<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (ce8fadf) with <code>main</code> (745dfa6)</sub>
+<sub>Comparing <code>mtshiba:implicit-recursive-union</code> (a100e6c) with <code>main</code> (4e9de95)</sub>
 
 
 
 ### Summary
 
 `⚡ 2` improved benchmarks  
-`❌ 3` regressed benchmarks  
-`✅ 48` untouched benchmarks  
+`❌ 2` regressed benchmarks  
+`✅ 49` untouched benchmarks  
 `🆕 1` new benchmark  
 
 
@@ -462,12 +465,11 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 07:06_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -4.83% |
-| ❌ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.6 s | 18 s | -57.64% |
-| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 86.7 s | 94.7 s | -8.45% |
-| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +6.15% |
-| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 69.7 ms | N/A |
-| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +14.62% |
+| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 86.9 s | 91.9 s | -5.46% |
+| ❌ | WallTime | [`` freqtrade ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Afreqtrade&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 7.7 s | 8.1 s | -4.92% |
+| 🆕 | Simulation | [`` ty_micro[recursive_union_type_alias_and_protocol] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_recursive_union_type_alias_and_protocol%3A%3Aty_micro%5Brecursive_union_type_alias_and_protocol%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | N/A | 69.6 ms | N/A |
+| ⚡ | Simulation | [`` ty_check_file[incremental] ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 6.1 ms | 5.8 ms | +6.23% |
+| ⚡ | Simulation | [`` hydra-zen ``](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 1.2 s | 1 s | +14.71% |
 
 
 ---

@@ -2,7 +2,7 @@
 number: 22212
 title: Implement a fixer for E402
 type: pull_request
-state: open
+state: closed
 author: PeterJCLaw
 labels: []
 assignees: []
@@ -10,9 +10,9 @@ draft: true
 base: main
 head: e402-fixer
 created_at: 2025-12-26T19:05:54Z
-updated_at: 2025-12-26T22:52:25Z
+updated_at: 2026-01-21T10:36:58Z
 url: https://github.com/astral-sh/ruff/pull/22212
-synced_at: 2026-01-12T15:57:44Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # Implement a fixer for E402
@@ -66,5 +66,15 @@ _Comment by @astral-sh-bot[bot] on 2025-12-26 19:14_
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:36_
+
+Thanks for working on this. I'll close this PR due to inactivity. Feel free to resubmit it if you plan to continue working on this.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:36_
 
 ---

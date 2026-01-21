@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: brent/up045
 created_at: 2025-12-31T22:41:05Z
-updated_at: 2026-01-12T23:07:35Z
+updated_at: 2026-01-21T10:23:07Z
 url: https://github.com/astral-sh/ruff/pull/22320
-synced_at: 2026-01-12T23:24:14Z
+synced_at: 2026-01-21T11:00:00Z
 ```
 
 # [`pyupgrade`] Apply `UP045` to string arguments of `typing.cast`
@@ -93,5 +93,15 @@ _Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/pyupgra
 Interestingly, the complex cases don't emit diagnostics even with my change. Claude thinks this is a bug, but I'll have to dig into it a bit more.
 
 ty also emits an [implicit-concatenated-string-type-annotation](https://docs.astral.sh/ty/reference/rules/#implicit-concatenated-string-type-annotation) diagnostic on the new test cases, so I could possibly just replace `in_string_type_definition` with `in_simple_string_type_definition` if we want to filter out the complex cases intentionally.
+
+---
+
+_@MichaReiser reviewed on 2026-01-21 10:23_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/resources/test/fixtures/pyupgrade/UP045_py39.py`:15 on 2026-01-21 10:23_
+
+Yeah, this is a bit surprising. Let me know if you want me to take a closer look
 
 ---

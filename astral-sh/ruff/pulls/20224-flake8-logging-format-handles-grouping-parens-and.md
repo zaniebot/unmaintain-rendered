@@ -2,16 +2,16 @@
 number: 20224
 title: "[`flake8-logging-format`] handles grouping parens and preserves r-prefix/quotes"
 type: pull_request
-state: open
+state: closed
 author: TaKO8Ki
 labels: []
 assignees: []
 base: main
 head: fix-handles-grouping-parens-and-preserves-r-prefix-quotes
 created_at: 2025-09-04T08:24:01Z
-updated_at: 2025-11-21T07:57:36Z
+updated_at: 2026-01-21T10:28:19Z
 url: https://github.com/astral-sh/ruff/pull/20224
-synced_at: 2026-01-12T15:56:57Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`flake8-logging-format`] handles grouping parens and preserves r-prefix/quotes
@@ -111,5 +111,9 @@ Thanks for working on this and apologies for the delay! I'd like to see a little
 _Comment by @MichaReiser on 2025-11-21 07:57_
 
 @TaKO8Ki I just wanted to check in with you if you plan on revisiting this PR. Please don't feel pressured to do so, I'm only asking to understand what the next steps are on this PR.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:28_
 
 ---

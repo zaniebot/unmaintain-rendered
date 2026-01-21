@@ -2,7 +2,7 @@
 number: 21115
 title: "[`ruff`] Prevent PYI025 from clashing with isort-required check"
 type: pull_request
-state: open
+state: closed
 author: TaKO8Ki
 labels:
   - bug
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-piy025-isort-loop
 created_at: 2025-10-28T22:11:37Z
-updated_at: 2025-10-31T07:16:10Z
+updated_at: 2026-01-21T10:30:23Z
 url: https://github.com/astral-sh/ruff/pull/21115
-synced_at: 2026-01-12T15:57:16Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`ruff`] Prevent PYI025 from clashing with isort-required check
@@ -134,5 +134,15 @@ _@TaKO8Ki reviewed on 2025-10-31 07:16_
 _Review comment by @TaKO8Ki on `crates/ruff_linter/src/rules/flake8_pyi/rules/unaliased_collections_abc_set_import.rs`:90 on 2025-10-31 07:16_
 
 Ok. I will check it.
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:30_
+
+Thanks for working on this. I'll close this PR due to inactivity. Feel free to resubmit the changes with the feedback addressed.
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:30_
 
 ---

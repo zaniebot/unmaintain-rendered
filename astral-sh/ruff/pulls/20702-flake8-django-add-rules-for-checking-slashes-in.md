@@ -2,7 +2,7 @@
 number: 20702
 title: "[`flake8-django`] Add rules for checking slashes in `path()`"
 type: pull_request
-state: open
+state: closed
 author: jvacek
 labels:
   - rule
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: dj014-dj015-slashes-in-path
 created_at: 2025-10-05T16:03:20Z
-updated_at: 2025-10-31T16:38:40Z
+updated_at: 2026-01-21T10:31:21Z
 url: https://github.com/astral-sh/ruff/pull/20702
-synced_at: 2026-01-12T15:57:07Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`flake8-django`] Add rules for checking slashes in `path()`
@@ -632,5 +632,15 @@ It might be good to get a quick look from @amyreese too. She's almost definitely
 ---
 
 _Label `preview` added by @ntBre on 2025-10-31 16:38_
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 10:31_
+
+Thank you for working on this. I'll close this PR due to inactivity. Feel free to resubmit it once the changes are addressed and we'll happily take another look
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:31_
 
 ---

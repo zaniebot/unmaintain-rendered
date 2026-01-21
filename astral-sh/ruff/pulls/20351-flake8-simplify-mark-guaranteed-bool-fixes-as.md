@@ -2,16 +2,16 @@
 number: 20351
 title: "[`flake8-simplify`] Mark guaranteed-bool fixes as safe `SIM103`"
 type: pull_request
-state: open
+state: closed
 author: TaKO8Ki
 labels: []
 assignees: []
 base: main
 head: sim103-safe-applicability
 created_at: 2025-09-11T16:49:15Z
-updated_at: 2025-11-21T07:59:33Z
+updated_at: 2026-01-21T10:26:13Z
 url: https://github.com/astral-sh/ruff/pull/20351
-synced_at: 2026-01-12T15:56:59Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # [`flake8-simplify`] Mark guaranteed-bool fixes as safe `SIM103`
@@ -414,5 +414,9 @@ def is_odd_or_zero(x):
 _Comment by @MichaReiser on 2025-11-21 07:59_
 
 @TaKO8Ki sorry for another ping. Do you think you'll have time in the near future to look into the PR feedback? If not, that's completely fine, I'm just trying to understand the status of this PR
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:26_
 
 ---

@@ -2,7 +2,7 @@
 number: 20805
 title: Implement safety checks for affix removal in slice_to_remove_prefix_or_suffix rule
 type: pull_request
-state: open
+state: closed
 author: tinkerer-shubh
 labels:
   - fixes
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: furb188-unsafe-fix
 created_at: 2025-10-10T14:10:19Z
-updated_at: 2025-10-15T14:15:45Z
+updated_at: 2026-01-21T10:27:39Z
 url: https://github.com/astral-sh/ruff/pull/20805
-synced_at: 2026-01-12T15:57:10Z
+synced_at: 2026-01-21T10:59:59Z
 ```
 
 # Implement safety checks for affix removal in slice_to_remove_prefix_or_suffix rule
@@ -216,5 +216,9 @@ I think we need basically the same thing here.
 ---
 
 _@ntBre reviewed on 2025-10-15 14:15_
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 10:27_
 
 ---
