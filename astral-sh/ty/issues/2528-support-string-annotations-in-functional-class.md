@@ -2,16 +2,16 @@
 number: 2528
 title: Support string annotations in functional class annotations
 type: issue
-state: open
+state: closed
 author: charliermarsh
 labels:
   - typing semantics
   - namedtuples
 assignees: []
 created_at: 2026-01-16T03:00:32Z
-updated_at: 2026-01-16T09:12:37Z
+updated_at: 2026-01-21T16:03:58Z
 url: https://github.com/astral-sh/ty/issues/2528
-synced_at: 2026-01-16T09:54:51Z
+synced_at: 2026-01-21T17:03:34Z
 ```
 
 # Support string annotations in functional class annotations
@@ -50,5 +50,9 @@ _Label `namedtuples` added by @AlexWaygood on 2026-01-16 09:12_
 ---
 
 _Label `typing semantics` added by @AlexWaygood on 2026-01-16 09:12_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-21 16:03_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-21T15:03:04Z
+updated_at: 2026-01-21T16:36:06Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-21T16:05:02Z
+synced_at: 2026-01-21T17:03:54Z
 ```
 
 # Dependency Dashboard
@@ -72,6 +72,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/conda-incubator-setup-miniconda-3.x -->Update conda-incubator/setup-miniconda action to v3.3.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
+ - [ ] <!-- approvePr-branch=renovate/peter-evans-create-pull-request-8.x -->Update peter-evans/create-pull-request action to v8.1.0
  - [ ] <!-- approvePr-branch=renovate/criterion-4.x-lockfile -->Update Rust crate criterion to v4.3.0
  - [ ] <!-- approvePr-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.4.1
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
@@ -890,7 +891,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `peter-evans/create-pull-request v8.0.0@98357b18bf14b5342f975ff684046ec3b2a07725`
+ - `peter-evans/create-pull-request v8.0.0@98357b18bf14b5342f975ff684046ec3b2a07725` → [Updates: `v8.1.0`]
 
 </details>
 

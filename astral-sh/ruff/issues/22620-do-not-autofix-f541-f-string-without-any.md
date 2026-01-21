@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-20T11:26:32Z
+updated_at: 2026-01-21T16:21:46Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-20T11:32:55Z
+synced_at: 2026-01-21T17:03:40Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -340,5 +340,51 @@ Unless explicitly silenced.
 In the face of ambiguity, refuse the temptation to guess.
  ```
 I know that with this we are not fully sure if this is an error or an intention, but we are entering a `guess` territory, so we should follow the path of `explicitly silenced` and allow user to `extend-safe-fixes` or do `--unsafe-fixes` globally.
+
+---
+
+_Comment by @k0pernikus on 2026-01-21 16:18_
+
+If this were "purely cosmetic", shouldn't this be autoformatted via `ruff format` while remaining silent on `ruff check`?
+
+I noticed that there is a difference in ruff's treatment of certain kind of issues, e.g.:
+
+```python
+@pytest.mark.user("admin")
+@pytest.mark.unauthenticated
+def test_user_can_login(page: Page, user: User):
+    foo                   =                        "bad code for ruff to complain about         "
+
+    expect(page.get_by_role("link", name=f"Objects {foo}")).to_be_visible()
+```
+
+This code will happily pass the `ruff check`:
+
+```shell
+uvx ruff check  
+All checks passed!
+```
+
+And it will be formatted on `ruff format` to:
+
+```python
+@pytest.mark.user("admin")
+@pytest.mark.unauthenticated
+def test_user_can_login(page: Page, user: User):
+    foo = "bad code for ruff to complain about         "
+
+    expect(page.get_by_role("link", name=f"Objects {foo}")).to_be_visible()
+```
+
+```shell
+uvx ruff format 
+1 file reformatted, 18 files left unchanged
+```
+
+---
+
+Just for clarity: Playing devil's advocate here, I still have the opinion that this should be an unsafe fix and something that  `uvx ruff check` shall complain about.
+
+And: I was surprised by the difference level of report during `ruff check` and `ruff format --check`; yet it makes complete sense as somethings can just be autoformatted without adding any noise to code quality tools.
 
 ---

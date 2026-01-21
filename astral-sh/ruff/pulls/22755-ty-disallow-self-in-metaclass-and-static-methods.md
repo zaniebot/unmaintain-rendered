@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/self2
 created_at: 2026-01-20T03:50:54Z
-updated_at: 2026-01-21T15:54:12Z
+updated_at: 2026-01-21T16:51:23Z
 url: https://github.com/astral-sh/ruff/pull/22755
-synced_at: 2026-01-21T16:04:59Z
+synced_at: 2026-01-21T17:03:51Z
 ```
 
 # [ty] Disallow Self in metaclass and static methods
@@ -87,25 +87,19 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 03:53_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-
 prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
 - src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
 + src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
 - src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
@@ -114,21 +108,21 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
 - src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
 + src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
 - src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
 + src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
 + src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
 - src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown | T@resolve_block_document_references | int | ... omitted 5 union elements]`
@@ -141,24 +135,8 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
 - src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
 + src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-- Found 5412 diagnostics
-+ Found 5407 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 46 diagnostics
-+ Found 47 diagnostics
-
-pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
-+ tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-+ tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- Found 4453 diagnostics
-+ Found 4455 diagnostics
-
-core (https://github.com/home-assistant/core)
-+ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, int | _R@ignore_variance | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14469 diagnostics
-+ Found 14470 diagnostics
+- Found 5407 diagnostics
++ Found 5412 diagnostics
 
 
 ```
@@ -172,6 +150,7 @@ core (https://github.com/home-assistant/core)
 
 ```diff
 flake8 (https://github.com/pycqa/flake8)
++ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
@@ -182,10 +161,42 @@ flake8 (https://github.com/pycqa/flake8)
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
@@ -196,25 +207,6 @@ flake8 (https://github.com/pycqa/flake8)
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 
 trio (https://github.com/python-trio/trio)
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
@@ -278,35 +270,26 @@ trio (https://github.com/python-trio/trio)
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
 + WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
 + WARN expected `heap_size` to be provided by Salsa query `typing_self`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to be provided by Salsa query `nearest_enclosing_class`
-+ WARN expected `heap_size` to 
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided by Salsa query `typing_self`
++ WARN expected `heap_size` to be provided 
 
-... (truncated 81 lines) ...
+... (truncated 149 lines) ...
 ```
 
 </details>
@@ -325,19 +308,26 @@ _Comment by @charliermarsh on 2026-01-20 04:02_
 _Comment by @codspeed-hq[bot] on 2026-01-20 14:10_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **not alter performance**
+## Merging this PR will **degrade performance by 5.04%**
 
 
 
 
-`✅ 9` untouched benchmarks  
-`⏩ 44` skipped benchmarks[^skipped]  
+`❌ 1` regressed benchmark  
+`✅ 22` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
 
 
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself2?utm_source=github&utm_medium=comment-v2&utm_content=acknowledge)._
 
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ❌ | WallTime | [`` altair ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself2?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Aaltair&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 4.5 s | 4.7 s | -5.04% |
 ---
 
-<sub>Comparing <code>charlie/self2</code> (4efe572) with <code>main</code> (6347407)</sub>
+<sub>Comparing <code>charlie/self2</code> (09eb587) with <code>main</code> (b1bcee2)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself2?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -348,7 +338,7 @@ _Comment by @codspeed-hq[bot] on 2026-01-20 14:10_
 </a>
 
 
-[^skipped]: 44 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself2?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself2?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
 
 ---
@@ -412,5 +402,13 @@ _@AlexWaygood requested changes on 2026-01-21 08:12_
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-21 15:02_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-21 16:01_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-21 16:16_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/delocate
 created_at: 2026-01-06T15:14:48Z
-updated_at: 2026-01-21T15:03:25Z
+updated_at: 2026-01-21T16:00:59Z
 url: https://github.com/astral-sh/uv/pull/17336
-synced_at: 2026-01-21T16:05:12Z
+synced_at: 2026-01-21T17:04:04Z
 ```
 
 # Add support for delocating macOS wheels
@@ -616,6 +616,18 @@ Maybe that's a different test, what I'm interested in seeing more than the exact
 
 ---
 
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:103 on 2026-01-21 12:56_
+
+What happens at runtime with a library like this, would this create a wheel with a shared library that fails to load?
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:462 on 2026-01-21 15:00_
+
+This and the `find_max_macos_version` below look off: In the Python delocate: there's a function that runs over the wheel directory after the libs have been copied and computes the minimum of all libs in the new wheel, I think that's libraries + binaries in our terminology (https://github.com/matthew-brett/delocate/blob/a97bc907ea5fab9256e2c92b995b332605fcd98b/delocate/delocating.py#L660-L691). It has the option to check for the required macos version support, but that check only runs if `MACOSX_DEPLOYMENT_TARGET` is set, otherwise it uses the minimum macos version possible with all binaries/libraries in the wheel. Do we have a test input wheel to check this?
+
+---
+
 _@charliermarsh reviewed on 2026-01-21 15:03_
 
 ---
@@ -623,5 +635,45 @@ _@charliermarsh reviewed on 2026-01-21 15:03_
 _Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:760 on 2026-01-21 15:03_
 
 Done
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/macho.rs`:215 on 2026-01-21 15:23_
+
+More something for a follow-up PR, but where did we end up on using arwen to avoid the problems with subprocess calls?
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/error.rs`:51 on 2026-01-21 15:29_
+
+This variant is unused
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/error.rs`:30 on 2026-01-21 15:29_
+
+This variant is unused
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/src/lib.rs`:47 on 2026-01-21 15:31_
+
+Why is this external symbol pub-use?
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/tests/macos_version.rs`:45 on 2026-01-21 15:56_
+
+I'm not sure if we need that test, it tests a `#[derive(Ord)]` in combination with the field order.
+
+---
+
+_Review comment by @konstin on `crates/uv-delocate/tests/wheel_operations.rs`:43 on 2026-01-21 15:58_
+
+This now covered by the existing test suite
+
+---
+
+_@konstin reviewed on 2026-01-21 16:00_
 
 ---

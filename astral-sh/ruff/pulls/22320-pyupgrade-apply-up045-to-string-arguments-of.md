@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: brent/up045
 created_at: 2025-12-31T22:41:05Z
-updated_at: 2026-01-21T10:23:07Z
+updated_at: 2026-01-21T16:06:15Z
 url: https://github.com/astral-sh/ruff/pull/22320
-synced_at: 2026-01-21T11:00:00Z
+synced_at: 2026-01-21T17:03:51Z
 ```
 
 # [`pyupgrade`] Apply `UP045` to string arguments of `typing.cast`
@@ -103,5 +103,15 @@ _@MichaReiser reviewed on 2026-01-21 10:23_
 _Review comment by @MichaReiser on `crates/ruff_linter/resources/test/fixtures/pyupgrade/UP045_py39.py`:15 on 2026-01-21 10:23_
 
 Yeah, this is a bit surprising. Let me know if you want me to take a closer look
+
+---
+
+_@ntBre reviewed on 2026-01-21 16:06_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/pyupgrade/UP045_py39.py`:15 on 2026-01-21 16:06_
+
+I think I'll just close this for now, unless you think it's worth landing without looking into the (arguably separate) issue with concatenated annotations. This is a pretty niche issue in any case.
 
 ---

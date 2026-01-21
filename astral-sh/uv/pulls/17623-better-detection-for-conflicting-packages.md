@@ -2,17 +2,18 @@
 number: 17623
 title: Better detection for conflicting packages
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - preview
 assignees: []
+merged: true
 base: main
 head: konsti/better-conflict-detection
 created_at: 2026-01-20T13:56:12Z
-updated_at: 2026-01-21T10:32:49Z
+updated_at: 2026-01-21T16:34:59Z
 url: https://github.com/astral-sh/uv/pull/17623
-synced_at: 2026-01-21T11:00:13Z
+synced_at: 2026-01-21T17:04:04Z
 ```
 
 # Better detection for conflicting packages
@@ -271,5 +272,17 @@ I think this:
 ```
 
 is the key insight here. That it's unlikely that every single file will have the same size but there will be a difference.
+
+---
+
+_Merged by @konstin on 2026-01-21 16:34_
+
+---
+
+_Closed by @konstin on 2026-01-21 16:34_
+
+---
+
+_Branch deleted on 2026-01-21 16:34_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-05-22T13:57:20Z
-updated_at: 2026-01-21T15:31:31Z
+updated_at: 2026-01-21T16:05:21Z
 url: https://github.com/astral-sh/ty/issues/487
-synced_at: 2026-01-21T16:04:41Z
+synced_at: 2026-01-21T17:03:33Z
 ```
 
 # improve diagnostics for C extension modules without stubs
@@ -173,5 +173,11 @@ info: rule `unresolved-attribute` is enabled by default
 
 Found 1 diagnostic
 ```
+
+---
+
+_Comment by @konstin on 2026-01-21 16:05_
+
+While long term pyo3 and maturin should generate type stubs (https://github.com/PyO3/maturin/pull/2940), attributes on native modules are something that imho should be ignored by default instead of erroring: The problem is a missing `.pyi` file, rather than not fulfilling a known type contract.
 
 ---

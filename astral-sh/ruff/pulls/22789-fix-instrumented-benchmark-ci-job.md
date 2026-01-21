@@ -2,18 +2,18 @@
 number: 22789
 title: Fix instrumented benchmark CI job
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - ci
 assignees: []
-draft: true
+merged: true
 base: main
 head: micha/fix-instrumented-benchmarks
 created_at: 2026-01-21T15:41:06Z
-updated_at: 2026-01-21T15:51:22Z
+updated_at: 2026-01-21T16:18:40Z
 url: https://github.com/astral-sh/ruff/pull/22789
-synced_at: 2026-01-21T16:04:59Z
+synced_at: 2026-01-21T17:03:51Z
 ```
 
 # Fix instrumented benchmark CI job
@@ -77,5 +77,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-21 15:48_
 ---
 
 _Renamed from "micha/fix instrumented benchmarks" to "Fix instrumented benchmark CI job" by @MichaReiser on 2026-01-21 15:51_
+
+---
+
+_Marked ready for review by @MichaReiser on 2026-01-21 16:18_
+
+---
+
+_Merged by @MichaReiser on 2026-01-21 16:18_
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 16:18_
+
+---
+
+_Branch deleted on 2026-01-21 16:18_
 
 ---

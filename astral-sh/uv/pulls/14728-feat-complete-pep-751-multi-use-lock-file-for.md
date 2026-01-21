@@ -10,9 +10,9 @@ draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-21T14:45:06Z
+updated_at: 2026-01-21T16:43:51Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-21T15:05:59Z
+synced_at: 2026-01-21T17:04:03Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file for pylock.toml export
@@ -631,7 +631,7 @@ Sure.
 
 What do you mean here exactly? Just so I fix the right thing 😅
 
- For now trying to understand the reason for that soke failing test.
+ For now trying to understand the reason for that sole failing test.
 
 
 ---

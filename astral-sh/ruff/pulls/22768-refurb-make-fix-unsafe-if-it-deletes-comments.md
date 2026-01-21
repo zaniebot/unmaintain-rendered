@@ -4,14 +4,15 @@ title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB110`)"
 type: pull_request
 state: open
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
 base: main
 head: FURB110
 created_at: 2026-01-20T17:51:10Z
-updated_at: 2026-01-20T18:04:57Z
+updated_at: 2026-01-21T16:51:11Z
 url: https://github.com/astral-sh/ruff/pull/22768
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-21T17:03:51Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB110`)
@@ -57,5 +58,32 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 18:04_
 
 
 
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-21 16:47_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/if_exp_instead_of_or_operator.rs`:39 on 2026-01-21 16:48_
+
+Small nit, but the other part of the sentence refers to the `body` of the expression, so I think it's confusing for the `it` here to refer to the fix instead.
+
+
+```suggestion
+/// `if` expression contains side effects or comments.
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB110_FURB110.py.snap`:116 on 2026-01-21 16:50_
+
+I think the check may be too aggressive in this case, if I'm reading the diff correctly. It looks like the contents of the parentheses aren't actually modified here, so the comment is preserved.
+
+---
+
+_@ntBre requested changes on 2026-01-21 16:51_
+
+Thanks! I think the range check is too aggressive in some cases here. We should make sure comments are actually being removed before marking a fix unsafe.
 
 ---
