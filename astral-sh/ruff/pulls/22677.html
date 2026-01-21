@@ -77,7 +77,7 @@ Linter (stable)
 <p>
 
 <pre>
-+ <a href="https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
++ <a href="https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -100,7 +100,7 @@ Linter (preview)
 <p>
 
 <pre>
-+ <a href="https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
++ <a href="https://github.com/apache/superset/blob/3fba9678565cbbffd048172eb3e01fac50ba31bc/superset/sql/dialects/pinot.py#L172">superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
 </pre>
 
 </p>
@@ -256,10 +256,82 @@ AttributeError: type object &#x27;Inner&#x27; has no attribute &#x27;InnerInner&
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2026-01-21 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP008.py</code>:314 on 2026-01-21 09:32</div>
+            <div class="timeline-body"><p>It was supposed to be with 0-argument, thanks for pointing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-21 09:36</div>
+            <div class="timeline-body"><p>This was a copy-paste indentation error, for some reason I lost the indentation when I copy-pasted, but it was tested properly.</p>
+<p>Try linting this code:</p>
+<pre><code>class Base:
+    def __init__(self, foo):
+        self.foo = foo
+
+
+class Outer(Base):
+    def __init__(self, foo):
+        super().__init__(foo)  # Should not trigger UP008
+
+    class Inner(Base):
+        def __init__(self, foo):
+            super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+
+        class InnerInner(Base):
+            def __init__(self, foo):
+                super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+oii = Outer.Inner.InnerInner(1)
+</code></pre>
+<p>Output:</p>
+<pre><code>&gt; echo &#x27;class Base:
+      def __init__(self, foo):
+          self.foo = foo
+
+
+  class Outer(Base):
+      def __init__(self, foo):
+          super().__init__(foo)  # Should not trigger UP008
+
+      class Inner(Base):
+          def __init__(self, foo):
+              super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+
+          class InnerInner(Base):
+              def __init__(self, foo):
+                  super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+  oii = Outer.Inner.InnerInner(1)&#x27; | cargo run -p ruff -- check --select UP008 -
+UP008 Use `super()` instead of `super(__class__, self)`
+  --&gt; -:12:18
+   |
+10 |     class Inner(Base):
+11 |         def __init__(self, foo):
+12 |             super(Outer.Inner, self).__init__(foo)  # Should trigger UP008
+   |                  ^^^^^^^^^^^^^^^^^^^
+13 |
+14 |         class InnerInner(Base):
+   |
+help: Remove `super()` parameters
+
+UP008 Use `super()` instead of `super(__class__, self)`
+  --&gt; -:16:22
+   |
+14 |         class InnerInner(Base):
+15 |             def __init__(self, foo):
+16 |                 super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 05:58:08 UTC
+        Synced at 2026-01-21 10:04:13 UTC
     </footer>
 </body>
 </html>
