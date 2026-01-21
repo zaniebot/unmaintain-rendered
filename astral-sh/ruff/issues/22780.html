@@ -24,34 +24,30 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a></div>
             <div class="timeline-body"><p>PLC1802 won’t trigger if the sequence is an attribute.</p>
-<p>https://play.ruff.rs/f9f8f76b-c468-4f4f-a3b8-0bca5850daf1</p>
+<p>https://play.ruff.rs/74477bb6-7796-4884-927a-2d0a8f93e4e2</p>
 Example
 <p>By running</p>
 <pre><code>$ echo &#x27;class Fruits:
-      fruits: list[str]
+    fruits: list[str]
 
-      def __init__(self, fruits: list[str]):
-          self.fruits = fruits
+    def __init__(self):
+        self.fruits = [&quot;apple&quot;, &quot;orange&quot;]
 
-  fruits_class = Fruits([&quot;orange&quot;, &quot;apple&quot;])
-  fruits_list = [&quot;a&quot;, &quot;b&quot;]
+        if len(self.fruits):
+            ...
 
-  if len(fruits_class.fruits):
-      ...
-
-  if len(fruits_list):
-      ...
-  &#x27; | cargo run -p ruff -- check --select PLC1802 -
+fruits = [&quot;apple&quot;, &quot;orange&quot;]
+if len(fruits):
+    ...&#x27; | cargo run -p ruff -- check --select PLC1802 -
 </code></pre>
-<p>We get this output:</p>
-<pre><code>PLC1802 [*] `len(fruits_list)` used as condition without comparison
-  --&gt; -:13:4
+<p>We get this output, which is missing the <code>self.fruits</code> inside the Fruits class:</p>
+<pre><code>PLC1802 [*] `len(fruits)` used as condition without comparison
+  --&gt; -:11:4
    |
-11 |     ...
-12 |
-13 | if len(fruits_list):
-   |    ^^^^^^^^^^^^^^^^
-14 |     ...
+10 | fruits = [&quot;apple&quot;, &quot;orange&quot;]
+11 | if len(fruits):
+   |    ^^^^^^^^^^^
+12 |     ...
    |
 help: Remove `len`
 
@@ -63,6 +59,29 @@ Found 1 error.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-21 00:00</div>
             <div class="timeline-body"><p>It seems related to ruff giving up on resolving <code>Expr::Attribute</code> in <code>From&lt;&amp;Expr&gt; for ResolvedPythonType</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_semantic/src/analyze/type_inference.rs#L348-L353">here</a>.</p>
+<pre><code>impl From&lt;&amp;Expr&gt; for ResolvedPythonType {
+    fn from(expr: &amp;Expr) -&gt; Self {
+        match expr {
+            // Primitives.
+            Expr::Dict(_) =&gt; ResolvedPythonType::Atom(PythonType::Dict),
+            Expr::DictComp(_) =&gt; ResolvedPythonType::Atom(PythonType::Dict),
+            // (...)
+            Expr::Lambda(_)
+            | Expr::Await(_)
+            | Expr::Yield(_)
+            | Expr::YieldFrom(_)
+            | Expr::Compare(_)
+            | Expr::Call(_)
+            | Expr::Attribute(_)
+            | Expr::Subscript(_)
+            | Expr::Starred(_)
+            | Expr::Name(_)
+            | Expr::Slice(_)
+            | Expr::IpyEscapeCommand(_) =&gt; ResolvedPythonType::Unknown,
+        }
+    }
+}
+</code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,7 +93,7 @@ Found 1 error.
     </div>
 
     <footer>
-        Synced at 2026-01-21 00:52:12 UTC
+        Synced at 2026-01-21 13:56:43 UTC
     </footer>
 </body>
 </html>
