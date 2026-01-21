@@ -275,10 +275,41 @@ In the face of ambiguity, refuse the temptation to guess.
 <p>I know that with this we are not fully sure if this is an error or an intention, but we are entering a <code>guess</code> territory, so we should follow the path of <code>explicitly silenced</code> and allow user to <code>extend-safe-fixes</code> or do <code>--unsafe-fixes</code> globally.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k0pernikus">@k0pernikus</a> on 2026-01-21 16:18</div>
+            <div class="timeline-body"><p>If this were &quot;purely cosmetic&quot;, shouldn&#x27;t this be autoformatted via <code>ruff format</code> while remaining silent on <code>ruff check</code>?</p>
+<p>I noticed that there is a difference in ruff&#x27;s treatment of certain kind of issues, e.g.:</p>
+<pre><code>@pytest.mark.user(&quot;admin&quot;)
+@pytest.mark.unauthenticated
+def test_user_can_login(page: Page, user: User):
+    foo                   =                        &quot;bad code for ruff to complain about         &quot;
+
+    expect(page.get_by_role(&quot;link&quot;, name=f&quot;Objects {foo}&quot;)).to_be_visible()
+</code></pre>
+<p>This code will happily pass the <code>ruff check</code>:</p>
+<pre><code>uvx ruff check  
+All checks passed!
+</code></pre>
+<p>And it will be formatted on <code>ruff format</code> to:</p>
+<pre><code>@pytest.mark.user(&quot;admin&quot;)
+@pytest.mark.unauthenticated
+def test_user_can_login(page: Page, user: User):
+    foo = &quot;bad code for ruff to complain about         &quot;
+
+    expect(page.get_by_role(&quot;link&quot;, name=f&quot;Objects {foo}&quot;)).to_be_visible()
+</code></pre>
+<pre><code>uvx ruff format 
+1 file reformatted, 18 files left unchanged
+</code></pre>
+<hr>
+<p>Just for clarity: Playing devil&#x27;s advocate here, I still have the opinion that this should be an unsafe fix and something that  <code>uvx ruff check</code> shall complain about.</p>
+<p>And: I was surprised by the difference level of report during <code>ruff check</code> and <code>ruff format --check</code>; yet it makes complete sense as somethings can just be autoformatted without adding any noise to code quality tools.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 18:50:45 UTC
+        Synced at 2026-01-21 17:05:20 UTC
     </footer>
 </body>
 </html>

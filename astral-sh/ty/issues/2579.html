@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing uses lossy conversion for `bytes` - astral-sh/ty #2579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing uses lossy conversion for <code>bytes</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2579">#2579</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2026-01-21 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
+            <div class="timeline-body">Summary
+<p>Narrowing a non-UTF-8 <code>bytes</code> subscript also narrows a different <code>bytes</code> subscript if <a href="https://doc.rust-lang.org/std/string/struct.String.html#method.from_utf8_lossy"><code>String::from_utf8_lossy</code></a> converts them to the same string. Narrowing should not use lossy conversion. <a href="https://play.ty.dev/f4d1c149-3442-467b-a548-585a46d717c3">Example</a>:</p>
+<pre><code>$ cat &gt;bug.py &lt;&lt;&#x27;# EOF&#x27;
+from typing import reveal_type
+def _(x: dict[bytes, int | None]):
+    if x[b&quot;\xaa&quot;] is not None:
+        reveal_type(x[b&quot;\xff&quot;])
+# EOF
+
+$ ty check --output-format concise bug.py
+bug.py:4:21: info[revealed-type] Revealed type: `int`
+Found 1 diagnostic
+</code></pre>
+Version
+<p>ty 0.0.13 (fc1478bd9 2026-01-21)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 17:06:51 UTC
+    </footer>
+</body>
+</html>

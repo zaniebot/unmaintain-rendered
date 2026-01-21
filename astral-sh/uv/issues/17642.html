@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add platform dependence to `exclude-dependencies` - astral-sh/uv #17642</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add platform dependence to <code>exclude-dependencies</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17642">#17642</a>
+        opened by <a href="https://github.com/jontwo">@jontwo</a>
+        on 2026-01-21 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jontwo">@jontwo</a></div>
+            <div class="timeline-body">Summary
+<p>GDAL is notoriously difficult to install on Windows, so we&#x27;re using the OSGeo4W shell in our project CI because it comes with GDAL already installed. We can just add our application on top. See https://github.com/andreglauser/vscode-osgeo4w-dev-template for an example setup - you can just do the following:</p>
+<pre><code>uv venv --system-site-packages --python C:\OSGeo4W\apps\Python312\python.exe
+uv sync
+</code></pre>
+<p>This didn&#x27;t work straight away because <code>uv</code> tries to install gdal as a dependency - you need to exclude it in pyproject.toml. However, we also support linux, so don&#x27;t want to exclude gdal when a job is not running on Windows.</p>
+<p>Maybe this is possible, in which case, the doc needs to be updated with an example. I couldn&#x27;t get it to work though. Instead we have this hack in our CI pipeline, which is only on Windows jobs (running on Powershell).</p>
+<pre><code>    - echo &#x27;exclude-dependencies = [&quot;gdal&quot;]&#x27; | Out-File -FilePath .\pyproject.toml -Append -Encoding utf8
+</code></pre>
+Example
+<p>Ideally, I would be able to provide PEP508-style requirements, as you can with <code>constraint-dependencies</code>.</p>
+<pre><code>[tool.uv]
+exclude-dependencies = [&quot;gdal ; sys_platform == &#x27;win32&#x27;&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/jontwo">@jontwo</a> on 2026-01-21 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 17:07:33 UTC
+    </footer>
+</body>
+</html>

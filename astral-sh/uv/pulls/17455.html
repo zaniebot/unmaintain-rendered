@@ -25,9 +25,35 @@
             <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a></div>
             <div class="timeline-body">Summary
 <p>Implement #13974.</p>
-<p>WIP</p>
+<p>Some of the code was inspired by existing code from <code>uv_distribution::metadata::lowering</code> which handles resolving index name references within <code>pyproject.toml</code>.</p>
+<p>This PR adds a new <code>IndexArg</code> type to <code>uv_distribution_types</code> which holds information about an index as passed on the CLI. Specifically the current <code>Index</code> type has a non-optional <code>url</code> field. <code>IndexArg</code> solves this by including two variants, one for the <code>Index</code> type and one for an <code>UnresolvedIndex</code> which holds the <code>name</code> and whether the index was passed using <code>--default-index</code>. This means that all the CLI handling can use <code>IndexArg</code> and then the standard <code>resolve</code> functions can transform these <code>IndexArg</code>s into <code>Index</code>es. This allows you to reference indexes by name if they are already defined somewhere else.</p>
+Error handling
+<p>The initial code made use of <code>Result</code> to propagate errors regarding resolution (i.e. no index found for that name). But I added a commit which replaces this with an early <code>exit(2)</code> as that seems to be the style used by other <code>resolve</code> style code.</p>
+The new <code>Resolve</code> trait
+<p><code>PipOptions</code> required a bunch of changes as it was using the <code>From</code> trait initially but index resolution requires additional metadata for the names which could have been passed as a tuple except for the fact that it&#x27;s ugly and also breaks the orphan rule so it wasn&#x27;t actually an option. Another alternative would be to do the resolution earlier but that seemed like an excessive amount of boilerplate, so instead a new trait was used.</p>
+Argument cross-references
+<p>You can&#x27;t resolve an index which you passed on the CLI (e.g. <code>--index foo=bar --index foo</code>) as I felt that didn&#x27;t make sense as a feature even if it could have been supported. Maybe there is a use for it though? Not sure.</p>
+Index writeback
+<p>The code for handling writing the index definition back into the <code>pyproject.toml</code> has remained unchanged. This means that if you reference a workspace index in a package add command, it will get copied to the package. This behaviour matches what would happen if you pass the full index including a name. I wasn&#x27;t completely sure what to do here, but I feel as if it might be confusing to have them behave differently.</p>
+<p>I think if this is undesirable, probably the best option here would be to make a decision on [Index priority] and then make the change in the writeback code itself, either to update the workspace index, or complain about modifications if the index is part of the workspace.</p>
+Index priority
+<p>One area of ambiguity is which indexes to prioritise when trying to resolve a name.</p>
+<p>When resolving the name of an index within a <code>pyproject.toml</code>, the lowering code resolves it by looking at the current file first, and then the workspace file.</p>
+<p>On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package&#x27;s indexes next.</p>
+<p>You can&#x27;t have conflicting index names in a <code>pyproject.toml</code>, maybe the simple solution here is to forbid this within a workspace?</p>
+<p>But, for the time being, the code follows the second strategy. It would be a bit of a change to make it follow the lowering strategy, but it seems possible toI believe that o. Since I realised this problem after having already written all of the code to implement the current strategy, I decided to leave it be for now.</p>
+<code>uv tool</code>
+<p>Passing <code>--index</code> to <code>uv tool</code> even if it&#x27;s the only index doesn&#x27;t guarantee that it will use only that index for the tool. Moreover, due to the fact that <code>--index &lt;name&gt;</code> works identically to <code>--index &lt;name&gt;=...</code>, the side effect is that the index will appear twice in the <code>uv-receipt.toml</code>. I think that any changes in this area are probably outside of the scope of this change.</p>
 Test Plan
-<p>To Do</p>
+<p>A suite of new tests specifically for <code>uv add</code> in various situations.</p>
+<p>The tests also help demonstrate how the current design decisions affect the results.</p>
+Outstanding
+<p>A few things are outstanding because I am hoping to get some feedback on the design decisions before I go ahead and implement them (to avoid unnecessary churn).</p>
+<ul>
+<li>Additional tests for other parts of uv which can now take <code>--index &lt;name&gt;</code></li>
+<li>Relevant documentation changes.</li>
+<li>Additional tests for index definitions in <code>uv.toml</code> (I had tested this manually but simply forgot to add a test case yet).</li>
+</ul>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,10 +134,35 @@ Test Plan
         <div class="timeline-entry">
             <div class="event">Added to milestone &quot;v0.10.0&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 15:22</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Moreover, due to the fact that --index  works identically to --index =..., the side effect is that the index will appear twice in the uv-receipt.toml</p>
+</blockquote>
+<p>This seems problematic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>This means that if you reference a workspace index in a package add command, it will get copied to the package. This behaviour matches what would happen if you pass the full index including a name. I wasn&#x27;t completely sure what to do here, but I feel as if it might be confusing to have them behave differently.</p>
+</blockquote>
+<p>Is it necessary for it to be copied into the child package? Or if you added it to the child package without doing so would the parent index still be used properly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>When resolving the name of an index within a pyproject.toml, the lowering code resolves it by looking at the current file first, and then the workspace file.</p>
+<p>On the other hand, when resolving which index to use for a package which has no specified index, the resolution takes the workspace index first and then the package&#x27;s indexes next.</p>
+</blockquote>
+<p>So <code>--name</code> resolves to an index in the opposite order in which index priority is applied during resolution?</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 16:09:24 UTC
+        Synced at 2026-01-21 17:08:14 UTC
     </footer>
 </body>
 </html>
