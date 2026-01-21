@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: feat/goto-definition-looks-up-on-metaclass
 created_at: 2026-01-20T08:05:46Z
-updated_at: 2026-01-20T08:50:53Z
+updated_at: 2026-01-21T08:49:18Z
 url: https://github.com/astral-sh/ruff/pull/22758
-synced_at: 2026-01-20T09:41:43Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] look up attributes on metaclasses for goto-definition
@@ -142,5 +142,25 @@ No memory usage changes detected ✅
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-20 08:50_
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2026-01-21 08:48_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2026-01-21 08:48_
+
+---
+
+_Review request for @sharkdp removed by @MichaReiser on 2026-01-21 08:48_
+
+---
+
+_Review request for @AlexWaygood removed by @MichaReiser on 2026-01-21 08:48_
+
+---
+
+_Review requested from @AlexWaygood by @MichaReiser on 2026-01-21 08:49_
 
 ---

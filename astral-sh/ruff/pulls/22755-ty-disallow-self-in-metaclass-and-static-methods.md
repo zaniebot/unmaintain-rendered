@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/self2
 created_at: 2026-01-20T03:50:54Z
-updated_at: 2026-01-21T04:12:18Z
+updated_at: 2026-01-21T08:12:02Z
 url: https://github.com/astral-sh/ruff/pull/22755
-synced_at: 2026-01-21T04:56:55Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] Disallow Self in metaclass and static methods
@@ -232,5 +232,27 @@ _Converted to draft by @charliermarsh on 2026-01-21 03:35_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-21 04:12_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2388 on 2026-01-21 08:04_
+
+Because this method directly accessed the AST, it needs to be Salsa-tracked to avoid overly eager cache invalidation if it's accessed while inferring types for a different module to the one the class is defined in. But we try not to have too many Salsa-tracked functions/methods, because they increase our memory-usage, so it may be better to use the existing `explicit_bases` method unless this buys us a lot in terms of performance 
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/annotations/self.md`:654 on 2026-01-21 08:10_
+
+The behaviour demonstrated in this test is correct, but the prose describing it seems pretty confused. `__new__` _is_ a staticmethod, even if isn't decorated with `@staticmethod`. But using `Self` in `__new__` is allowed, partly because of the fact that at runtime it is heavily special-cased by the interpreter and behaves in many ways more like you'd usually expect a classmethod to behave. It always receives a `cls` argument with type `type[Self]` first, and it often returns an object of type `Self`.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:229 on 2026-01-21 08:11_
+
+Uff, I think we already have 3 methods for determining if a function is a staticmethod — I'd prefer not to add a fourth 😄
+
+---
+
+_@AlexWaygood requested changes on 2026-01-21 08:12_
 
 ---

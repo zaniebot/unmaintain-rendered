@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix/pep695-type-alias-solver
 created_at: 2026-01-18T13:12:15Z
-updated_at: 2026-01-21T02:33:06Z
+updated_at: 2026-01-21T08:30:58Z
 url: https://github.com/astral-sh/ruff/pull/22678
-synced_at: 2026-01-21T03:00:30Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] Support solving generics involving PEP 695 type aliases
@@ -560,5 +560,9 @@ _Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/generics
 ---
 
 _@ibraheemdev reviewed on 2026-01-21 02:33_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-21 08:30_
 
 ---

@@ -1,21 +1,22 @@
 ```yaml
 number: 22761
-title: 📝 Add --exit-non-zero-on-format to formatter exit codes section
+title: "Add `--exit-non-zero-on-format` to formatter exit codes section"
 type: pull_request
-state: open
+state: merged
 author: alejsdev
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: docs/ruff-format-flag
 created_at: 2026-01-20T12:37:36Z
-updated_at: 2026-01-20T19:14:51Z
+updated_at: 2026-01-21T08:37:39Z
 url: https://github.com/astral-sh/ruff/pull/22761
-synced_at: 2026-01-20T20:43:31Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
-# 📝 Add --exit-non-zero-on-format to formatter exit codes section
+# Add `--exit-non-zero-on-format` to formatter exit codes section
 
 ---
 
@@ -99,5 +100,23 @@ _@alejsdev reviewed on 2026-01-20 19:14_
 _Review comment by @alejsdev on `docs/formatter.md`:379 on 2026-01-20 19:14_
 
 done, thank you! 
+
+---
+
+_Renamed from "📝 Add --exit-non-zero-on-format to formatter exit codes section" to "Add `--exit-non-zero-on-format` to formatter exit codes section" by @MichaReiser on 2026-01-21 08:34_
+
+---
+
+_@MichaReiser approved on 2026-01-21 08:34_
+
+Thank you
+
+---
+
+_Merged by @MichaReiser on 2026-01-21 08:37_
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 08:37_
 
 ---

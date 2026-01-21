@@ -10,9 +10,9 @@ draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-21T02:35:33Z
+updated_at: 2026-01-21T08:47:30Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-21T03:00:43Z
+synced_at: 2026-01-21T09:03:15Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file for pylock.toml export
@@ -601,7 +601,7 @@ _Comment by @codspeed-hq[bot] on 2026-01-21 01:47_
 
 ### Merging this PR will **not alter performance**
 
-<sub>Comparing <code>gaborbernat:toml-extra</code> (0c2d2c1) with <code>main</code> (ba13064)</sub>
+<sub>Comparing <code>gaborbernat:toml-extra</code> (3b10b90) with <code>main</code> (ba13064)</sub>
 
 
 
@@ -612,5 +612,11 @@ _Comment by @codspeed-hq[bot] on 2026-01-21 01:47_
 
 
 
+
+---
+
+_Comment by @konstin on 2026-01-21 08:21_
+
+Once the `extra` vs. `extras` part is working, can you describe what algorithm we use for it and how we pass the required data through? This would be crucial to understand the approach this PR is taking and to verify whether it's correct.
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: completions-exception-context
 created_at: 2026-01-20T20:34:23Z
-updated_at: 2026-01-20T22:17:18Z
+updated_at: 2026-01-21T08:32:49Z
 url: https://github.com/astral-sh/ruff/pull/22775
-synced_at: 2026-01-20T22:52:51Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] Improve completion rankings for raise-from/except contexts
@@ -114,5 +114,29 @@ _Review requested from @Gankra by @RasmusNygren on 2026-01-20 20:41_
 ---
 
 _Label `ty` added by @ntBre on 2026-01-20 22:17_
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review request for @Gankra removed by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review request for @sharkdp removed by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review request for @AlexWaygood removed by @MichaReiser on 2026-01-21 08:32_
+
+---
+
+_Review requested from @BurntSushi by @MichaReiser on 2026-01-21 08:32_
 
 ---

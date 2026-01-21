@@ -4,12 +4,13 @@ title: Mechanism to opt-in or opt-out of markdown formatting
 type: issue
 state: open
 author: amyreese
-labels: []
+labels:
+  - configuration
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-21T03:28:32Z
+updated_at: 2026-01-21T07:52:35Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-21T03:58:05Z
+synced_at: 2026-01-21T09:02:51Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -81,5 +82,9 @@ _Comment by @DetachHead on 2026-01-21 03:28_
 i think this is the better choice. i prefer when linters enable all checks by default because it's much better for discoverability. you can be confident that all users who disabled it have done so because they don't want it, and that all users who keep it enabled do.
 
 if this feature was disabled by default, a vast majority of people who don't check changelogs would be missing out on this feature that they would enable if they knew it existed.
+
+---
+
+_Label `configuration` added by @MichaReiser on 2026-01-21 07:52_
 
 ---

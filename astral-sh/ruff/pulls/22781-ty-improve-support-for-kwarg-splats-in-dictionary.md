@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/dict-splat
 created_at: 2026-01-21T02:16:04Z
-updated_at: 2026-01-21T02:21:31Z
+updated_at: 2026-01-21T08:26:22Z
 url: https://github.com/astral-sh/ruff/pull/22781
-synced_at: 2026-01-21T03:00:30Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] Improve support for kwarg splats in dictionary literals
@@ -292,5 +292,45 @@ _Comment by @astral-sh-bot[bot] on 2026-01-21 02:21_
 **[Full report with detailed diff](https://46c57090.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://46c57090.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 07:56_
+
+Huh, the ecosystem changes suggest that there are about 100 new diagnostics for prefect, but the ecosystem analyzer only reports 16? 
+
+---
+
+_Comment by @AlexWaygood on 2026-01-21 07:58_
+
+> Huh, the ecosystem changes suggest that there are about 100 new diagnostics for prefect, but the ecosystem analyzer only reports 16?
+
+Prefect is one of our most non-deterministic repos currently. I think those would all go away if you reran mypy_primer ☹️
+
+---
+
+_Comment by @AlexWaygood on 2026-01-21 08:16_
+
+E.g. You see the same prefect diagnostics going away on https://github.com/astral-sh/ruff/pull/22067#issuecomment-3673257468
+
+<details>
+<summary>Screenshot</summary>
+
+![IMG_1479](https://github.com/user-attachments/assets/1256abce-0521-4aee-ba38-5564c28e512a)
+
+</details>
+
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 08:17_
+
+Wow, so it's getting worse? I mean, 100 non-deterministic diagnostics that don't just differ by text sounds unusable to me
+
+---
+
+_Comment by @AlexWaygood on 2026-01-21 08:22_
+
+I wouldn't say it's got worse recently, but yes, it's been very bad since https://github.com/astral-sh/ruff/pull/21551 landed and hasn't got better since. It only happens on specific repos and most of the time it does not manifest as 100 new diagnostics coming or going. Prefect is by far our most non-deterministic repo. I've been rerunning primer often to check if diagnostic changes persist when they're on known flaky repos and I'm unsure whether they're our regular flakes or not.
 
 ---

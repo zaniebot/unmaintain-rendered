@@ -6,11 +6,12 @@ state: open
 author: auscompgeek
 labels:
   - generics
+  - overloads
 assignees: []
 created_at: 2026-01-17T12:39:07Z
-updated_at: 2026-01-18T17:47:06Z
+updated_at: 2026-01-21T07:58:30Z
 url: https://github.com/astral-sh/ty/issues/2546
-synced_at: 2026-01-18T18:15:23Z
+synced_at: 2026-01-21T09:02:45Z
 ```
 
 # `invalid-argument-type` when passing overloaded function to `map`
@@ -111,5 +112,17 @@ ty 0.0.12
 ---
 
 _Label `generics` added by @AlexWaygood on 2026-01-18 17:47_
+
+---
+
+_Label `overloads` added by @dhruvmanila on 2026-01-21 07:55_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-21 07:58_
+
+This seems specific to overloads because if I remove them then the error disappears.
+
+Looking at the error message, I think it might be because the `func: Callable[[_T1], _S]` gets specialized into a single callable instead of capturing the overloads and so when the argument types are checked, there's a mismatch.
 
 ---

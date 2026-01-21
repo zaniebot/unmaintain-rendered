@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-03-10T18:43:51Z
-updated_at: 2025-09-05T21:59:59Z
+updated_at: 2026-01-21T08:03:20Z
 url: https://github.com/astral-sh/uv/issues/12103
-synced_at: 2026-01-12T16:00:55Z
+synced_at: 2026-01-21T09:03:07Z
 ```
 
 # Is there a way to list the extras on a package that is not yet installed?
@@ -67,6 +67,20 @@ I initially suggested using the uv tree command to avoid introducing an addition
 
 That said, I would be happy if this was implemented however the devs would think is the best. 
 
+
+
+---
+
+_Comment by @forthrin on 2026-01-21 08:03_
+
+Does `uv` have command for information about a package *at all*, in particular link to its homepage, and a description? Eg.
+
+```
+$ uv tool info pyby
+Convert Python code into Ruby
+https://github.com/haohmaru/pyby
+$
+```
 
 
 ---

@@ -2,15 +2,15 @@
 number: 22673
 title: "[PT011] Support pytest 8.4.0 `check` parameter"
 type: issue
-state: open
+state: closed
 author: harupy
 labels:
   - rule
 assignees: []
 created_at: 2026-01-18T10:24:03Z
-updated_at: 2026-01-20T15:15:03Z
+updated_at: 2026-01-21T08:22:14Z
 url: https://github.com/astral-sh/ruff/issues/22673
-synced_at: 2026-01-20T15:43:52Z
+synced_at: 2026-01-21T09:02:51Z
 ```
 
 # [PT011] Support pytest 8.4.0 `check` parameter
@@ -57,5 +57,9 @@ _Label `rule` added by @ntBre on 2026-01-19 14:50_
 _Comment by @harupy on 2026-01-20 15:15_
 
 @ntBre Thanks for the comment! Filed #22725
+
+---
+
+_Closed by @MichaReiser on 2026-01-21 08:22_
 
 ---

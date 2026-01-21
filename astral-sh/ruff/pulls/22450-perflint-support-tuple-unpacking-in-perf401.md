@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-21T03:01:09Z
+updated_at: 2026-01-21T08:48:11Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-21T03:58:15Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -676,5 +676,11 @@ I'm still concerned about some of the ecosystem reports, like the ones below, wh
 _Comment by @Jkhall81 on 2026-01-21 02:54_
 
 @amyreese You're right.  I added a check to check the reference count of the list variable.  In these false positive situations that you identified it should now suggest `list.extend`, instead of a list comprehension that would destroy any previously appended stuff.  I added a test also, just for this scenario.
+
+---
+
+_Comment by @MichaReiser on 2026-01-21 08:48_
+
+This seems like a considerable expansion to the rule's scope. I suggest we preview gate this change. See https://github.com/astral-sh/ruff/blob/5d99ef9d95b22c1d8217a23219483c3fe6ffb024/crates/ruff_linter/src/preview.rs#L13-L15 for examples of other preview gated features.
 
 ---

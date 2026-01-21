@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: cjm/attrs-in-decorated-methods
 created_at: 2026-01-20T21:59:48Z
-updated_at: 2026-01-21T06:03:52Z
+updated_at: 2026-01-21T08:11:08Z
 url: https://github.com/astral-sh/ruff/pull/22778
-synced_at: 2026-01-21T06:54:06Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # [ty] Fix assignment in decorated method causing Unknown fallback
@@ -545,5 +545,9 @@ The new parso diagnostics have the same basic cause, and are also true positives
 _Comment by @carljm on 2026-01-21 03:59_
 
 The sklearn diagnostics are similar to home-assistant and parso; they generally follow the pattern "we understand more types as something other than Unknown, so we get more diagnostics". The one wrinkle with sklearn is that some of the new types we understand also trigger #350.
+
+---
+
+_@MichaReiser approved on 2026-01-21 08:11_
 
 ---

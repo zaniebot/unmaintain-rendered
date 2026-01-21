@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/better-conflict-detection
 created_at: 2026-01-20T13:56:12Z
-updated_at: 2026-01-20T23:25:45Z
+updated_at: 2026-01-21T08:29:38Z
 url: https://github.com/astral-sh/uv/pull/17623
-synced_at: 2026-01-20T23:51:56Z
+synced_at: 2026-01-21T09:03:15Z
 ```
 
 # Better detection for conflicting packages
@@ -173,5 +173,15 @@ Sorting here doesn't affect the iteration order for `BTreeMap`.
 ---
 
 _@EliteTK approved on 2026-01-20 23:25_
+
+---
+
+_@konstin reviewed on 2026-01-21 08:29_
+
+---
+
+_Review comment by @konstin on `crates/uv-install-wheel/src/linker.rs`:28 on 2026-01-21 08:29_
+
+Stuck at the same question of naming :sweat_smile: 
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: brent/new-rule-docs
 created_at: 2026-01-20T23:19:27Z
-updated_at: 2026-01-21T00:41:34Z
+updated_at: 2026-01-21T08:13:04Z
 url: https://github.com/astral-sh/ruff/pull/22779
-synced_at: 2026-01-21T00:50:46Z
+synced_at: 2026-01-21T09:03:02Z
 ```
 
 # Update contributing guide for adding a new rule
@@ -41,5 +41,19 @@ _Label `documentation` added by @ntBre on 2026-01-20 23:19_
 ---
 
 _@amyreese approved on 2026-01-21 00:41_
+
+---
+
+_@MichaReiser reviewed on 2026-01-21 08:12_
+
+---
+
+_Review comment by @MichaReiser on `CONTRIBUTING.md`:191 on 2026-01-21 08:12_
+
+Very unrelated, but our playground might be more approachable than the CLI :) We could add a link to https://play.ruff.rs/?secondary=AST
+
+---
+
+_@MichaReiser approved on 2026-01-21 08:13_
 
 ---
