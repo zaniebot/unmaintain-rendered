@@ -2,7 +2,7 @@
 number: 22134
 title: "[ty] Add support for narrowing on tuple match cases"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/narrow
 created_at: 2025-12-22T02:36:06Z
-updated_at: 2025-12-30T22:58:23Z
+updated_at: 2026-01-21T04:06:21Z
 url: https://github.com/astral-sh/ruff/pull/22134
-synced_at: 2026-01-12T15:57:42Z
+synced_at: 2026-01-21T04:56:55Z
 ```
 
 # [ty] Add support for narrowing on tuple match cases
@@ -149,5 +149,9 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Closed by @charliermarsh on 2026-01-21 04:06_
 
 ---

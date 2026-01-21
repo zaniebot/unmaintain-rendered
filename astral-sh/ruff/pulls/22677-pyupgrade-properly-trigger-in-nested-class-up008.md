@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T00:28:15Z
+updated_at: 2026-01-21T04:50:53Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T00:50:46Z
+synced_at: 2026-01-21T04:56:55Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -175,5 +175,40 @@ I opened an [issue](https://github.com/astral-sh/ruff/issues/22780) and I can't 
 ---
 
 _@amyreese approved on 2026-01-21 00:28_
+
+---
+
+_@generalmimon reviewed on 2026-01-21 04:50_
+
+---
+
+_Review comment by @generalmimon on `crates/ruff_linter/resources/test/fixtures/pyupgrade/UP008.py`:314 on 2026-01-21 04:50_
+
+I'm not sure what you intended here with the 1-argument `super(self)` call, but it actually raises an error at runtime:
+
+```pycon
+Python 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> class Base:
+...     def __init__(self, foo):
+...         self.foo = foo
+...
+>>> class Outer(Base):
+...     def __init__(self, foo):
+...         super(self).__init__(foo)  # Should not trigger UP008
+...
+>>> o = Outer(5)
+Traceback (most recent call last):
+  File "<python-input-2>", line 1, in <module>
+    o = Outer(5)
+  File "<python-input-1>", line 3, in __init__
+    super(self).__init__(foo)  # Should not trigger UP008
+    ~~~~~^^^^^^
+TypeError: super() argument 1 must be a type, not Outer
+```
+
+Perhaps you wanted to use either a 2-argument or 0-argument call instead? Also, if the `super` call doesn't have two arguments, the lint will return early, so I don't know if you wanted to verify that there is no panic in that case, for example?
+
+https://github.com/astral-sh/ruff/blob/6f8ae1ba7c62d8197371c43c5501fc005b91824c/crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs#L91-L96
 
 ---

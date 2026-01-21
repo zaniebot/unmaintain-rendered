@@ -2,7 +2,7 @@
 number: 17459
 title: "Pass `get_interpreter_info.py` script path as CLI instead of using -c option"
 type: pull_request
-state: open
+state: closed
 author: ryanking13
 labels:
   - needs-decision
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-16T10:30:54Z
+updated_at: 2026-01-21T03:55:38Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-16T11:07:47Z
+synced_at: 2026-01-21T04:57:08Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -134,5 +134,9 @@ We generally assume that Windows interpreters can use Windows paths, and can e.g
 ---
 
 _Converted to draft by @konstin on 2026-01-16 10:30_
+
+---
+
+_Closed by @ryanking13 on 2026-01-21 03:55_
 
 ---

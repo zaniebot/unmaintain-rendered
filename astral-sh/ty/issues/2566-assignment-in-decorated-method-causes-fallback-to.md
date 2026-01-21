@@ -7,9 +7,9 @@ author: philj56
 labels: []
 assignees: []
 created_at: 2026-01-19T17:03:34Z
-updated_at: 2026-01-20T22:01:18Z
+updated_at: 2026-01-21T04:02:08Z
 url: https://github.com/astral-sh/ty/issues/2566
-synced_at: 2026-01-20T22:52:34Z
+synced_at: 2026-01-21T04:56:39Z
 ```
 
 # Assignment in decorated method causes fallback to `Unknown`
@@ -75,5 +75,9 @@ Thanks for the report! Tracked this down and put up a fix in https://github.com/
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-20 22:01_
+
+---
+
+_Assigned to @carljm by @carljm on 2026-01-21 04:02_
 
 ---

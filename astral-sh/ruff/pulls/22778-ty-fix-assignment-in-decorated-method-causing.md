@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: cjm/attrs-in-decorated-methods
 created_at: 2026-01-20T21:59:48Z
-updated_at: 2026-01-21T01:27:03Z
+updated_at: 2026-01-21T03:59:07Z
 url: https://github.com/astral-sh/ruff/pull/22778
-synced_at: 2026-01-21T02:01:17Z
+synced_at: 2026-01-21T04:56:55Z
 ```
 
 # [ty] Fix assignment in decorated method causing Unknown fallback
@@ -539,5 +539,11 @@ This code implicitly relies on the `update` method being called before the `acco
 The reason why `None` wasn't previously included in the type of `self.accounts` in this particular case is a bit complex, and looks like it has to do with Salsa cycles introduced by the use of `.class_member(...)` in `is_valid_scope`. The new version infers the types of decorators directly, without needing to go through the entire `class_member()` call, and is thus less likely to introduce cycles -- a side benefit!
 
 The new parso diagnostics have the same basic cause, and are also true positives.
+
+---
+
+_Comment by @carljm on 2026-01-21 03:59_
+
+The sklearn diagnostics are similar to home-assistant and parso; they generally follow the pattern "we understand more types as something other than Unknown, so we get more diagnostics". The one wrinkle with sklearn is that some of the new types we understand also trigger #350.
 
 ---

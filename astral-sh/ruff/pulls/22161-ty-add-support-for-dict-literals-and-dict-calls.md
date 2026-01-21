@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: typed-dict-as-call-parameter
 created_at: 2025-12-23T13:07:37Z
-updated_at: 2026-01-16T16:43:15Z
+updated_at: 2026-01-21T04:07:22Z
 url: https://github.com/astral-sh/ruff/pull/22161
-synced_at: 2026-01-16T16:59:44Z
+synced_at: 2026-01-21T04:56:55Z
 ```
 
 # [ty] Add support for dict literals and dict() calls as default values for parameters with TypedDict types
@@ -258,5 +258,17 @@ I hope it makes better sense now?
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2026-01-16 16:43_
+
+---
+
+_@ibraheemdev reviewed on 2026-01-21 04:07_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:2646 on 2026-01-21 04:07_
+
+We infer the parameter default as part of the outer scope [here](https://github.com/astral-sh/ruff/blob/6fe7de97b3742178c5992e8c5edc1a024841d874/crates/ty_python_semantic/src/types/infer/builder.rs#L2380). Inferring them multiple times means that the original inferred type will still be displayed, e.g., by the IDE on hover. We should try to infer the value directly with type context in its scope.
+
+I think what this requires is [creating a deferred function scope](https://github.com/astral-sh/ruff/blob/745dfa654ca34bbe13f6a2eb81c2814434d1bc19/crates/ty_python_semantic/src/types/infer/builder.rs#L2583) if the function has default value expressions, even if it has type parameters, and then infer default values in [`infer_function_deferred`](https://github.com/astral-sh/ruff/blob/745dfa654ca34bbe13f6a2eb81c2814434d1bc19/crates/ty_python_semantic/src/types/infer/builder.rs#L3225) with the parameter annotations. Note that if there are type parameters, the only thing that should be inferred in `infer_function_deferred` is the default values, and you should call `infer_scope_types` on the type-params scope to get the parameter annotation types to use as type context.
 
 ---

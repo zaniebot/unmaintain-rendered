@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/metaclass
 created_at: 2025-12-31T16:45:36Z
-updated_at: 2025-12-31T20:12:24Z
+updated_at: 2026-01-21T04:29:29Z
 url: https://github.com/astral-sh/ruff/pull/22317
-synced_at: 2026-01-12T15:57:47Z
+synced_at: 2026-01-21T04:56:55Z
 ```
 
 # [ty] Respect `__new__` and metaclass `__call__` return types
@@ -40,58 +41,47 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 16:47_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/) improved 🎉
 
+The percentage of diagnostics emitted that were expected errors increased from 77.42% to 77.74%. The percentage of expected errors that received a diagnostic increased from 60.49% to 60.67%.
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 672 | 674 | +2 | ⏫ (✅) |
+| False Positives | 196 | 193 | -3 | ⏬ (✅) |
+| False Negatives | 439 | 437 | -2 | ⏬ (✅) |
+| Total Diagnostics | 868 | 867 | -1 | ⏬ |
+| Precision | 77.42% | 77.74% | +0.32% | ⏫ (✅) |
+| Recall | 60.49% | 60.67% | +0.18% | ⏫ (✅) |
+
+
+
+### True positives added
 
 <details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
 
-```diff
---- old-output.txt	2025-12-31 20:08:51.526638698 +0000
-+++ new-output.txt	2025-12-31 20:08:51.881637816 +0000
-@@ -208,29 +208,25 @@
- constructors_call_init.py:91:1: error[type-assertion-failure] Type `Class6[int, str]` does not match asserted type `Class6[Unknown, Unknown]`
- constructors_call_init.py:99:1: error[type-assertion-failure] Type `Class7[str, int]` does not match asserted type `Class7[Unknown, Unknown]`
- constructors_call_init.py:130:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
--constructors_call_metaclass.py:39:1: error[type-assertion-failure] Type `int | Meta2` does not match asserted type `Class2`
--constructors_call_metaclass.py:39:13: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
- constructors_call_metaclass.py:46:16: error[invalid-super-argument] `T@__call__` is not an instance or subclass of `<class 'Meta3'>` in `super(<class 'Meta3'>, T@__call__)` call
- constructors_call_metaclass.py:54:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
- constructors_call_metaclass.py:68:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
- constructors_call_new.py:21:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `int`, found `float`
--constructors_call_new.py:49:1: error[type-assertion-failure] Type `int` does not match asserted type `Class3`
- constructors_call_new.py:49:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
- constructors_call_new.py:64:1: error[type-assertion-failure] Type `Class4 | Any` does not match asserted type `Class4`
- constructors_call_new.py:64:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
- constructors_call_new.py:76:5: error[type-assertion-failure] Type `Never` does not match asserted type `Class5`
- constructors_call_new.py:76:17: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
--constructors_call_new.py:89:1: error[type-assertion-failure] Type `int | Class6` does not match asserted type `Class6`
- constructors_call_new.py:89:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
- constructors_call_new.py:113:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class8[list[T@Class8]]`
--constructors_call_new.py:116:1: error[type-assertion-failure] Type `Class8[list[int]]` does not match asserted type `Class8[int]`
--constructors_call_new.py:117:1: error[type-assertion-failure] Type `Class8[list[str]]` does not match asserted type `Class8[str]`
- constructors_call_new.py:125:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__new__`
- constructors_call_new.py:140:47: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class11[int]`
- constructors_call_new.py:145:1: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[Class11[int]]`, found `<class 'Class11[str]'>`
-+constructors_call_type.py:30:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of bound method `__call__`
- constructors_call_type.py:40:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of function `__new__`
- constructors_call_type.py:50:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of bound method `__init__`
- constructors_call_type.py:59:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+constructors_call_type.py:72:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of bound method `__call__`
- constructors_call_type.py:81:5: error[missing-argument] No argument provided for required parameter `y` of function `__new__`
- constructors_call_type.py:82:12: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str`, found `Literal[2]`
- constructors_callable.py:36:13: info[revealed-type] Revealed type: `(x: int) -> Class1`
-@@ -1020,4 +1016,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
- typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
- typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
--Found 1022 diagnostics
-+Found 1018 diagnostics
+| Location | Name | Message |
+|----------|------|---------|
+| [constructors_call_type.py:30:5](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/constructors_call_type.py#L30) | missing-argument | No arguments provided for required parameters `x`, `y` of bound method `__call__` |
+| [constructors_call_type.py:72:5](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/constructors_call_type.py#L72) | missing-argument | No arguments provided for required parameters `x`, `y` of bound method `__call__` |
 
-```
 
 </details>
 
+### False positives removed
+
+<details>
+
+| Location | Name | Message |
+|----------|------|---------|
+| [constructors_call_metaclass.py:39:1](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/constructors_call_metaclass.py#L39) | type-assertion-failure | Type `int \| Meta2` does not match asserted type `Class2` |
+| [constructors_call_new.py:117:1](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/constructors_call_new.py#L117) | type-assertion-failure | Type `Class8[list[int]]` does not match asserted type `Class8[int]` |
+| [constructors_call_new.py:118:1](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/tests/constructors_call_new.py#L118) | type-assertion-failure | Type `Class8[list[str]]` does not match asserted type `Class8[str]` |
+
+
+</details>
 
 
 
@@ -166,6 +156,7 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 + src/bandersnatch_filter_plugins/latest_name.py:30:29: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_filter_plugins/latest_name.py:38:23: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_filter_plugins/metadata_filter.py:36:36: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
++ src/bandersnatch_filter_plugins/metadata_filter.py:36:36: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_filter_plugins/metadata_filter.py:198:38: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_filter_plugins/metadata_filter.py:271:36: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_filter_plugins/prerelease_name.py:40:25: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
@@ -174,85 +165,85 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 + src/bandersnatch_storage_plugins/s3.py:139:21: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_storage_plugins/s3.py:159:25: error[not-subscriptable] Cannot subscript object of type `type` with no `__class_getitem__` method
 + src/bandersnatch_storage_plugins/s3.py:163:43: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | ConfigParser | type`
-- Found 80 diagnostics
-+ Found 143 diagnostics
+- Found 78 diagnostics
++ Found 142 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 + testing/test_nodes.py:33:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 433 diagnostics
-+ Found 434 diagnostics
+- Found 407 diagnostics
++ Found 408 diagnostics
 
 graphql-core (https://github.com/graphql-python/graphql-core)
-+ src/graphql/type/definition.py:452:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
-+ src/graphql/type/definition.py:782:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
-+ src/graphql/type/definition.py:886:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
-+ src/graphql/type/definition.py:989:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
-+ src/graphql/type/definition.py:1124:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
-+ src/graphql/type/definition.py:1356:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
-+ src/graphql/type/directives.py:165:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/directives.py:182:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/directives.py:197:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/directives.py:201:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/directives.py:213:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/directives.py:217:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/directives.py:219:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/directives.py:240:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/directives.py:258:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:45:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:100:30: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:115:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:119:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:123:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:134:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:167:33: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:180:39: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
-+ src/graphql/type/introspection.py:269:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:270:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:271:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:276:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:292:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:301:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:307:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:401:28: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:420:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:421:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:426:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:433:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:437:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:471:29: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:483:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:485:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:438:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:768:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:872:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:975:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:1110:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ src/graphql/type/definition.py:1342:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ src/graphql/type/directives.py:159:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/directives.py:176:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/directives.py:191:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/directives.py:195:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/directives.py:207:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/directives.py:211:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/directives.py:213:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/directives.py:234:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/directives.py:252:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:48:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:103:30: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:118:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:122:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:126:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:137:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:170:33: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:183:39: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
++ src/graphql/type/introspection.py:272:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:273:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:274:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:279:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:295:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:304:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:310:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:405:28: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:424:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:425:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:430:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:437:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:441:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:475:29: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:487:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
 + src/graphql/type/introspection.py:489:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:495:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:499:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:532:34: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:545:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:548:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:551:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:555:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ src/graphql/type/introspection.py:576:33: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
-+ src/graphql/type/introspection.py:599:30: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
-+ src/graphql/type/introspection.py:668:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/introspection.py:674:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ src/graphql/type/scalars.py:309:59: error[invalid-assignment] Object of type `dict[str | Unknown, GraphQLNamedType | Unknown]` is not assignable to `Mapping[str, GraphQLScalarType]`
-+ src/graphql/utilities/build_client_schema.py:153:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
-+ src/graphql/utilities/build_client_schema.py:184:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
-+ src/graphql/utilities/build_client_schema.py:194:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
-+ src/graphql/utilities/build_client_schema.py:214:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
-+ src/graphql/utilities/build_client_schema.py:231:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
-+ src/graphql/utilities/build_client_schema.py:253:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:360:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:375:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:392:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:426:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:465:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:490:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:691:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:710:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:726:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:741:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:754:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
-+ src/graphql/utilities/extend_schema.py:771:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:493:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:499:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:503:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:536:34: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:549:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:552:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:555:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:559:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ src/graphql/type/introspection.py:580:33: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ src/graphql/type/introspection.py:603:30: error[invalid-assignment] Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
++ src/graphql/type/introspection.py:672:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/introspection.py:678:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ src/graphql/type/scalars.py:307:59: error[invalid-assignment] Object of type `dict[str, GraphQLNamedType]` is not assignable to `Mapping[str, GraphQLScalarType]`
++ src/graphql/utilities/build_client_schema.py:155:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ src/graphql/utilities/build_client_schema.py:186:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/build_client_schema.py:196:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ src/graphql/utilities/build_client_schema.py:216:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ src/graphql/utilities/build_client_schema.py:233:20: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ src/graphql/utilities/build_client_schema.py:255:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:352:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:367:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:384:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:457:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:482:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:683:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:702:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:718:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:733:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:746:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ src/graphql/utilities/extend_schema.py:763:16: error[invalid-return-type] Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
 + tests/benchmarks/test_execution_async.py:14:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/benchmarks/test_execution_async.py:15:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/benchmarks/test_execution_async.py:28:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
@@ -298,62 +289,61 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 + tests/execution/test_abstract.py:361:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_abstract.py:363:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(() -> Collection[GraphQLInterfaceType]) | Collection[GraphQLInterfaceType] | None`, found `list[Unknown | GraphQLNamedType]`
 + tests/execution/test_abstract.py:367:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:25:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:25:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:41:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:43:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:87:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:87:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:88:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:89:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:131:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:131:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:132:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_customize.py:136:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:39:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:40:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:41:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ tests/execution/test_defer.py:56:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:57:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:58:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:17:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:17:61: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:33:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:35:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:79:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:79:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:80:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:81:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:123:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:123:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:124:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_customize.py:128:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:42:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:43:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:44:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
 + tests/execution/test_defer.py:59:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:65:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:65:72: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:69:58: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:83:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:84:58: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ tests/execution/test_defer.py:91:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:98:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:99:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:106:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:107:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:114:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:121:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:122:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:123:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
-+ tests/execution/test_defer.py:125:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:126:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:132:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:132:57: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:132:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_defer.py:135:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:60:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:61:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:62:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:68:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:68:72: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:72:58: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:86:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:87:58: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ tests/execution/test_defer.py:94:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:101:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:102:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:109:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:110:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:117:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:124:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:125:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:126:52: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `GraphQLNamedType` does not satisfy upper bound `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements` of type variable `GNT_co`
++ tests/execution/test_defer.py:128:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:129:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:135:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:135:57: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:135:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_defer.py:138:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
 + tests/execution/test_directives.py:6:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
 + tests/execution/test_directives.py:7:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_directives.py:7:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:41:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:43:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:102:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_executor.py:42:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ tests/execution/test_executor.py:44:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:103:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:104:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:105:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:106:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
 + tests/execution/test_executor.py:107:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:109:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:110:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
-+ tests/execution/test_executor.py:114:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
-+ tests/execution
++ tests/execution/test_executor.py:108:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_executor.py:110:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLObjectType | GraphQLInterfaceType | ... omitted 4 union elements`, found `GraphQLNamedType`
++ tests/execution/test_executor.py:111:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown] | GraphQLNonNull[GraphQLScalarType | GraphQLEnumType | GraphQLInputObjectType | GraphQLList[Unknown]]`, found `GraphQLNamedType`
++ tests/execution/test_executor.py:115:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expec
 
-... (truncated 2712 lines) ...
+... (truncated 2734 lines) ...
 ```
 
 </details>
@@ -471,28 +461,31 @@ _Comment by @astral-sh-bot[bot] on 2025-12-31 19:47_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 1,187 | 12 | 20 |
-| `possibly-missing-attribute` | 733 | 16 | 26 |
-| `unresolved-attribute` | 247 | 6 | 26 |
-| `unsupported-operator` | 99 | 2 | 112 |
-| `invalid-return-type` | 61 | 0 | 9 |
-| `invalid-assignment` | 31 | 2 | 6 |
-| `not-subscriptable` | 29 | 0 | 0 |
-| `unused-ignore-comment` | 8 | 9 | 0 |
+| `invalid-argument-type` | 1,177 | 9 | 24 |
+| `possibly-missing-attribute` | 738 | 13 | 26 |
+| `unresolved-attribute` | 249 | 6 | 26 |
+| `unsupported-operator` | 100 | 2 | 111 |
+| `invalid-return-type` | 62 | 0 | 5 |
+| `invalid-assignment` | 31 | 1 | 6 |
+| `not-subscriptable` | 30 | 0 | 0 |
 | `too-many-positional-arguments` | 16 | 0 | 0 |
+| `unused-ignore-comment` | 7 | 9 | 0 |
+| `no-matching-overload` | 11 | 0 | 0 |
 | `invalid-key` | 10 | 0 | 0 |
 | `missing-argument` | 3 | 7 | 0 |
-| `no-matching-overload` | 8 | 0 | 0 |
+| `invalid-parameter-default` | 1 | 0 | 7 |
 | `redundant-cast` | 1 | 4 | 0 |
-| `invalid-await` | 0 | 2 | 0 |
-| `type-assertion-failure` | 0 | 2 | 0 |
-| `invalid-parameter-default` | 1 | 0 | 0 |
+| `invalid-await` | 2 | 0 | 0 |
 | `unknown-argument` | 1 | 0 | 0 |
-| **Total** | **2,435** | **62** | **199** |
+| **Total** | **2,439** | **51** | **205** |
 
 
-**[Full report with detailed diff](https://2b306a3a.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://2b306a3a.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://2a962561.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://2a962561.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-21 04:25_
 
 ---
