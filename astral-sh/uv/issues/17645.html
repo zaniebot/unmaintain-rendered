@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` removes base dependencies when switching extras (at least impacts typer/typer-slim) - astral-sh/uv #17645</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>uv sync</code> removes base dependencies when switching extras (at least impacts typer/typer-slim)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17645">#17645</a>
+        opened by <a href="https://github.com/pimlock">@pimlock</a>
+        on 2026-01-21 19:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pimlock">@pimlock</a></div>
+            <div class="timeline-body">Summary
+Summary
+<p>When switching extras with <code>uv sync</code> (or <code>uv tool install</code>), packages that provide conflicting files (like <code>typer</code> and <code>typer-slim</code>) can corrupt the venv. Installing <code>typer-slim</code> overwrites <code>typer</code>&#x27;s files, and uninstalling <code>typer-slim</code> deletes them—leaving uv&#x27;s metadata incorrectly showing typer as installed while the actual files are gone.</p>
+Reproduction
+<p>I created a repo with the repro example: https://github.com/pimlock/uv-bug-repro</p>
+<p>When this happened in my workflow, the dependency tree was more complex, the base package depended on <code>typer</code> and one of deps defined in extra had <code>typer-slim</code> as a dep few levels deep.</p>
+<p>Here&#x27;s the verbose output when running all the commands with the spot where the &quot;issue&quot; happens being highlighted</p>
+<ul>
+<li>https://github.com/pimlock/uv-bug-repro/blob/main/repro-output.txt#L180-L192</li>
+</ul>
+<p>Commands:</p>
+<pre><code>git clone https://github.com/pimlock/uv-bug-repro
+cd uv-bug-repro
+
+uv sync                     # ✓ works
+uv sync --extra extra1      # ✓ works
+uv sync --extra extra2      # ✗ ModuleNotFoundError: No module named &#x27;typer&#x27;
+</code></pre>
+<p>The package has:</p>
+<ul>
+<li>Base dependency: typer&gt;=0.20.0</li>
+<li>extra1: typer-slim&gt;=0.20.0</li>
+<li>extra2: rich&gt;=13.0.0</li>
+</ul>
+What happens
+<ol>
+<li><code>uv sync</code> installs typer (which depends on typer-slim)</li>
+<li><code>uv sync --extra extra1</code> adds typer-slim explicitly</li>
+<li><code>uv sync --extra extra2</code> removes typer-slim, but also removes typer even though it&#x27;s a base dependency</li>
+</ol>
+<p>This issue is likely caused by how <code>typer</code> and <code>typer-slim</code> are set up (i.e. <code>typer</code> doesn&#x27;t depend on <code>typer-slim</code>), but it may be potentially causing similar issues with other packages (AFAIK pydantic uses the <code>-slim</code> pattern, but in a different way).</p>
+<ul>
+<li>typer requires: click, typing-extensions, shellingham, rich</li>
+<li>typer-slim requires: click, typing-extensions</li>
+</ul>
+<p>They conflict because they both install files to the same typer/ directory. So here&#x27;s what&#x27;s happening:</p>
+<ol>
+<li>Step 1: <code>typer</code> installed → typer/ directory created</li>
+<li>Step 2: <code>typer-slim</code> installed → overwrites typer/ directory</li>
+<li>Step 3: <code>typer-slim</code> uninstalled → deletes typer/ directory</li>
+</ol>
+Expected
+<p>Base dependency typer&gt;=0.20.0 should always be installed regardless of which extras are selected.</p>
+Workaround
+<p><code>uv sync --extra extra2 --reinstall</code> works correctly.</p>
+Platform
+<p>Darwin 25.2.0 arm64</p>
+Version
+<p>uv 0.9.26 (ee4f003 2026-01-15)</p>
+Python version
+<p>CPython 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/pimlock">@pimlock</a> on 2026-01-21 19:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-21 20:07:55 UTC
+    </footer>
+</body>
+</html>
