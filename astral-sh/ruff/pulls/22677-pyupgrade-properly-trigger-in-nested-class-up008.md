@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-21T20:56:42Z
+updated_at: 2026-01-21T23:16:57Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-21T21:15:40Z
+synced_at: 2026-01-22T00:08:57Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -549,5 +549,26 @@ _@leandrobbraga reviewed on 2026-01-21 20:56_
 _Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:134 on 2026-01-21 20:56_
 
 Thank you for your review, I'll try to think about the corner cases and come up with a solution in the next days. 
+
+---
+
+_@generalmimon reviewed on 2026-01-21 23:16_
+
+---
+
+_Review comment by @generalmimon on `crates/ruff_linter/src/rules/pyupgrade/rules/super_call_with_parameters.rs`:134 on 2026-01-21 23:16_
+
+See https://github.com/astral-sh/ruff/issues/22597#issuecomment-3781530191 - I've just found out that the situation I described above is already covered in this pyupgrade test case:
+
+[asottile / **pyupgrade**](https://github.com/asottile/pyupgrade) / [`tests/features/super_test.py:32-35`](https://github.com/asottile/pyupgrade/blob/369aea6489e38ca74a18df494f191857ba484950/tests/features/super_test.py#L32-L35)
+
+```py
+        'class Outer:\n'  # super arg1 nested in unrelated name
+        '    class C(Base):\n'
+        '        def f(self):\n'
+        '            super(some_module.Outer.C, self).f()\n',
+```
+
+Honestly, I think it's worth looking at the entire [`tests/features/super_test.py`](https://github.com/asottile/pyupgrade/blob/369aea6489e38ca74a18df494f191857ba484950/tests/features/super_test.py) file and ideally porting all test cases that are not yet covered by the Ruff test suite. There aren't that many, but Ruff still seems to be missing a few important ones.
 
 ---

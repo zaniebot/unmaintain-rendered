@@ -9,9 +9,9 @@ labels:
   - rule
 assignees: []
 created_at: 2026-01-15T13:09:16Z
-updated_at: 2026-01-20T22:43:49Z
+updated_at: 2026-01-21T23:18:18Z
 url: https://github.com/astral-sh/ruff/issues/22597
-synced_at: 2026-01-20T22:52:40Z
+synced_at: 2026-01-22T00:08:45Z
 ```
 
 # UP008 false negative in inner (nested) classes
@@ -110,5 +110,15 @@ _Label `rule` added by @ntBre on 2026-01-15 15:44_
 _Comment by @leandrobbraga on 2026-01-20 22:43_
 
 I have a fix in https://github.com/astral-sh/ruff/pull/22677
+
+---
+
+_Comment by @generalmimon on 2026-01-21 23:01_
+
+I went digging in the https://github.com/asottile/pyupgrade repo and found that it also didn't originally support `super` calls in nested classes: https://github.com/asottile/pyupgrade/issues/696
+
+The reason I mention this is that the associated PR https://github.com/asottile/pyupgrade/pull/707 could be interesting to look at, both for the implementation and for the added test cases, which are quite thorough and Ruff would not pass them at the moment. [pyupgrade](https://github.com/asottile/pyupgrade) is MIT-licensed (see [LICENSE](https://github.com/asottile/pyupgrade/blob/369aea6489e38ca74a18df494f191857ba484950/LICENSE)), so I believe it should be OK to look at it.
+
+As for the test cases that Ruff wouldn't pass, this test case https://github.com/asottile/pyupgrade/blob/369aea6489e38ca74a18df494f191857ba484950/tests/features/super_test.py#L32-L35 essentially covers the same situation that I described in my review comment https://github.com/astral-sh/ruff/pull/22677#discussion_r2714271448.
 
 ---

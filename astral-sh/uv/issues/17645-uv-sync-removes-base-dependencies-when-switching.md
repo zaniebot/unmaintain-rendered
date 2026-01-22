@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T19:40:22Z
-updated_at: 2026-01-21T22:54:26Z
+updated_at: 2026-01-21T23:09:56Z
 url: https://github.com/astral-sh/uv/issues/17645
-synced_at: 2026-01-21T23:08:30Z
+synced_at: 2026-01-22T00:09:02Z
 ```
 
 # `uv sync` removes base dependencies when switching extras (at least impacts typer/typer-slim)
@@ -145,5 +145,45 @@ uv pip install ".[extra1]"
 uv pip install ".[extra2]"
 repro-cli # works!
 ```
+
+---
+
+_Comment by @zanieb on 2026-01-21 23:03_
+
+`pip install` and `uv pip install` both won't remove any extraneous files, so `typer-slim` is just not being removed, I presume?
+
+---
+
+_Comment by @pimlock on 2026-01-21 23:08_
+
+Yes, that seems to be the case:
+```
+uv pip install ".[extra2]"
+Resolved 9 packages in 4ms
+      Built uv-bug-repro @ file:///Users/pmlocek/dev/tries/2026-01-21-uv-repro
+Prepared 1 package in 435ms
+Uninstalled 1 package in 2ms
+Installed 1 package in 6ms
+ ~ uv-bug-repro==0.1.0 (from file:///Users/pmlocek/dev/tries/2026-01-21-uv-repro)
+```
+
+vs
+
+```
+uv sync --extra extra2
+Resolved 11 packages in 2ms
+Uninstalled 1 package in 6ms
+ - typer-slim==0.21.1
+```
+
+Also, that reminded me of `--inexact`, which also doesn't remove extraneous stuff, so `uv sync --extra extra2 --inexact` leaves `typer` module in venv.
+
+---
+
+_Comment by @zanieb on 2026-01-21 23:09_
+
+Yeah the problem with that as the "fix" is that if `typer-slim` mutates any files from `typer` then the mutated file will remain and could break the package.
+
+One fix is that we can identify that satisfied candidates need to be "reinstalled" if an uninstalled candidate has an overlapping file, here's a poc https://github.com/astral-sh/uv/compare/main...zaniebot:claude/reproduce-uv-17645-7DkMp
 
 ---

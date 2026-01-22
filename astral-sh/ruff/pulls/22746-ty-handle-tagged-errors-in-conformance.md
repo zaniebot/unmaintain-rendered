@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/handle-tagged-errors-conformance
 created_at: 2026-01-19T21:38:32Z
-updated_at: 2026-01-21T15:11:41Z
+updated_at: 2026-01-21T23:28:43Z
 url: https://github.com/astral-sh/ruff/pull/22746
-synced_at: 2026-01-21T16:04:59Z
+synced_at: 2026-01-22T00:08:57Z
 ```
 
 # [ty] Handle tagged errors in conformance
@@ -347,5 +347,15 @@ Nit: You could consider using a `match classification` here
 _@MichaReiser approved on 2026-01-21 15:11_
 
 Thank you. This overall makes sense to me. I've a few small nit comments
+
+---
+
+_@WillDuke reviewed on 2026-01-21 23:24_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:273 on 2026-01-21 23:24_
+
+Makes sense. One advantage of grouping them like this is that you'll be able to see why an error that appears to match a line in the conformance suite is a false positive if another line with the same tag has a diagnostic.
 
 ---

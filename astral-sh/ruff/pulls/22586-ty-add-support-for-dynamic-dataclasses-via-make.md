@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-21T22:52:01Z
+updated_at: 2026-01-21T23:47:25Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-21T23:08:24Z
+synced_at: 2026-01-22T00:08:57Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -125,18 +125,25 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 
 ## `ecosystem-analyzer` results
 
+**Failing projects**:
+
+| Project | Old Status | New Status | Old Return Code | New Return Code |
+|---------|------------|------------|-----------------|------------------|
+| `core` | success | abnormal exit | `1` | `101` |
+
+**Diagnostic changes:**
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-parameter-default` | 0 | 0 | 7 |
-| `invalid-return-type` | 0 | 4 | 2 |
-| `invalid-assignment` | 0 | 0 | 4 |
+| `invalid-return-type` | 0 | 4 | 4 |
+| `invalid-await` | 0 | 0 | 6 |
+| `invalid-assignment` | 0 | 0 | 5 |
 | `invalid-argument-type` | 0 | 0 | 3 |
 | `unused-ignore-comment` | 2 | 0 | 0 |
-| **Total** | **2** | **4** | **16** |
+| **Total** | **2** | **4** | **18** |
 
 
-**[Full report with detailed diff](https://afd3da90.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://afd3da90.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://fa73a46c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://fa73a46c.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -204,7 +211,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6387 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6527 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -431,5 +438,9 @@ _Converted to draft by @charliermarsh on 2026-01-19 13:41_
 _Comment by @charliermarsh on 2026-01-19 13:41_
 
 (Marking as draft while we finish the recursive definition work upstream.)
+
+---
+
+_Review request for @carljm removed by @carljm on 2026-01-21 23:47_
 
 ---

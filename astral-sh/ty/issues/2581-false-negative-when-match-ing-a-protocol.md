@@ -8,9 +8,9 @@ labels:
   - Protocols
 assignees: []
 created_at: 2026-01-21T17:12:58Z
-updated_at: 2026-01-21T20:03:04Z
+updated_at: 2026-01-21T23:44:43Z
 url: https://github.com/astral-sh/ty/issues/2581
-synced_at: 2026-01-21T21:10:58Z
+synced_at: 2026-01-22T00:08:39Z
 ```
 
 # False negative when `match`ing a Protocol
@@ -74,5 +74,21 @@ _Comment by @AlexWaygood on 2026-01-21 19:50_
 Thanks! Yes, it seems reasonable to expand the rule so that it catches this runtime error. Mypy and pyrefly have the same false negative that we do here, but pyright appears to catch this.
 
 Edit: oops, i see you already analysed what other type checkers do here — thanks!
+
+---
+
+_Comment by @denyszhak on 2026-01-21 23:31_
+
+@AlexWaygood May I take on this one?
+
+---
+
+_Comment by @carljm on 2026-01-21 23:44_
+
+@denyszhak Certainly!
+
+---
+
+_Assigned to @denyszhak by @carljm on 2026-01-21 23:44_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2025-05-08T12:10:17Z
-updated_at: 2025-12-21T14:39:03Z
+updated_at: 2026-01-21T23:45:36Z
 url: https://github.com/astral-sh/ty/issues/269
-synced_at: 2026-01-12T15:54:22Z
+synced_at: 2026-01-22T00:08:39Z
 ```
 
 # `pre-commit` hook for `ty`
@@ -514,5 +514,11 @@ Hey guys, so I tried a little something, before realising that others also made 
 - https://foundry.fsky.io/vel/ty-pre-commit (missed out on this being mentioned above)
 
 But I noticed that there is still the issue of `unresolved-import` and `possibly-missing-import` causing failures. Until Astral manages to fix those, I wouldn't recommend using these in production with `--ignore unresolved-import --ignore possibly-missing-import` (and also the fact that these are still unofficial and not at all endored by Astral and friends)
+
+---
+
+_Comment by @Borda on 2026-01-21 23:45_
+
+That would be great, just being able to use it together with the pre-commit bot, which does not like local hooks lol
 
 ---

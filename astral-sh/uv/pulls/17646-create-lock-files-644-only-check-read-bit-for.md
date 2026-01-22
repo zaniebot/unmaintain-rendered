@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 16769-lockfile-perms
 created_at: 2026-01-21T20:09:30Z
-updated_at: 2026-01-21T21:04:27Z
+updated_at: 2026-01-21T23:48:31Z
 url: https://github.com/astral-sh/uv/pull/17646
-synced_at: 2026-01-21T22:07:30Z
+synced_at: 2026-01-22T00:09:10Z
 ```
 
 # Create lock files 644, only check read bit for locks, respect umask
@@ -79,5 +79,61 @@ $ hdiutil attach exfat.dmg
 $ cd /Volumes/EXFATDISK
 $ uv init --bare --cache-dir build/uv/cache -v
 ```
+
+---
+
+_Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:316 on 2026-01-21 23:11_
+
+This won't break the testcase on ExFAT because ExFAT doesn't have a concept of permission bits so it won't matter, but the reason this code was here was to cater for whatever filesystem doesn't support renameat2 but does support permission bits so there's no reason to remove it in this PR unless I'm missing something.
+
+---
+
+_Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:247 on 2026-01-21 23:15_
+
+If we don't need to write, this should just be `0o444`.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 23:27_
+
+Thanks.
+
+Overall I don't see anything wrong with the idea. Changing the mode to `0o444` will be a good test to ensure that we can still take exclusive locks on MacOS.
+
+I am also curious to see what error message we get if umask is 777, but I have a feeling that we'll never get this far in that case, although you could use fault injection with `strace` to test it.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 23:38_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:316 on 2026-01-21 23:38_
+
+To clarify, the code shouldn't be removed but should be amended to respect umask.
+
+So... e.g.: `mode != (DESIRED_MODE & !umask)` ... and then have `try_set_permissions` also `&` with `!umask`.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 23:45_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:285 on 2026-01-21 23:45_
+
+This should also have had `.write(true)` dropped. But instead, it should actually just use `.mode(0o444)`.
+
+---
+
+_@EliteTK reviewed on 2026-01-21 23:46_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:316 on 2026-01-21 23:46_
+
+Actually, scratch that.
+
+See the comments above about using `.mode()`, that should be sufficient and then this code isn't necessary. Not sure how I didn't think of this the first time.
 
 ---
