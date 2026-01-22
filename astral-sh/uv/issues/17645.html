@@ -122,10 +122,41 @@ repro-cli # works!
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 23:03</div>
+            <div class="timeline-body"><p><code>pip install</code> and <code>uv pip install</code> both won&#x27;t remove any extraneous files, so <code>typer-slim</code> is just not being removed, I presume?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimlock">@pimlock</a> on 2026-01-21 23:08</div>
+            <div class="timeline-body"><p>Yes, that seems to be the case:</p>
+<pre><code>uv pip install &quot;.[extra2]&quot;
+Resolved 9 packages in 4ms
+      Built uv-bug-repro @ file:///Users/pmlocek/dev/tries/2026-01-21-uv-repro
+Prepared 1 package in 435ms
+Uninstalled 1 package in 2ms
+Installed 1 package in 6ms
+ ~ uv-bug-repro==0.1.0 (from file:///Users/pmlocek/dev/tries/2026-01-21-uv-repro)
+</code></pre>
+<p>vs</p>
+<pre><code>uv sync --extra extra2
+Resolved 11 packages in 2ms
+Uninstalled 1 package in 6ms
+ - typer-slim==0.21.1
+</code></pre>
+<p>Also, that reminded me of <code>--inexact</code>, which also doesn&#x27;t remove extraneous stuff, so <code>uv sync --extra extra2 --inexact</code> leaves <code>typer</code> module in venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-21 23:09</div>
+            <div class="timeline-body"><p>Yeah the problem with that as the &quot;fix&quot; is that if <code>typer-slim</code> mutates any files from <code>typer</code> then the mutated file will remain and could break the package.</p>
+<p>One fix is that we can identify that satisfied candidates need to be &quot;reinstalled&quot; if an uninstalled candidate has an overlapping file, here&#x27;s a poc https://github.com/astral-sh/uv/compare/main...zaniebot:claude/reproduce-uv-17645-7DkMp</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 23:12:10 UTC
+        Synced at 2026-01-22 00:12:52 UTC
     </footer>
 </body>
 </html>

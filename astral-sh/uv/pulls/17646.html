@@ -65,10 +65,56 @@ $ uv init --bare --cache-dir build/uv/cache -v
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:316 on 2026-01-21 23:11</div>
+            <div class="timeline-body"><p>This won&#x27;t break the testcase on ExFAT because ExFAT doesn&#x27;t have a concept of permission bits so it won&#x27;t matter, but the reason this code was here was to cater for whatever filesystem doesn&#x27;t support renameat2 but does support permission bits so there&#x27;s no reason to remove it in this PR unless I&#x27;m missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:247 on 2026-01-21 23:15</div>
+            <div class="timeline-body"><p>If we don&#x27;t need to write, this should just be <code>0o444</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2026-01-21 23:27</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<p>Overall I don&#x27;t see anything wrong with the idea. Changing the mode to <code>0o444</code> will be a good test to ensure that we can still take exclusive locks on MacOS.</p>
+<p>I am also curious to see what error message we get if umask is 777, but I have a feeling that we&#x27;ll never get this far in that case, although you could use fault injection with <code>strace</code> to test it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2026-01-21 23:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:316 on 2026-01-21 23:38</div>
+            <div class="timeline-body"><p>To clarify, the code shouldn&#x27;t be removed but should be amended to respect umask.</p>
+<p>So... e.g.: <code>mode != (DESIRED_MODE &amp; !umask)</code> ... and then have <code>try_set_permissions</code> also <code>&amp;</code> with <code>!umask</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2026-01-21 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:285 on 2026-01-21 23:45</div>
+            <div class="timeline-body"><p>This should also have had <code>.write(true)</code> dropped. But instead, it should actually just use <code>.mode(0o444)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2026-01-21 23:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:316 on 2026-01-21 23:46</div>
+            <div class="timeline-body"><p>Actually, scratch that.</p>
+<p>See the comments above about using <code>.mode()</code>, that should be sufficient and then this code isn&#x27;t necessary. Not sure how I didn&#x27;t think of this the first time.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-21 22:11:59 UTC
+        Synced at 2026-01-22 00:13:36 UTC
     </footer>
 </body>
 </html>
