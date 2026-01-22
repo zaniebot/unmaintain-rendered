@@ -101,10 +101,66 @@ AttributeError: module &#x27;cffi&#x27; has no attribute &#x27;__version__&#x27;
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-22 03:40</div>
+            <div class="timeline-body"><p>The problem is that this isn&#x27;t trivially reproducible</p>
+<pre><code>❯ docker run -t astral/uv:bookworm bash -c &#x27;uv init -p 3.12 test-cffi &amp;&amp; cd test-cffi &amp;&amp; uv add cffi &amp;&amp; uv run -p 3.12 python -c &quot;import cffi; print(cffi.__version__); print(cffi.FFI())&quot;&#x27;
+Initialized project `test-cffi` at `/test-cffi`
+Using CPython 3.12.12
+Creating virtual environment at: .venv
+Resolved 3 packages in 264ms
+Prepared 2 packages in 144ms
+Installed 2 packages in 1ms
+ + cffi==2.0.0
+ + pycparser==3.0
+2.0.0
+&lt;cffi.api.FFI object at 0xffff9e483560&gt;
+</code></pre>
+<p>Can you reproduce in a container for us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-22 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-22 03:44</div>
+            <div class="timeline-body"><pre><code>❯ cat Dockerfile
+FROM archlinux:latest
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
+RUN uv init -p 3.12 test-cffi
+WORKDIR /app/test-cffi
+RUN uv add cffi
+CMD [&quot;uv&quot;, &quot;run&quot;, &quot;-p&quot;, &quot;3.12&quot;, &quot;python&quot;, &quot;-c&quot;, &quot;import cffi; print(cffi.__version__); print(cffi.FFI())&quot;]
+❯ docker build --platform linux/amd64 -t test-cffi-arch .
+[+] Building 0.2s (12/12) FINISHED                                                       docker:orbstack
+ =&gt; [internal] load build definition from Dockerfile                                                0.0s
+ =&gt; =&gt; transferring dockerfile: 305B                                                                0.0s
+ =&gt; [internal] load metadata for ghcr.io/astral-sh/uv:latest                                        0.1s
+ =&gt; [internal] load metadata for docker.io/library/archlinux:latest                                 0.1s
+ =&gt; [internal] load .dockerignore                                                                   0.0s
+ =&gt; =&gt; transferring context: 2B                                                                     0.0s
+ =&gt; FROM ghcr.io/astral-sh/uv:latest@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00f  0.0s
+ =&gt; [stage-0 1/6] FROM docker.io/library/archlinux:latest@sha256:f5add4183c5f05abf3b65489447aee6d5  0.0s
+ =&gt; CACHED [stage-0 2/6] COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/                     0.0s
+ =&gt; CACHED [stage-0 3/6] WORKDIR /app                                                               0.0s
+ =&gt; CACHED [stage-0 4/6] RUN uv init -p 3.12 test-cffi                                              0.0s
+ =&gt; CACHED [stage-0 5/6] WORKDIR /app/test-cffi                                                     0.0s
+ =&gt; CACHED [stage-0 6/6] RUN uv add cffi                                                            0.0s
+ =&gt; exporting to image                                                                              0.0s
+ =&gt; =&gt; exporting layers                                                                             0.0s
+ =&gt; =&gt; writing image sha256:b14a099148828a240a84faa3b949fc7bd8baa184213e7cf45a5e28ab5ba85c0f        0.0s
+ =&gt; =&gt; naming to docker.io/library/test-cffi-arch                                                   0.0s
+❯ docker run --platform linux/amd64 -t  test-cffi-arch
+2.0.0
+&lt;cffi.api.FFI object at 0x7fffff833410&gt;
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-22 03:13:08 UTC
+        Synced at 2026-01-22 04:13:06 UTC
     </footer>
 </body>
 </html>
