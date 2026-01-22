@@ -6,11 +6,12 @@ state: open
 author: map0logo
 labels:
   - bug
+  - needs-mre
 assignees: []
 created_at: 2026-01-21T23:14:46Z
-updated_at: 2026-01-22T02:25:32Z
+updated_at: 2026-01-22T03:44:16Z
 url: https://github.com/astral-sh/uv/issues/17650
-synced_at: 2026-01-22T03:09:32Z
+synced_at: 2026-01-22T04:09:33Z
 ```
 
 # `cffi` installed via uv is missing core attributes (`__version__` and `FFI`)
@@ -131,5 +132,68 @@ AttributeError: module 'cffi' has no attribute '__version__'
 ```
 
 
+
+---
+
+_Comment by @zanieb on 2026-01-22 03:40_
+
+The problem is that this isn't trivially reproducible
+
+```
+❯ docker run -t astral/uv:bookworm bash -c 'uv init -p 3.12 test-cffi && cd test-cffi && uv add cffi && uv run -p 3.12 python -c "import cffi; print(cffi.__version__); print(cffi.FFI())"'
+Initialized project `test-cffi` at `/test-cffi`
+Using CPython 3.12.12
+Creating virtual environment at: .venv
+Resolved 3 packages in 264ms
+Prepared 2 packages in 144ms
+Installed 2 packages in 1ms
+ + cffi==2.0.0
+ + pycparser==3.0
+2.0.0
+<cffi.api.FFI object at 0xffff9e483560>
+```
+
+Can you reproduce in a container for us?
+
+---
+
+_Label `needs-mre` added by @zanieb on 2026-01-22 03:40_
+
+---
+
+_Comment by @zanieb on 2026-01-22 03:44_
+
+```
+❯ cat Dockerfile
+FROM archlinux:latest
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
+RUN uv init -p 3.12 test-cffi
+WORKDIR /app/test-cffi
+RUN uv add cffi
+CMD ["uv", "run", "-p", "3.12", "python", "-c", "import cffi; print(cffi.__version__); print(cffi.FFI())"]
+❯ docker build --platform linux/amd64 -t test-cffi-arch .
+[+] Building 0.2s (12/12) FINISHED                                                       docker:orbstack
+ => [internal] load build definition from Dockerfile                                                0.0s
+ => => transferring dockerfile: 305B                                                                0.0s
+ => [internal] load metadata for ghcr.io/astral-sh/uv:latest                                        0.1s
+ => [internal] load metadata for docker.io/library/archlinux:latest                                 0.1s
+ => [internal] load .dockerignore                                                                   0.0s
+ => => transferring context: 2B                                                                     0.0s
+ => FROM ghcr.io/astral-sh/uv:latest@sha256:9a23023be68b2ed09750ae636228e903a54a05ea56ed03a934d00f  0.0s
+ => [stage-0 1/6] FROM docker.io/library/archlinux:latest@sha256:f5add4183c5f05abf3b65489447aee6d5  0.0s
+ => CACHED [stage-0 2/6] COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/                     0.0s
+ => CACHED [stage-0 3/6] WORKDIR /app                                                               0.0s
+ => CACHED [stage-0 4/6] RUN uv init -p 3.12 test-cffi                                              0.0s
+ => CACHED [stage-0 5/6] WORKDIR /app/test-cffi                                                     0.0s
+ => CACHED [stage-0 6/6] RUN uv add cffi                                                            0.0s
+ => exporting to image                                                                              0.0s
+ => => exporting layers                                                                             0.0s
+ => => writing image sha256:b14a099148828a240a84faa3b949fc7bd8baa184213e7cf45a5e28ab5ba85c0f        0.0s
+ => => naming to docker.io/library/test-cffi-arch                                                   0.0s
+❯ docker run --platform linux/amd64 -t  test-cffi-arch
+2.0.0
+<cffi.api.FFI object at 0x7fffff833410>
+```
 
 ---

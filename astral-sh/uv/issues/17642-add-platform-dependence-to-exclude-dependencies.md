@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-21T16:10:11Z
-updated_at: 2026-01-21T16:10:11Z
+updated_at: 2026-01-22T03:33:54Z
 url: https://github.com/astral-sh/uv/issues/17642
-synced_at: 2026-01-21T17:03:56Z
+synced_at: 2026-01-22T04:09:33Z
 ```
 
 # Add platform dependence to `exclude-dependencies`
@@ -48,5 +48,13 @@ exclude-dependencies = ["gdal ; sys_platform == 'win32'"]
 ---
 
 _Label `enhancement` added by @jontwo on 2026-01-21 16:10_
+
+---
+
+_Comment by @zanieb on 2026-01-22 03:33_
+
+I think maybe you want to use `override-dependencies` instead?
+
+I think adding marker support to `exclude-dependencies` would be challenging.
 
 ---

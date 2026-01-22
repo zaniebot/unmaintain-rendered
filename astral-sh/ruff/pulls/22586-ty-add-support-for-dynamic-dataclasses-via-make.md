@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-22T02:53:56Z
+updated_at: 2026-01-22T03:58:04Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-22T03:09:27Z
+synced_at: 2026-01-22T04:09:27Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -64,34 +63,44 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
 
 ```diff
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown | T@resolve_block_document_references | dict[str, Any]]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown | dict[str, Any] | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, Unknown | T@resolve_variables]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, Unknown | int | T@resolve_variables | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown | T@resolve_variables]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown | int | T@resolve_variables | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
 
 strawberry (https://github.com/strawberry-graphql/strawberry)
 + strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 345 diagnostics
 + Found 347 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 7 union elements, object_ | Self@iloc]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | IndexHierarchy | TypeBlocks | ... omitted 7 union elements, TVDtype@Series]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 8 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | IndexHierarchy | TypeBlocks | ... omitted 7 union elements, object_]`
+- Found 1821 diagnostics
++ Found 1825 diagnostics
+
+core (https://github.com/home-assistant/core)
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, int | _R@ignore_variance | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14464 diagnostics
++ Found 14465 diagnostics
 
 
 ```
@@ -153,12 +162,14 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `invalid-await` | 0 | 0 | 6 |
-| `unused-ignore-comment` | 4 | 0 | 0 |
-| `invalid-argument-type` | 1 | 2 | 0 |
-| **Total** | **5** | **2** | **6** |
+| `invalid-assignment` | 0 | 0 | 5 |
+| `invalid-return-type` | 1 | 0 | 3 |
+| `invalid-argument-type` | 0 | 0 | 3 |
+| `unused-ignore-comment` | 2 | 0 | 0 |
+| **Total** | **3** | **0** | **17** |
 
 
-**[Full report with detailed diff](https://50588323.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://50588323.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://8617121d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://8617121d.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -226,7 +237,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6557 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6584 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -276,7 +287,7 @@ Okiedokie
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:183 on 2026-01-16 11:51_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:328 on 2026-01-16 11:51_
 
 Can we also test that we view these attributes as immutable? (I can't remember exactly what error we should be emitting here)
 
@@ -297,7 +308,7 @@ p.y = 56  # error
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:262 on 2026-01-16 11:53_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:539 on 2026-01-16 11:53_
 
 ```suggestion
 from dataclasses import make_dataclass
@@ -313,7 +324,7 @@ reveal_mro(Derived)  # revealed: (<class 'Derived'>, <class 'Base'>, <class 'obj
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:294 on 2026-01-16 11:57_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:571 on 2026-01-16 11:57_
 
 ```suggestion
 from dataclasses import make_dataclass
@@ -339,7 +350,7 @@ reveal_type(p.unknown)  # revealed: Any
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:331 on 2026-01-16 11:58_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:608 on 2026-01-16 11:58_
 
 But you don't currently emit a diagnostic on this branch for too _few_ positional arguments -- this does not cause us to emit an error on this branch, but it fails at runtime:
 
@@ -351,7 +362,7 @@ make_dataclass("foo")
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:428 on 2026-01-16 12:00_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:717 on 2026-01-16 12:00_
 
 You don't currently emit an error for `make_dataclass("foo", bases=12345)` on this branch
 
@@ -457,5 +468,9 @@ _Comment by @charliermarsh on 2026-01-19 13:41_
 ---
 
 _Review request for @carljm removed by @carljm on 2026-01-21 23:47_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-22 03:22_
 
 ---
