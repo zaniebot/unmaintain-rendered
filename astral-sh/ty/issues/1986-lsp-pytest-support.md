@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-17T08:45:14Z
-updated_at: 2026-01-01T01:51:42Z
+updated_at: 2026-01-22T01:17:13Z
 url: https://github.com/astral-sh/ty/issues/1986
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-22T02:08:47Z
 ```
 
 # LSP: pytest support
@@ -64,5 +64,17 @@ Some CodeLens support would be nice as well. I'd love for ty to support [inline-
 <img width="401" height="65" alt="Image" src="https://github.com/user-attachments/assets/3d484080-af22-43a4-9210-734122fbef2d" />
 
 
+
+---
+
+_Comment by @marovira on 2026-01-22 01:17_
+
+I would also suggest (if it hasn't been suggested already) to have autocompletion for fixtures.
+For example, it would be nice if the following could be done:
+```python
+def test_foo(tmp_ ): # <- Ty should suggest tmp_path here as a completion option.
+```
+
+For reference, I would suggest looking at Jedi, as that one has support for completions on pytest fixtures.
 
 ---

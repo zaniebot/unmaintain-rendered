@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 16769-lockfile-perms
 created_at: 2026-01-21T20:09:30Z
-updated_at: 2026-01-21T23:48:31Z
+updated_at: 2026-01-22T01:51:02Z
 url: https://github.com/astral-sh/uv/pull/17646
-synced_at: 2026-01-22T00:09:10Z
+synced_at: 2026-01-22T02:09:18Z
 ```
 
 # Create lock files 644, only check read bit for locks, respect umask
@@ -135,5 +135,35 @@ _Review comment by @EliteTK on `crates/uv-fs/src/locked_file.rs`:316 on 2026-01-
 Actually, scratch that.
 
 See the comments above about using `.mode()`, that should be sufficient and then this code isn't necessary. Not sure how I didn't think of this the first time.
+
+---
+
+_Review comment by @dcwatson on `crates/uv-fs/src/locked_file.rs`:285 on 2026-01-22 01:27_
+
+I initially dropped the `.write(true)` but tests failed on Windows. I added it back to both implementations (this and the `#[cfg(not(unix))]` one) since I'm not very familiar with Rust's filesystem calls, but you're probably right that it can be dropped from this case.
+
+---
+
+_@dcwatson reviewed on 2026-01-22 01:27_
+
+---
+
+_@dcwatson reviewed on 2026-01-22 01:30_
+
+---
+
+_Review comment by @dcwatson on `crates/uv-fs/src/locked_file.rs`:247 on 2026-01-22 01:30_
+
+I don't have strong feelings either way. 644 is a pretty typical "new file" permission, but you're right we don't strictly need the owner write bit. It does make deleting them annoying in `zsh` since it will prompt you 😅
+
+---
+
+_@zanieb reviewed on 2026-01-22 01:51_
+
+---
+
+_Review comment by @zanieb on `crates/uv-fs/src/locked_file.rs`:247 on 2026-01-22 01:51_
+
+(I presume that could break cache cleans?)
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: amy/ruffen-docs
 created_at: 2026-01-09T01:26:45Z
-updated_at: 2026-01-21T12:00:43Z
+updated_at: 2026-01-22T01:28:49Z
 url: https://github.com/astral-sh/ruff/pull/22470
-synced_at: 2026-01-21T12:56:53Z
+synced_at: 2026-01-22T02:09:04Z
 ```
 
 # Apply formatting to markdown code blocks
@@ -559,6 +559,8 @@ Let's add a test that `ruff check markdown.md` logs a warning that no python fil
 All checks passed!
 ```
 
+We might also want to add a preview and non-preview test for what Ruff does when checking a directory.
+
 ---
 
 _Review comment by @MichaReiser on `crates/ruff_python_ast/src/lib.rs`:93 on 2026-01-21 09:54_
@@ -615,5 +617,15 @@ _@harupy reviewed on 2026-01-21 12:00_
 _Review comment by @harupy on `crates/ruff_python_ast/src/lib.rs`:111 on 2026-01-21 12:00_
 
 btw thanks for working on this!
+
+---
+
+_@amyreese reviewed on 2026-01-22 01:21_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_python_ast/src/lib.rs`:93 on 2026-01-22 01:21_
+
+I looked at adding a new FormatSourceType but I think it ended up making type handling more awkward, so I added Markdown/Toml to the existing SourceType enum, updated SourceKind constructors to take SourceType instead of PySourceType, and then refactored various places to pass around SourceType instead of PySourceType when relevant. It touches more places, but resolves a lot of issues with mapping from extensions to source types in ways that adding a FormatSourceType wouldn't have helped. This also meant there wasn't a special type just for formatting vs linting.
 
 ---
