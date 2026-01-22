@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-21T23:14:46Z
-updated_at: 2026-01-21T23:15:02Z
+updated_at: 2026-01-22T02:25:32Z
 url: https://github.com/astral-sh/uv/issues/17650
-synced_at: 2026-01-22T00:09:02Z
+synced_at: 2026-01-22T03:09:32Z
 ```
 
 # `cffi` installed via uv is missing core attributes (`__version__` and `FFI`)
@@ -92,5 +92,44 @@ Linux 6.6.119-1-MANJARO x86_64 GNU/Linux
 ---
 
 _Label `bug` added by @map0logo on 2026-01-21 23:14_
+
+---
+
+_Comment by @map0logo on 2026-01-22 02:25_
+
+
+This is not the case at least in Manjaro Linux and Python 3.12
+
+Trying your script:
+
+```shell
+uv init test-cffi && cd test-cffi
+uv add cffi
+echo "# shadow" > cffi.py
+uv run python -c "import cffi; print(cffi.__version__)"
+```
+
+```python
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AttributeError: module 'cffi' has no attribute '__version__'
+```
+
+Without shadowing
+
+```shell
+rm cffi.py
+uv run python -c "import cffi; print(cffi.__version__)"
+```
+
+I got, again
+
+```python
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AttributeError: module 'cffi' has no attribute '__version__'
+```
+
+
 
 ---

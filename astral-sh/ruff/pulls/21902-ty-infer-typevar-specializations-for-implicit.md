@@ -12,9 +12,9 @@ draft: true
 base: main
 head: dcreager/genprop
 created_at: 2025-12-10T18:22:13Z
-updated_at: 2026-01-22T01:59:53Z
+updated_at: 2026-01-22T02:09:03Z
 url: https://github.com/astral-sh/ruff/pull/21902
-synced_at: 2026-01-22T02:09:04Z
+synced_at: 2026-01-22T03:09:26Z
 ```
 
 # [ty] Infer typevar specializations for implicit generic protocols
@@ -81,27 +81,30 @@ _Comment by @codspeed-hq[bot] on 2025-12-16 00:58_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **improve performance by 9.33%**
+### Merging this PR will **degrade performance by 5.94%**
 
-<sub>Comparing <code>dcreager/genprop</code> (9c4668c) with <code>main</code> (10fd3b2)</sub>
+<sub>Comparing <code>dcreager/genprop</code> (d5db355) with <code>main</code> (c5b4ee6)</sub>
 
 
 
 ### Summary
 
 `⚡ 1` improved benchmark  
-`✅ 13` untouched benchmarks  
-`⏩ 39` skipped benchmarks[^skipped]  
+`❌ 1` regressed benchmark  
+`✅ 15` untouched benchmarks  
+`⏩ 36` skipped benchmarks[^skipped]  
 
 
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
 
 ### Performance Changes
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 236.7 ms | 216.5 ms | +9.33% |
+| ⚡ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 236.4 ms | 219.7 ms | +7.6% |
+| ❌ | Simulation | [`` attrs ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aattrs%3A%3Aproject%3A%3Aattrs&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 436.6 ms | 464.1 ms | -5.94% |
 
-[^skipped]: 39 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+[^skipped]: 36 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
 
 ---

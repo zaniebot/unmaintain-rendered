@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-21T01:57:23Z
-updated_at: 2026-01-21T11:57:23Z
+updated_at: 2026-01-22T02:49:37Z
 url: https://github.com/astral-sh/ty/issues/2574
-synced_at: 2026-01-21T12:56:36Z
+synced_at: 2026-01-22T03:09:10Z
 ```
 
 # support a `Module` type in `ty_extensions` for typing specific modules
@@ -30,6 +30,21 @@ def get_module() ->  Module["collections.abc"]:
     from collections import abc
     
     return abc
+```
+
+this is already possible by using `TypeOf` (thank you @AlexWaygood):
+```py
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import collections.abc
+    from ty_extensions import TypeOf
+
+def get_module() -> TypeOf[collections.abc]:
+    import collections.abc
+    return collections.abc
 ```
 
 ---
@@ -171,5 +186,11 @@ def get_module() -> TypeOf[collections.abc]:
 ---
 
 _Label `needs-decision` added by @AlexWaygood on 2026-01-21 11:53_
+
+---
+
+_Comment by @KotlinIsland on 2026-01-22 02:49_
+
+well, maybe this isn't required then? probably it would help make things a little easier to understand, but is it worth is, i'm not really sure
 
 ---

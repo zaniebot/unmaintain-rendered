@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-20T06:29:32Z
+updated_at: 2026-01-22T02:29:06Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-20T06:36:15Z
+synced_at: 2026-01-22T03:09:27Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -649,5 +649,11 @@ PR for macros: https://github.com/apache/airflow/pull/60808
 _@Lee-W reviewed on 2026-01-20 06:29_
 
 LGTM again :)
+
+---
+
+_Comment by @Lee-W on 2026-01-22 02:29_
+
+Hey @MichaReiser @ntBre , this rule looks good from an airflow perspective now. would appreciate if we can have some review from ruff end. Thanks!
 
 ---

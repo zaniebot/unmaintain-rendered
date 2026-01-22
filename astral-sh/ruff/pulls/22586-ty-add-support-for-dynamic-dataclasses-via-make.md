@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-22T00:57:29Z
+updated_at: 2026-01-22T02:53:56Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-22T01:09:23Z
+synced_at: 2026-01-22T03:09:27Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -63,6 +63,30 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown | T@resolve_block_document_references | dict[str, Any]]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown | dict[str, Any] | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, Unknown | T@resolve_variables]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, Unknown | int | T@resolve_variables | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown | T@resolve_variables]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown | int | T@resolve_variables | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `dict[str, Any] | int | T@resolve_block_document_references | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
+
 strawberry (https://github.com/strawberry-graphql/strawberry)
 + strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -125,28 +149,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 
 ## `ecosystem-analyzer` results
 
-**Failing projects**:
-
-| Project | Old Status | New Status | Old Return Code | New Return Code |
-|---------|------------|------------|-----------------|------------------|
-| `core` | success | abnormal exit | `1` | `101` |
-
-**Diagnostic changes:**
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-await` | 0 | 2 | 6 |
-| `invalid-parameter-default` | 0 | 0 | 7 |
-| `invalid-assignment` | 0 | 0 | 6 |
-| `invalid-argument-type` | 0 | 1 | 4 |
-| `possibly-missing-attribute` | 0 | 3 | 1 |
-| `invalid-return-type` | 0 | 0 | 3 |
-| `unused-ignore-comment` | 3 | 0 | 0 |
-| `unresolved-attribute` | 0 | 0 | 2 |
-| **Total** | **3** | **6** | **29** |
+| `invalid-await` | 0 | 0 | 6 |
+| `unused-ignore-comment` | 4 | 0 | 0 |
+| `invalid-argument-type` | 1 | 2 | 0 |
+| **Total** | **5** | **2** | **6** |
 
 
-**[Full report with detailed diff](https://22c0392b.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://22c0392b.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://50588323.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://50588323.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -214,7 +226,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6528 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6557 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -386,7 +398,7 @@ Since we'll _have_ to support recursive and stringified types for functional `ty
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:669 on 2026-01-16 16:25_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:676 on 2026-01-16 16:25_
 
 do we have tests for what happens if functional dataclasses with and without `order=True` are passed to `total_ordering()`?
 
@@ -418,7 +430,7 @@ I think you could reduce duplication between the branches a little bit in this m
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:764 on 2026-01-16 16:30_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:771 on 2026-01-16 16:30_
 
 do we have a test that demonstrates that a `slots=True` functional dataclass is understood as a disjoint base?
 
