@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/self2
 created_at: 2026-01-20T03:50:54Z
-updated_at: 2026-01-21T23:28:42Z
+updated_at: 2026-01-22T00:23:59Z
 url: https://github.com/astral-sh/ruff/pull/22755
-synced_at: 2026-01-22T00:08:57Z
+synced_at: 2026-01-22T01:09:23Z
 ```
 
 # [ty] Disallow Self in metaclass and static methods
@@ -253,5 +253,11 @@ _Marked ready for review by @charliermarsh on 2026-01-21 16:01_
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-21 16:16_
+
+---
+
+_Comment by @charliermarsh on 2026-01-22 00:23_
+
+Really having trouble shaking this regression.
 
 ---

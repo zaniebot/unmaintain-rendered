@@ -8,9 +8,9 @@ labels:
   - performance
 assignees: []
 created_at: 2026-01-21T10:31:16Z
-updated_at: 2026-01-21T13:37:04Z
+updated_at: 2026-01-22T00:24:50Z
 url: https://github.com/astral-sh/ty/issues/2575
-synced_at: 2026-01-21T14:07:04Z
+synced_at: 2026-01-22T01:09:06Z
 ```
 
 # Extreme slowdown when using types from `pulumi_cloudflare` (~12 min vs sub-second for `pulumi_aws`)
@@ -130,5 +130,9 @@ _Comment by @MichaReiser on 2026-01-21 13:37_
 Thank you for reporting this. This is very slow! 
 
 I didn't run the check command to completion, but ty spends almost all time in `ReachabilityConstraints::add_and_constraint` ([profile](https://share.firefox.dev/3LXRl27)) but it's not entirely clear to me which code is triggering this exponential blow up (CC: @dcreager in case you're aware of some blow up cases)
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-22 00:24_
 
 ---

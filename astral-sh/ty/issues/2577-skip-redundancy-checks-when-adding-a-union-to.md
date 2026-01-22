@@ -9,9 +9,9 @@ labels:
   - performance
 assignees: []
 created_at: 2026-01-21T13:44:59Z
-updated_at: 2026-01-21T13:44:59Z
+updated_at: 2026-01-22T00:22:00Z
 url: https://github.com/astral-sh/ty/issues/2577
-synced_at: 2026-01-21T14:07:04Z
+synced_at: 2026-01-22T01:09:06Z
 ```
 
 # Skip redundancy checks when adding a union to another union
@@ -33,5 +33,13 @@ _Label `help wanted` added by @MichaReiser on 2026-01-21 13:45_
 ---
 
 _Label `performance` added by @MichaReiser on 2026-01-21 13:45_
+
+---
+
+_Comment by @carljm on 2026-01-22 00:22_
+
+To clarify terminology: in ty, we use "normalized" to mean something more extreme, where a union has a fixed ordering and all types within it are also normalized. Unions in ty are not necessarily "normalized" by this definition -- most are not.
+
+What is true of most unions in ty is that they are simplified -- redundant elements are removed. But this is not true of all unions: cycle normalization creates non-simplified unions (because simplification requires `has_relation_to` checks, which can then cause cycles in cycle handling...). So given that non-simplified unions can exist, I don't think this optimization is currently safe. We would have to track an extra bit in every union marking whether it had already been simplified or not.
 
 ---

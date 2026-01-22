@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-21T23:47:25Z
+updated_at: 2026-01-22T00:57:29Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-22T00:08:57Z
+synced_at: 2026-01-22T01:09:23Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -135,15 +135,18 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 0 | 4 | 4 |
-| `invalid-await` | 0 | 0 | 6 |
-| `invalid-assignment` | 0 | 0 | 5 |
-| `invalid-argument-type` | 0 | 0 | 3 |
-| `unused-ignore-comment` | 2 | 0 | 0 |
-| **Total** | **2** | **4** | **18** |
+| `invalid-await` | 0 | 2 | 6 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-assignment` | 0 | 0 | 6 |
+| `invalid-argument-type` | 0 | 1 | 4 |
+| `possibly-missing-attribute` | 0 | 3 | 1 |
+| `invalid-return-type` | 0 | 0 | 3 |
+| `unused-ignore-comment` | 3 | 0 | 0 |
+| `unresolved-attribute` | 0 | 0 | 2 |
+| **Total** | **3** | **6** | **29** |
 
 
-**[Full report with detailed diff](https://fa73a46c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://fa73a46c.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://22c0392b.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://22c0392b.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -211,7 +214,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6527 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:6528 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -261,7 +264,7 @@ Okiedokie
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:152 on 2026-01-16 11:51_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:183 on 2026-01-16 11:51_
 
 Can we also test that we view these attributes as immutable? (I can't remember exactly what error we should be emitting here)
 
@@ -282,7 +285,7 @@ p.y = 56  # error
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:206 on 2026-01-16 11:53_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:262 on 2026-01-16 11:53_
 
 ```suggestion
 from dataclasses import make_dataclass
@@ -298,7 +301,7 @@ reveal_mro(Derived)  # revealed: (<class 'Derived'>, <class 'Base'>, <class 'obj
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:238 on 2026-01-16 11:57_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:294 on 2026-01-16 11:57_
 
 ```suggestion
 from dataclasses import make_dataclass
@@ -324,7 +327,7 @@ reveal_type(p.unknown)  # revealed: Any
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:254 on 2026-01-16 11:58_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:331 on 2026-01-16 11:58_
 
 But you don't currently emit a diagnostic on this branch for too _few_ positional arguments -- this does not cause us to emit an error on this branch, but it fails at runtime:
 
@@ -336,7 +339,7 @@ make_dataclass("foo")
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:351 on 2026-01-16 12:00_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:428 on 2026-01-16 12:00_
 
 You don't currently emit an error for `make_dataclass("foo", bases=12345)` on this branch
 
@@ -383,7 +386,7 @@ Since we'll _have_ to support recursive and stringified types for functional `ty
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:676 on 2026-01-16 16:25_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:669 on 2026-01-16 16:25_
 
 do we have tests for what happens if functional dataclasses with and without `order=True` are passed to `total_ordering()`?
 
@@ -415,7 +418,7 @@ I think you could reduce duplication between the branches a little bit in this m
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:771 on 2026-01-16 16:30_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:764 on 2026-01-16 16:30_
 
 do we have a test that demonstrates that a `slots=True` functional dataclass is understood as a disjoint base?
 
